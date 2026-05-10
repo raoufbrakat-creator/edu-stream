@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edu Stream — الأستاذ رؤوف بركات</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================
+   RESET & ROOT
+   ============================ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g1:#c9a84c;--g2:#e8c96a;--g3:#b8943e;
+  --b1:#5b7cfa;--b2:#8a5bfa;--b3:#1fb5a9;
+  --navy:#0a1628;--navy2:#0f1f3d;--navy3:#1a3260;
+  --white:#fff;--cream:#faf7f0;--cream2:#f0ead8;
+  --muted:#5a6170;--bdr:#ddd5c0;
+  --green:#059669;--red:#b91c1c;
+}
+body{font-family:"Tajawal",sans-serif;direction:rtl;background:var(--navy);color:#fff;min-height:100vh;overflow-x:hidden}
+
+/* ============================
+   PARTICLES BACKGROUND
+   ============================ */
+#particles-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;animation:float linear infinite;opacity:0}
+@keyframes float{
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  10%{opacity:.6}
+  90%{opacity:.4}
+  100%{transform:translateY(-10vh) rotate(720deg);opacity:0}
+}
+.bg-mesh{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%,rgba(91,124,250,.12),transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(138,91,250,.1),transparent),
+    radial-gradient(ellipse 100% 60% at 50% 50%,rgba(201,168,76,.05),transparent),
+    linear-gradient(160deg,#060e22 0%,#0a1628 50%,#060e1a 100%);
+  pointer-events:none;
+}
+
+/* ============================
+   SCREENS
+   ============================ */
+.screen{display:none;position:relative;z-index:1;min-height:100vh}
+.screen.active{display:block}
+
+/* ============================
+   LOGIN SCREEN
+   ============================ */
+/* ============================
+   LOGIN — FULL SCREEN SPLIT
+   ============================ */
+#screenLogin{
+  min-height:100vh;display:flex;flex-direction:column;
+  background:linear-gradient(135deg,#f8f6ff 0%,#eef2ff 40%,#f0f9ff 70%,#fafaf0 100%);
+  position:relative;overflow:hidden;
+}
+/* Decorative blobs */
+#screenLogin::before{
+  content:'';position:absolute;top:-120px;right:-80px;
+  width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,124,250,.18) 0%,rgba(138,91,250,.08) 50%,transparent 70%);
+  pointer-events:none;
+}
+#screenLogin::after{
+  content:'';position:absolute;bottom:-100px;left:-60px;
+  width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.15) 0%,rgba(31,181,169,.06) 50%,transparent 70%);
+  pointer-events:none;
+}
+.login-blob1{position:absolute;top:30%;left:5%;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,124,250,.1),transparent 70%);pointer-events:none;z-index:0}
+.login-blob2{position:absolute;top:10%;right:10%;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.12),transparent 70%);pointer-events:none;z-index:0}
+.login-blob3{position:absolute;bottom:20%;right:5%;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(31,181,169,.09),transparent 70%);pointer-events:none;z-index:0}
+
+/* TOP NAV BAR */
+.login-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 28px;position:relative;z-index:2;
+}
+.login-topbar-brand{display:flex;align-items:center;gap:10px}
+.login-topbar-logo{width:40px;height:40px;border-radius:12px;overflow:hidden;
+  border:2px solid rgba(201,168,76,.4);box-shadow:0 4px 14px rgba(201,168,76,.2)}
+.login-topbar-logo img{width:100%;height:100%;object-fit:cover}
+.login-topbar-name{font-size:.88rem;font-weight:900;color:#0f1f3d}
+.login-topbar-sub{font-size:.65rem;color:#5a6170;font-weight:600}
+.login-contact-btns{display:flex;gap:8px}
+.login-contact-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;
+  border-radius:20px;font-family:"Tajawal",sans-serif;font-size:.72rem;font-weight:700;
+  text-decoration:none;transition:all .2s;border:none;cursor:pointer}
+.lcb-wa{background:#25d366;color:#fff;box-shadow:0 3px 10px rgba(37,211,102,.25)}
+.lcb-fb{background:#1877f2;color:#fff;box-shadow:0 3px 10px rgba(24,119,242,.25)}
+.login-contact-btn:hover{transform:translateY(-2px)}
+
+/* MAIN SPLIT LAYOUT */
+.login-split{
+  display:grid;grid-template-columns:1fr;
+  flex:1;position:relative;z-index:2;
+  max-width:1100px;margin:0 auto;width:100%;
+  padding:20px 20px 30px;gap:24px;align-items:center;
+}
+@media(min-width:768px){
+  .login-split{grid-template-columns:1fr 1fr;padding:30px 40px 40px;gap:40px}
+}
+
+/* LEFT SIDE — BRAND */
+.login-brand{text-align:center;padding:10px 0}
+@media(min-width:768px){.login-brand{text-align:right;padding:0}}
+.login-logo-big{
+  width:110px;height:110px;border-radius:28px;overflow:hidden;
+  margin:0 auto 20px;
+  box-shadow:0 16px 48px rgba(91,124,250,.25),0 0 0 4px rgba(201,168,76,.2),0 0 0 8px rgba(201,168,76,.07);
+  position:relative;
+  animation:logoBounce 3s ease-in-out infinite;
+}
+@media(min-width:768px){.login-logo-big{margin:0 0 24px auto}}
+@keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.login-logo-big img{width:100%;height:100%;object-fit:cover}
+.login-brand-title{
+  font-size:2.2rem;font-weight:900;color:#0f1f3d;line-height:1.2;margin-bottom:10px;
+}
+@media(max-width:767px){.login-brand-title{font-size:1.7rem}}
+.login-brand-title span{
+  background:linear-gradient(135deg,#5b7cfa,#8a5bfa,#1fb5a9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.login-brand-sub{font-size:.9rem;color:#5a6170;line-height:1.7;margin-bottom:20px;font-weight:500}
+.login-features{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+@media(max-width:767px){.login-features{align-items:center}}
+.login-feature{display:flex;align-items:center;gap:10px}
+@media(max-width:767px){.login-feature{justify-content:center}}
+.feature-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.feature-text{font-size:.8rem;font-weight:700;color:#374151}
+.login-stats{display:flex;gap:16px;flex-wrap:wrap}
+@media(max-width:767px){.login-stats{justify-content:center}}
+.lstat{text-align:center;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);
+  border-radius:14px;padding:12px 18px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.lstat-num{font-size:1.4rem;font-weight:900;color:#0f1f3d;display:block;line-height:1}
+.lstat-lbl{font-size:.65rem;color:#6b7280;font-weight:700;margin-top:3px}
+
+/* RIGHT SIDE — FORM */
+.login-form-wrap{
+  background:#fff;border-radius:24px;
+  box-shadow:0 20px 60px rgba(91,124,250,.12),0 4px 16px rgba(0,0,0,.06);
+  overflow:hidden;border:1px solid rgba(255,255,255,.8);
+}
+.login-form-head{
+  background:linear-gradient(135deg,#0f1f3d 0%,#1a3260 60%,#243d70 100%);
+  padding:22px 24px 18px;text-align:center;position:relative;overflow:hidden;
+}
+.login-form-head::before{content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 0,transparent 50%);
+  background-size:20px 20px}
+.login-form-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,#c9a84c 30%,#e8c96a 50%,#c9a84c 70%,transparent)}
+.lfh-icon{font-size:2rem;margin-bottom:8px;display:block}
+.lfh-title{font-size:1rem;font-weight:900;color:#fff;margin-bottom:4px}
+.lfh-sub{font-size:.72rem;color:rgba(255,255,255,.5);font-weight:600}
+
+.login-form-body{padding:24px}
+
+/* ROLE SWITCHER */
+.role-switcher{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:22px}
+.role-btn{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 10px;border-radius:16px;border:2px solid #e5e7eb;
+  background:#f9fafb;cursor:pointer;transition:all .25s;
+  font-family:"Tajawal",sans-serif;
+}
+.role-btn:hover{border-color:#5b7cfa;background:#eef2ff}
+.role-btn.active{
+  border-color:#5b7cfa;background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+  box-shadow:0 4px 14px rgba(91,124,250,.15);
+}
+.role-btn-icon{font-size:1.6rem;line-height:1}
+.role-btn-label{font-size:.78rem;font-weight:800;color:#374151}
+.role-btn.active .role-btn-label{color:#4f46e5}
+.role-btn-sub{font-size:.62rem;color:#9ca3af;font-weight:600}
+
+/* FORM FIELDS */
+.field-group{margin-bottom:16px}
+.field-label{font-size:.75rem;font-weight:800;color:#374151;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.field-input{
+  width:100%;padding:13px 16px;
+  border:2px solid #e5e7eb;border-radius:13px;
+  font-family:"Tajawal",sans-serif;font-size:.95rem;
+  background:#fff;color:#111827;outline:none;transition:all .2s;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.04);
+}
+.field-input::placeholder{color:#9ca3af}
+.field-input:focus{border-color:#5b7cfa;box-shadow:0 0 0 3px rgba(91,124,250,.1),inset 0 1px 3px rgba(0,0,0,.04)}
+.field-input.code-style{text-align:center;letter-spacing:5px;font-weight:900;font-size:1.1rem;text-transform:uppercase;color:#0f1f3d}
+.field-input.code-style:focus{border-color:#c9a84c;box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+
+/* SUBMIT BUTTON */
+.btn-submit{
+  width:100%;padding:14px;margin-top:4px;
+  border:none;border-radius:13px;
+  font-family:"Tajawal",sans-serif;font-size:1rem;font-weight:900;
+  cursor:pointer;transition:all .25s;position:relative;overflow:hidden;
+}
+.btn-submit.student{
+  background:linear-gradient(135deg,#4f46e5 0%,#5b7cfa 50%,#7c3aed 100%);
+  color:#fff;box-shadow:0 8px 24px rgba(91,124,250,.4);
+}
+.btn-submit.student:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(91,124,250,.5)}
+.btn-submit.teacher{
+  background:linear-gradient(135deg,#b8943e 0%,#c9a84c 50%,#e8c96a 100%);
+  color:#0f1f3d;box-shadow:0 8px 24px rgba(201,168,76,.4);
+}
+.btn-submit.teacher:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(201,168,76,.5)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-submit-inner{display:flex;align-items:center;justify-content:center;gap:8px;position:relative}
+.btn-arrow{font-size:1.1rem;transition:transform .2s}
+.btn-submit:hover .btn-arrow{transform:translateX(-4px)}
+
+/* ERROR */
+.err-box{
+  background:#fef2f2;color:#b91c1c;
+  border:1.5px solid #fca5a5;border-radius:10px;
+  padding:10px 14px;font-size:.78rem;font-weight:700;
+  margin-bottom:14px;display:none;text-align:center;
+  animation:shake .4s ease;
+}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.hint-text{text-align:center;font-size:.7rem;color:#9ca3af;margin-top:10px;font-weight:600}
+
+/* TEACHER BADGE */
+.teacher-badge{
+  background:linear-gradient(135deg,#1e1b4b,#312e81);
+  border:1px solid rgba(99,102,241,.3);border-radius:12px;
+  padding:10px 14px;text-align:center;margin-bottom:16px;
+}
+.teacher-badge span{font-size:.75rem;color:#a5b4fc;font-weight:700}
+
+/* FOOTER */
+.login-footer{
+  text-align:center;padding:14px 20px 20px;
+  border-top:1px solid #f3f4f6;background:#fafafa;
+}
+.lf-copy{font-size:.65rem;color:#9ca3af;margin-top:6px}
+.lf-contacts{display:flex;gap:8px;justify-content:center;margin-bottom:0}
+.lf-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;
+  border-radius:20px;font-family:"Tajawal",sans-serif;font-size:.72rem;font-weight:700;
+  text-decoration:none;transition:all .2s}
+.lf-wa{background:#25d366;color:#fff;box-shadow:0 3px 10px rgba(37,211,102,.2)}
+.lf-fb{background:#1877f2;color:#fff;box-shadow:0 3px 10px rgba(24,119,242,.2)}
+.lf-btn:hover{transform:translateY(-2px)}
+
+/* TAB COMPATIBILITY */
+.tab-btn{display:none}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.tabs{display:none}
+.finput{display:none}
+.finput-wrap{display:none}
+.lcard{display:none}
+.lh{display:none}
+.lb{display:none}
+.lf{display:none}
+
+/* ============================
+   TOPBAR
+   ============================ */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(6,14,34,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  box-shadow:0 4px 24px rgba(0,0,0,.4);
+}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 16px;
+  display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.topbar-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar-logo-img{width:36px;height:36px;border-radius:10px;overflow:hidden;border:2px solid var(--g1);flex-shrink:0}
+.topbar-logo-img img{width:100%;height:100%;object-fit:cover}
+.topbar-logo-text{font-size:.88rem;font-weight:900;color:#fff;line-height:1.2}
+.topbar-logo-sub{font-size:.62rem;color:rgba(255,255,255,.45);font-weight:500}
+.topbar-nav{display:flex;align-items:center;gap:2px}
+.tnav-btn{padding:8px 14px;border:none;border-radius:9px;
+  font-family:"Tajawal",sans-serif;font-size:.78rem;font-weight:700;
+  cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.55)}
+.tnav-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.tnav-btn.active{background:rgba(201,168,76,.15);color:var(--g2);border:1px solid rgba(201,168,76,.2)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-user-pill{display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:22px;padding:5px 12px 5px 5px;font-size:.75rem}
+.topbar-user-avatar{width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b1),var(--b2));
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:900;flex-shrink:0}
+.topbar-user-name{font-weight:700;color:#fff;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-logout{padding:7px 14px;border:1px solid rgba(255,255,255,.12);border-radius:9px;
+  font-family:"Tajawal",sans-serif;font-size:.73rem;font-weight:700;
+  background:transparent;color:rgba(255,255,255,.6);cursor:pointer;transition:all .2s}
+.btn-logout:hover{background:rgba(185,28,28,.2);color:#fca5a5;border-color:rgba(185,28,28,.3)}
+.btn-hamburger{background:transparent;border:none;cursor:pointer;padding:6px;
+  display:flex;flex-direction:column;gap:4px}
+.btn-hamburger span{display:block;width:20px;height:2px;background:rgba(255,255,255,.7);
+  border-radius:2px;transition:all .3s}
+.mobile-menu{display:none;padding:8px 12px 12px;border-top:1px solid rgba(255,255,255,.07)}
+.mobile-menu.open{display:flex;flex-direction:column;gap:4px}
+.mobile-menu .tnav-btn{text-align:right;width:100%}
+
+/* ============================
+   MAIN CONTENT
+   ============================ */
+.main-wrap{max-width:1200px;margin:0 auto;padding:28px 16px}
+
+/* HERO SECTION */
+.hero{display:grid;grid-template-columns:1fr;gap:24px;margin-bottom:32px}
+@media(min-width:768px){.hero{grid-template-columns:1fr 1fr}}
+.hero-title{font-size:2.2rem;font-weight:900;line-height:1.25;margin-bottom:12px}
+.hero-title .name-highlight{
+  background:linear-gradient(135deg,var(--g1),var(--g2),var(--b1));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:.95rem;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:20px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn-primary{padding:12px 24px;border:none;border-radius:12px;
+  font-family:"Tajawal",sans-serif;font-size:.9rem;font-weight:800;
+  cursor:pointer;transition:all .2s;
+  background:linear-gradient(135deg,var(--b1),var(--b2));
+  color:#fff;box-shadow:0 6px 20px rgba(91,124,250,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(91,124,250,.5)}
+.btn-secondary{padding:12px 24px;border:1px solid rgba(255,255,255,.15);border-radius:12px;
+  font-family:"Tajawal",sans-serif;font-size:.9rem;font-weight:700;
+  cursor:pointer;transition:all .2s;background:rgba(255,255,255,.06);color:#fff}
+.btn-secondary:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:28px}
+@media(min-width:640px){.stats-row{grid-template-columns:repeat(4,1fr)}}
+.stat-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:16px;padding:16px 14px;text-align:center;
+  position:relative;overflow:hidden;transition:all .2s;
+}
+.stat-card:hover{background:rgba(255,255,255,.08);transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.c1::before{background:linear-gradient(90deg,var(--b1),var(--b2))}
+.stat-card.c2::before{background:linear-gradient(90deg,var(--g1),var(--g2))}
+.stat-card.c3::before{background:linear-gradient(90deg,#059669,#10b981)}
+.stat-card.c4::before{background:linear-gradient(90deg,#e11d48,#f43f5e)}
+.stat-num{font-size:2rem;font-weight:900;display:block;line-height:1;margin-bottom:4px}
+.stat-label{font-size:.68rem;color:rgba(255,255,255,.5);font-weight:700}
+
+/* PANELS */
+.panel{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;padding:20px;margin-bottom:16px;
+}
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
+.panel-title{font-size:.92rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:7px}
+.panel-title .dot{width:8px;height:8px;border-radius:50%;background:var(--g1)}
+
+/* TEACHER NAV TABS */
+.t-tabs{display:flex;gap:6px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+.t-tabs::-webkit-scrollbar{height:3px}
+.t-tabs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:3px}
+.t-tab{padding:9px 18px;border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  font-family:"Tajawal",sans-serif;font-size:.8rem;font-weight:700;
+  cursor:pointer;transition:all .2s;background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.55);white-space:nowrap}
+.t-tab.active{background:rgba(201,168,76,.15);color:var(--g2);border-color:rgba(201,168,76,.3)}
+.t-tab:hover:not(.active){background:rgba(255,255,255,.09);color:#fff}
+.t-pane{display:none}.t-pane.active{display:block}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+thead{background:rgba(201,168,76,.08)}
+th{padding:11px 12px;text-align:right;font-weight:700;font-size:.72rem;color:var(--g2)}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s}
+tbody tr:hover{background:rgba(255,255,255,.04)}
+tbody tr:last-child{border-bottom:none}
+td{padding:11px 12px;color:rgba(255,255,255,.85);font-size:.78rem}
+
+/* BADGE */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:700}
+.badge-done{background:rgba(5,150,105,.18);color:#6ee7b7;border:1px solid rgba(5,150,105,.25)}
+.badge-pend{background:rgba(251,191,36,.12);color:#fcd34d;border:1px solid rgba(251,191,36,.2)}
+.badge-lock{background:rgba(185,28,28,.18);color:#fca5a5;border:1px solid rgba(185,28,28,.25)}
+.code-chip{font-family:monospace;font-size:.82rem;font-weight:700;
+  background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);
+  border-radius:6px;padding:2px 8px;color:var(--g2);letter-spacing:1px}
+
+/* FORM ELEMENTS */
+.tinput{width:100%;padding:11px 14px;
+  border:1.5px solid rgba(255,255,255,.1);border-radius:10px;
+  font-family:"Tajawal",sans-serif;font-size:.85rem;
+  background:rgba(255,255,255,.06);color:#fff;outline:none;transition:all .2s}
+.tinput:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.06)}
+.tinput::placeholder{color:rgba(255,255,255,.3)}
+.tselect{width:100%;padding:11px 14px;
+  border:1.5px solid rgba(255,255,255,.1);border-radius:10px;
+  font-family:"Tajawal",sans-serif;font-size:.85rem;
+  background:#0d1e40;color:#fff;outline:none;cursor:pointer}
+.form-label{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:5px;display:block}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+
+/* BUTTONS */
+.tbtn{padding:10px 18px;border:none;border-radius:10px;
+  font-family:"Tajawal",sans-serif;font-size:.82rem;font-weight:700;
+  cursor:pointer;transition:all .2s}
+.tbtn-gold{background:linear-gradient(135deg,var(--g3),var(--g1));color:var(--navy);box-shadow:0 4px 14px rgba(201,168,76,.3)}
+.tbtn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(201,168,76,.4)}
+.tbtn-blue{background:linear-gradient(135deg,var(--b1),var(--b2));color:#fff;box-shadow:0 4px 14px rgba(91,124,250,.3)}
+.tbtn-ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1)}
+.tbtn-ghost:hover{background:rgba(255,255,255,.14);color:#fff}
+.tbtn-red{background:rgba(185,28,28,.2);color:#fca5a5;border:1px solid rgba(185,28,28,.3)}
+.tbtn-red:hover{background:rgba(185,28,28,.35)}
+.tbtn-green{background:rgba(5,150,105,.2);color:#6ee7b7;border:1px solid rgba(5,150,105,.3)}
+.tbtn-sm{padding:5px 10px;font-size:.7rem;border-radius:7px}
+.tbtn-full{width:100%;text-align:center}
+
+/* ALERT */
+.alert{border-radius:10px;padding:10px 14px;font-size:.8rem;font-weight:600;margin-bottom:12px;display:none;text-align:center}
+.alert-err{background:rgba(185,28,28,.15);color:#fca5a5;border:1px solid rgba(185,28,28,.25)}
+.alert-ok{background:rgba(5,150,105,.15);color:#6ee7b7;border:1px solid rgba(5,150,105,.25)}
+
+/* EXAM CARD */
+.exam-card{
+  background:linear-gradient(135deg,rgba(91,124,250,.1),rgba(138,91,250,.07));
+  border:1px solid rgba(91,124,250,.2);border-radius:16px;padding:20px;
+  cursor:pointer;transition:all .25s;position:relative;overflow:hidden;
+}
+.exam-card::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.03),transparent);pointer-events:none}
+.exam-card:hover{transform:translateY(-3px);border-color:rgba(91,124,250,.4);
+  box-shadow:0 16px 40px rgba(91,124,250,.2)}
+.exam-card.done{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.2);cursor:default}
+.exam-card.done:hover{transform:none}
+.exam-chip{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:700;
+  background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);
+  border-radius:20px;padding:3px 10px;color:var(--g2)}
+
+/* LESSONS GRID */
+.lessons-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.lessons-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.lessons-grid{grid-template-columns:1fr 1fr 1fr}}
+.lesson-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:18px;display:flex;flex-direction:column;
+  transition:all .2s;animation:fadeUp .4s ease both;
+}
+.lesson-card:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);transform:translateY(-2px)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.lesson-title{font-size:1rem;font-weight:800;margin-bottom:5px}
+.lesson-meta{font-size:.7rem;color:rgba(255,255,255,.45);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.lesson-meta span{background:rgba(255,255,255,.07);border-radius:6px;padding:2px 7px}
+.lesson-summary{font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.6;flex:1;margin-bottom:12px}
+.progress-bar-wrap{height:5px;background:rgba(255,255,255,.08);border-radius:5px;margin-bottom:4px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(to left,#34d399,#6ee7b7);transition:width .5s ease}
+.lesson-prog-txt{font-size:.65rem;color:rgba(255,255,255,.4);margin-bottom:12px}
+.lesson-btns{display:flex;gap:8px}
+
+/* RESULTS LIST */
+.result-item{display:flex;align-items:center;justify-content:space-between;
+  padding:13px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.result-item:last-child{border-bottom:none}
+.result-name{font-size:.85rem;font-weight:700}
+.result-sub{font-size:.68rem;color:rgba(255,255,255,.4);margin-top:2px}
+.result-score{font-size:.95rem;font-weight:900;text-align:left}
+.result-pct{font-size:.65rem;font-weight:700;border-radius:20px;padding:2px 8px;display:block;text-align:center;margin-top:3px}
+
+/* CHART CONTAINER */
+.chart-wrap{position:relative;width:100%;max-width:260px;margin:0 auto}
+
+/* DRAWER */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;
+  backdrop-filter:blur(4px);transition:opacity .3s}
+.drawer-overlay.open{display:block;animation:fadeIn .25s ease}
+.drawer{position:fixed;top:0;right:-100%;bottom:0;width:100%;max-width:480px;
+  background:linear-gradient(160deg,#0a1628,#0d1e40);
+  border-left:1px solid rgba(255,255,255,.1);
+  z-index:101;overflow-y:auto;
+  transition:right .35s cubic-bezier(.22,.68,0,1.2);
+  box-shadow:-20px 0 60px rgba(0,0,0,.5)}
+.drawer.open{right:0}
+.drawer-top{position:sticky;top:0;z-index:1;padding:18px 20px;
+  background:linear-gradient(to bottom,#0a1628 80%,transparent);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.drawer-close{width:34px;height:34px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.drawer-close:hover{background:rgba(255,255,255,.2)}
+.drawer-body{padding:0 20px 100px}
+.drawer-footer{position:sticky;bottom:0;padding:16px 20px;
+  background:linear-gradient(to top,#0a1628 80%,transparent);
+  display:flex;align-items:center;justify-content:space-between}
+.drawer-prog-txt{font-size:.72rem;color:rgba(255,255,255,.45)}
+
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
+  align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
+.modal-bg.open{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:linear-gradient(160deg,#0d1e40,#0a1628);
+  border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:28px 24px;
+  max-width:380px;width:100%;text-align:center;
+  box-shadow:0 40px 80px rgba(0,0,0,.6);animation:modalIn .3s cubic-bezier(.22,.68,0,1.2)}
+@keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:none}}
+.modal-icon{font-size:2.6rem;margin-bottom:12px;display:block}
+.modal-title{font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:8px}
+.modal-msg{font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:16px}
+.modal-input{width:100%;padding:12px;border:1.5px solid rgba(255,255,255,.15);border-radius:10px;
+  font-family:"Tajawal",sans-serif;font-size:.95rem;text-align:center;margin-bottom:10px;
+  background:rgba(255,255,255,.07);color:#fff;outline:none}
+.modal-input:focus{border-color:rgba(201,168,76,.5)}
+.modal-input::placeholder{color:rgba(255,255,255,.3)}
+.modal-err{font-size:.75rem;color:#fca5a5;margin-bottom:10px;display:none;font-weight:600}
+.modal-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.mbtn{padding:10px 22px;border:none;border-radius:10px;
+  font-family:"Tajawal",sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s}
+.mbtn-gold{background:linear-gradient(135deg,var(--g3),var(--g1));color:var(--navy)}
+.mbtn-red{background:rgba(185,28,28,.8);color:#fff}
+.mbtn-ghost{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.1)}
+.mbtn:hover{transform:translateY(-1px)}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:300;
+  display:none;pointer-events:none}
+.toast-inner{background:rgba(15,25,55,.95);border:1px solid rgba(255,255,255,.15);
+  border-radius:30px;padding:11px 22px;color:#fff;font-weight:700;font-size:.85rem;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+  animation:toastIn .3s cubic-bezier(.22,.68,0,1.2)}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* SPIN */
+.spin{display:inline-block;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* WELCOME CARD */
+.welcome-card{
+  background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(91,124,250,.08));
+  border:1px solid rgba(201,168,76,.18);border-radius:16px;padding:20px;
+  display:flex;align-items:center;gap:16px;margin-bottom:24px;
+}
+.welcome-avatar{width:54px;height:54px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--b1),var(--b2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;border:2px solid var(--g1)}
+.welcome-text-name{font-size:1rem;font-weight:900;color:#fff;margin-bottom:3px}
+.welcome-text-meta{font-size:.72rem;color:rgba(255,255,255,.5)}
+.welcome-score-badge{margin-right:auto;background:rgba(5,150,105,.15);
+  border:1px solid rgba(5,150,105,.25);border-radius:12px;padding:8px 14px;text-align:center;flex-shrink:0}
+.welcome-score-num{font-size:1.2rem;font-weight:900;color:#6ee7b7;display:block;line-height:1}
+.welcome-score-lbl{font-size:.62rem;color:rgba(255,255,255,.45);font-weight:600}
+
+/* QUIZ SECTION */
+.quiz-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:14px}
+.quiz-q{font-size:.83rem;font-weight:700;margin-bottom:10px;line-height:1.55}
+.quiz-opts{display:flex;flex-direction:column;gap:6px}
+.quiz-opt{padding:9px 13px;border-radius:9px;border:1.5px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.8);
+  font-family:"Tajawal",sans-serif;font-size:.8rem;font-weight:600;
+  cursor:pointer;transition:all .2s;text-align:right}
+.quiz-opt:hover:not(:disabled){background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.quiz-opt:disabled{cursor:not-allowed}
+.quiz-opt.correct{background:rgba(5,150,105,.2);border-color:#059669;color:#6ee7b7}
+.quiz-opt.wrong{background:rgba(185,28,28,.2);border-color:#b91c1c;color:#fca5a5}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.sec-hdr-line{flex:1;height:1px;background:linear-gradient(to left,rgba(255,255,255,.1),transparent)}
+.sec-hdr-title{font-size:.78rem;font-weight:800;color:rgba(255,255,255,.4);letter-spacing:.8px;white-space:nowrap}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:rgba(255,255,255,.35)}
+.empty-icon{font-size:2.5rem;margin-bottom:10px;display:block}
+.empty-txt{font-size:.85rem;font-weight:600}
+
+/* RESPONSIVE HIDE */
+@media(min-width:768px){.mobile-only{display:none!important}}
+@media(max-width:767px){.desktop-only{display:none!important}}
+</style>
+</head>
+<body>
+
+<!-- PARTICLES -->
+<div id="particles-bg"></div>
+<div class="bg-mesh"></div>
+
+<!-- ===================================
+     SCREEN: LOGIN — FULL SCREEN
+==================================== -->
+<div id="screenLogin" class="screen active">
+
+  <!-- Decorative blobs -->
+  <div class="login-blob1"></div>
+  <div class="login-blob2"></div>
+  <div class="login-blob3"></div>
+
+  <!-- Top Nav -->
+  <div class="login-topbar">
+    <div class="login-topbar-brand">
+      <div class="login-topbar-logo"><img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt="Edu Stream"></div>
+      <div>
+        <div class="login-topbar-name">Edu Stream</div>
+        <div class="login-topbar-sub">منصة التعليم التفاعلي</div>
+      </div>
+    </div>
+    <div class="login-contact-btns">
+      <a class="login-contact-btn lcb-wa" href="https://wa.me/201012032976" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.116.554 4.103 1.524 5.82L.057 23.804a.5.5 0 00.61.641l6.204-1.63A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.659-.52-5.168-1.427l-.362-.214-3.742.984.999-3.648-.235-.374A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        واتساب
+      </a>
+      <a class="login-contact-btn lcb-fb" href="https://www.facebook.com/share/1Pbp4SxyNd/" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.887v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+        فيسبوك
+      </a>
+    </div>
+  </div>
+
+  <!-- Split Content -->
+  <div class="login-split">
+
+    <!-- LEFT: BRAND -->
+    <div class="login-brand">
+      <div class="login-logo-big">
+        <img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt="Edu Stream">
+      </div>
+      <div class="login-brand-title">
+        منصة <span>Edu Stream</span>
+      </div>
+      <p class="login-brand-sub">
+        منصة تعليمية متكاملة في اللغة العربية للمرحلة الإعدادية والثانوية<br>مع الأستاذ رؤوف بركات
+      </p>
+      <div class="login-features">
+        <div class="login-feature">
+          <div class="feature-icon" style="background:#eef2ff">📚</div>
+          <span class="feature-text">دروس منظمة ومبسّطة حسب المرحلة</span>
+        </div>
+        <div class="login-feature">
+          <div class="feature-icon" style="background:#f0fdf4">✍️</div>
+          <span class="feature-text">تمارين تفاعلية مع تصحيح فوري</span>
+        </div>
+        <div class="login-feature">
+          <div class="feature-icon" style="background:#fffbeb">📝</div>
+          <span class="feature-text">امتحانات محاكية للواقع مع تقرير مفصّل</span>
+        </div>
+      </div>
+      <div class="login-stats">
+        <div class="lstat">
+          <span class="lstat-num">60</span>
+          <div class="lstat-lbl">سؤال في الامتحان</div>
+        </div>
+        <div class="lstat">
+          <span class="lstat-num">5</span>
+          <div class="lstat-lbl">أقسام دراسية</div>
+        </div>
+        <div class="lstat">
+          <span class="lstat-num">150</span>
+          <div class="lstat-lbl">دقيقة للامتحان</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: FORM -->
+    <div>
+      <div class="login-form-wrap">
+        <div class="login-form-head">
+          <span class="lfh-icon">🎓</span>
+          <div class="lfh-title">مرحباً بك في المنصة</div>
+          <div class="lfh-sub">اختر طريقة الدخول المناسبة</div>
+        </div>
+        <div class="login-form-body">
+          <!-- ROLE SWITCHER -->
+          <div class="role-switcher">
+            <button class="role-btn active" id="roleStudent" onclick="switchRole('student')">
+              <span class="role-btn-icon">🎓</span>
+              <span class="role-btn-label">طالب</span>
+              <span class="role-btn-sub">بالكود الشخصي</span>
+            </button>
+            <button class="role-btn" id="roleTeacher" onclick="switchRole('teacher')">
+              <span class="role-btn-icon">👨‍🏫</span>
+              <span class="role-btn-label">معلم</span>
+              <span class="role-btn-sub">بكلمة المرور</span>
+            </button>
+          </div>
+
+          <!-- STUDENT FORM -->
+          <div id="ltab-student" class="tab-pane active">
+            <div id="loginErr" class="err-box"></div>
+            <div class="field-group">
+              <label class="field-label">🔑 كودك الشخصي</label>
+              <input id="stuCodeIn" class="field-input code-style" placeholder="RB001" maxlength="10"
+                oninput="this.value=this.value.toUpperCase()"
+                onkeydown="if(event.key==='Enter')doStudentLogin()">
+            </div>
+            <button class="btn-submit student" onclick="doStudentLogin()">
+              <div class="btn-submit-inner">
+                <span id="loginBtnTxt">دخول المنصة</span>
+                <span class="btn-arrow">←</span>
+              </div>
+            </button>
+            <p class="hint-text">الكود يُعطى من الأستاذ رؤوف مباشرةً</p>
+          </div>
+
+          <!-- TEACHER FORM -->
+          <div id="ltab-teacher" class="tab-pane">
+            <div class="teacher-badge"><span>👨‍🏫 منطقة المعلم — الأستاذ رؤوف بركات</span></div>
+            <div id="teacherErr" class="err-box"></div>
+            <div class="field-group">
+              <label class="field-label">🔐 كلمة مرور المعلم</label>
+              <input id="teacherPassIn" type="password" class="field-input" placeholder="••••••••"
+                onkeydown="if(event.key==='Enter')doTeacherLogin()">
+            </div>
+            <button class="btn-submit teacher" onclick="doTeacherLogin()">
+              <div class="btn-submit-inner">
+                <span id="teacherBtnTxt">دخول لوحة التحكم</span>
+                <span class="btn-arrow">←</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="login-footer">
+          <div class="lf-contacts" style="margin-bottom:8px">
+            <a class="lf-btn lf-wa" href="https://wa.me/201012032976" target="_blank">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.116.554 4.103 1.524 5.82L.057 23.804a.5.5 0 00.61.641l6.204-1.63A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.659-.52-5.168-1.427l-.362-.214-3.742.984.999-3.648-.235-.374A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+              01012032976
+            </a>
+            <a class="lf-btn lf-fb" href="https://www.facebook.com/share/1Pbp4SxyNd/" target="_blank">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.887v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+              Raouf Brakat
+            </a>
+          </div>
+          <div class="lf-copy">© <span id="yr1"></span> Edu Stream — All rights reserved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================
+     SCREEN: STUDENT
+==================================== -->
+<div id="screenStudent" class="screen">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-logo">
+        <div class="topbar-logo-img"><img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt=""></div>
+        <div><div class="topbar-logo-text">Edu Stream</div><div class="topbar-logo-sub">رؤوف بركات</div></div>
+      </div>
+      <div class="topbar-nav desktop-only">
+        <button class="tnav-btn active" onclick="stuRoute('home',this)">🏠 الرئيسية</button>
+        <button class="tnav-btn" onclick="stuRoute('lessons',this)">📚 الدروس</button>
+        <button class="tnav-btn" onclick="stuRoute('exercises',this)">✍️ التمارين</button>
+        <button class="tnav-btn" onclick="stuRoute('exams',this)">📝 الامتحانات</button>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-user-pill desktop-only">
+          <div class="topbar-user-avatar" id="stuAvatar">ط</div>
+          <span class="topbar-user-name" id="stuTopName">—</span>
+        </div>
+        <button class="btn-logout" onclick="stuLogout()">خروج 🚪</button>
+        <button class="btn-hamburger mobile-only" onclick="toggleStuMobile()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div id="stuMobileMenu" class="mobile-menu mobile-only">
+      <button class="tnav-btn" onclick="stuRoute('home',this);toggleStuMobile()">🏠 الرئيسية</button>
+      <button class="tnav-btn" onclick="stuRoute('lessons',this);toggleStuMobile()">📚 الدروس</button>
+      <button class="tnav-btn" onclick="stuRoute('exercises',this);toggleStuMobile()">✍️ التمارين</button>
+      <button class="tnav-btn" onclick="stuRoute('exams',this);toggleStuMobile()">📝 الامتحانات</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="sv-home" class="main-wrap">
+    <div class="welcome-card">
+      <div class="welcome-avatar" id="stuWelcomeAvatar">ط</div>
+      <div>
+        <div class="welcome-text-name" id="stuWelcomeName">أهلاً!</div>
+        <div class="welcome-text-meta" id="stuWelcomeMeta">—</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.35);margin-top:3px" id="stuLastLogin"></div>
+      </div>
+      <div class="welcome-score-badge" id="stuScoreBadge" style="display:none">
+        <span class="welcome-score-num" id="stuScoreNum">—</span>
+        <span class="welcome-score-lbl">درجتك</span>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1 class="hero-title">تعلّم العربية<br><span class="name-highlight">بإتقان وثقة</span></h1>
+        <p class="hero-sub">دروس منظمة، تمارين تفاعلية، وامتحانات محاكية للواقع مع الأستاذ رؤوف بركات.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="stuRoute('lessons')">📚 ابدأ التعلم</button>
+          <button class="btn-secondary" onclick="stuRoute('exams')">📝 الامتحانات</button>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap">
+          <span style="font-size:.75rem;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:5px">
+            <span style="width:7px;height:7px;border-radius:50%;background:#34d399;display:inline-block"></span>محتوى مرتب حسب المرحلة</span>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:5px">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--b1);display:inline-block"></span>تمارين مع تصحيح فوري</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div onclick="stuRoute('lessons')" style="background:rgba(91,124,250,.1);border:1px solid rgba(91,124,250,.2);border-radius:14px;padding:18px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(91,124,250,.18)'" onmouseout="this.style.background='rgba(91,124,250,.1)'">
+          <div style="font-size:1.8rem;margin-bottom:6px">📚</div>
+          <div style="font-weight:800;font-size:.88rem">الدروس</div>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.5);margin-top:3px">شرح مبسط ومنهجي</div>
+        </div>
+        <div onclick="stuRoute('exercises')" style="background:rgba(31,181,169,.1);border:1px solid rgba(31,181,169,.2);border-radius:14px;padding:18px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(31,181,169,.18)'" onmouseout="this.style.background='rgba(31,181,169,.1)'">
+          <div style="font-size:1.8rem;margin-bottom:6px">✍️</div>
+          <div style="font-weight:800;font-size:.88rem">التمارين</div>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.5);margin-top:3px">تدريب مع تغذية راجعة</div>
+        </div>
+        <div onclick="stuRoute('exams')" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:18px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.1)'">
+          <div style="font-size:1.8rem;margin-bottom:6px">📝</div>
+          <div style="font-weight:800;font-size:.88rem">الامتحانات</div>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.5);margin-top:3px">نماذج وفق المعايير</div>
+        </div>
+        <div style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:14px;padding:18px">
+          <div style="font-size:1.8rem;margin-bottom:6px">🏆</div>
+          <div style="font-weight:800;font-size:.88rem" id="homeScoreTitle">درجتك</div>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.5);margin-top:3px" id="homeScoreSub">لم تمتحن بعد</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LESSONS -->
+  <div id="sv-lessons" class="main-wrap" style="display:none">
+    <div style="margin-bottom:20px">
+      <h2 style="font-size:1.6rem;font-weight:900;margin-bottom:4px">📚 الدروس</h2>
+      <p style="font-size:.82rem;color:rgba(255,255,255,.45)">فلترة سريعة حسب المرحلة والمادة والوحدة.</p>
+    </div>
+    <div class="panel" style="margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="filterGrid">
+        <div><label class="form-label">المرحلة</label>
+          <select id="fsStage" class="tselect" onchange="renderLessons()">
+            <option value="">الكل</option><option value="إعدادي">إعدادي</option><option value="ثانوي">ثانوي</option>
+          </select></div>
+        <div><label class="form-label">المادة</label>
+          <select id="fsSubject" class="tselect" onchange="renderLessons()">
+            <option value="">الكل</option><option value="لغة عربية">لغة عربية</option>
+          </select></div>
+        <div><label class="form-label">الوحدة</label>
+          <select id="fsUnit" class="tselect" onchange="renderLessons()">
+            <option value="">الكل</option><option value="1">الوحدة 1</option><option value="2">الوحدة 2</option>
+          </select></div>
+        <div><label class="form-label">بحث</label>
+          <input id="fsSearch" type="text" class="tinput" placeholder="ابحث بعنوان الدرس..." oninput="renderLessons()"></div>
+      </div>
+      <button onclick="resetFilters()" class="tbtn tbtn-ghost tbtn-sm" style="margin-top:10px">↺ إعادة الضبط</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-size:.8rem;color:rgba(255,255,255,.45)">عدد الدروس: <strong id="lessonsCount" style="color:#fff">0</strong></span>
+    </div>
+    <div id="lessonsGrid" class="lessons-grid"></div>
+    <div id="lessonsEmpty" class="empty-state" style="display:none"><span class="empty-icon">🔍</span><div class="empty-txt">لا توجد دروس مطابقة</div></div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div id="sv-exercises" class="main-wrap" style="display:none">
+    <div style="margin-bottom:20px">
+      <h2 style="font-size:1.6rem;font-weight:900;margin-bottom:4px">✍️ التمارين</h2>
+      <p style="font-size:.82rem;color:rgba(255,255,255,.45)">أسئلة قصيرة مع تصحيح فوري.</p>
+    </div>
+    <div style="display:grid;gap:14px;grid-template-columns:1fr" id="exercisesGrid">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>تمييز الفاعل والمفعول</div></div>
+        <div class="space-y-3" id="quiz1">
+          <div class="quiz-card" style="margin-bottom:10px">
+            <div class="quiz-q">«قرأ الطالبُ الكتابَ» — كلمة "الطالبُ" هي:</div>
+            <div class="quiz-opts">
+              <button class="quiz-opt" data-answer="correct" onclick="handleQuizOpt(this)">فاعل ✅</button>
+              <button class="quiz-opt" data-answer="wrong" onclick="handleQuizOpt(this)">مفعول به</button>
+            </div>
+          </div>
+          <div class="quiz-card">
+            <div class="quiz-q">«شكر المعلمُ الطالبَ» — كلمة "الطالبَ" هي:</div>
+            <div class="quiz-opts">
+              <button class="quiz-opt" data-answer="wrong" onclick="handleQuizOpt(this)">فاعل</button>
+              <button class="quiz-opt" data-answer="correct" onclick="handleQuizOpt(this)">مفعول به ✅</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>مرادفات الكلمات</div></div>
+        <div id="quiz2">
+          <div class="quiz-card">
+            <div class="quiz-q">مرادف كلمة «فصيح»:</div>
+            <div class="quiz-opts">
+              <button class="quiz-opt" data-answer="correct" onclick="handleQuizOpt(this)">بليغ</button>
+              <button class="quiz-opt" data-answer="wrong" onclick="handleQuizOpt(this)">سريع</button>
+              <button class="quiz-opt" data-answer="wrong" onclick="handleQuizOpt(this)">ثقيل</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXAMS -->
+  <div id="sv-exams" class="main-wrap" style="display:none">
+    <div style="margin-bottom:20px">
+      <h2 style="font-size:1.6rem;font-weight:900;margin-bottom:4px">📝 الامتحانات</h2>
+      <p style="font-size:.82rem;color:rgba(255,255,255,.45)">الامتحانات المتاحة لك من الأستاذ رؤوف.</p>
+    </div>
+    <div id="examsList"></div>
+  </div>
+</div>
+
+<!-- ===================================
+     SCREEN: TEACHER
+==================================== -->
+<div id="screenTeacher" class="screen">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-logo">
+        <div class="topbar-logo-img"><img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt=""></div>
+        <div><div class="topbar-logo-text">لوحة التحكم</div><div class="topbar-logo-sub">الأستاذ رؤوف بركات</div></div>
+      </div>
+      <button class="btn-logout" onclick="teacherLogout()">خروج 🚪</button>
+    </div>
+  </div>
+  <div class="main-wrap" style="max-width:900px">
+    <!-- Stats -->
+    <div class="stats-row" style="margin-bottom:24px">
+      <div class="stat-card c1"><span class="stat-num" id="tS1">0</span><div class="stat-label">👤 إجمالي الطلاب</div></div>
+      <div class="stat-card c2"><span class="stat-num" id="tS2">0</span><div class="stat-label">✅ أنهوا الامتحان</div></div>
+      <div class="stat-card c3"><span class="stat-num" id="tS3">—</span><div class="stat-label">📊 المتوسط</div></div>
+      <div class="stat-card c4"><span class="stat-num" id="tS4">0</span><div class="stat-label">⏳ لم يمتحنوا</div></div>
+    </div>
+    <!-- Tabs -->
+    <div class="t-tabs">
+      <button class="t-tab active" onclick="tTab('students',this)">👥 الطلاب</button>
+      <button class="t-tab" onclick="tTab('results',this)">📊 النتائج</button>
+      <button class="t-tab" onclick="tTab('chart',this)">📈 الرسم البياني</button>
+      <button class="t-tab" onclick="tTab('add',this)">➕ إضافة طالب</button>
+      <button class="t-tab" onclick="tTab('whatsapp',this)">📱 واتساب</button>
+      <button class="t-tab" onclick="tTab('settings',this)">⚙️ إعدادات</button>
+    </div>
+
+    <!-- STUDENTS -->
+    <div id="tp-students" class="t-pane active">
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="dot"></span>قائمة الطلاب</div>
+          <button onclick="loadStudents()" class="tbtn tbtn-ghost tbtn-sm">🔄 تحديث</button>
+        </div>
+        <input id="stuSearch" type="text" class="tinput" placeholder="🔍 بحث باسم أو كود..." oninput="filterStu()" style="margin-bottom:12px">
+        <div class="tbl-wrap">
+          <table><thead><tr><th>#</th><th>الاسم</th><th>الكود</th><th>الصف</th><th>الجنس</th><th>الحالة</th><th>إجراء</th></tr></thead>
+          <tbody id="stuTableBody"><tr><td colspan="7" style="text-align:center;padding:20px;color:rgba(255,255,255,.3)">⏳ جاري التحميل...</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="tp-results" class="t-pane">
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="dot"></span>نتائج الامتحان</div>
+          <button onclick="exportCSV()" class="tbtn tbtn-gold tbtn-sm">📥 تصدير CSV</button>
+        </div>
+        <div id="resultsList2"><div class="empty-state"><span class="empty-icon">⏳</span><div class="empty-txt">جاري التحميل...</div></div></div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <div id="tp-chart" class="t-pane">
+      <div style="display:grid;grid-template-columns:1fr;gap:16px">
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>توزيع الدرجات</div></div>
+          <div style="max-width:400px;margin:0 auto;position:relative;height:260px">
+            <canvas id="chartBar"></canvas>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>نسبة النجاح</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center">
+            <div class="chart-wrap" style="max-width:200px;height:200px">
+              <canvas id="chartDoughnut"></canvas>
+            </div>
+            <div id="chartLegend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD STUDENT -->
+    <div id="tp-add" class="t-pane">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>إضافة طالب جديد</div></div>
+        <div id="addErr" class="alert alert-err"></div>
+        <div id="addOk" class="alert alert-ok"></div>
+        <div class="form-row" style="margin-bottom:12px">
+          <div><label class="form-label">الاسم الثلاثي</label><input id="nName" type="text" class="tinput" placeholder="اسم الطالب كاملاً"></div>
+          <div><label class="form-label">الكود الشخصي</label>
+            <div style="display:flex;gap:6px">
+              <input id="nCode" type="text" class="tinput" placeholder="RB001" maxlength="10" oninput="this.value=this.value.toUpperCase()" style="flex:1">
+              <button onclick="genCode()" class="tbtn tbtn-ghost" title="توليد كود تلقائي" style="flex-shrink:0;padding:10px 12px">🎲</button>
+            </div></div>
+        </div>
+        <div class="form-row" style="margin-bottom:12px">
+          <div><label class="form-label">الجنس</label>
+            <select id="nGender" class="tselect"><option value="male">ذكر 👦</option><option value="female">أنثى 👧</option></select></div>
+          <div><label class="form-label">الصف</label>
+            <select id="nGrade" class="tselect">
+              <option value="ثاني ثانوي">ثاني ثانوي</option>
+              <option value="ثالث ثانوي">ثالث ثانوي</option>
+              <option value="أول ثانوي">أول ثانوي</option>
+              <option value="ثالث إعدادي">ثالث إعدادي</option>
+              <option value="ثاني إعدادي">ثاني إعدادي</option>
+            </select></div>
+        </div>
+        <div style="margin-bottom:14px"><label class="form-label">رقم الواتساب (اختياري)</label>
+          <input id="nPhone" type="tel" class="tinput" placeholder="01XXXXXXXXX"></div>
+        <button onclick="addStudent()" class="tbtn tbtn-gold tbtn-full">➕ إضافة الطالب</button>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>🗑️ حذف طالب</div></div>
+        <div style="display:flex;gap:8px">
+          <input id="delCode" type="text" class="tinput" placeholder="كود الطالب للحذف" oninput="this.value=this.value.toUpperCase()" style="flex:1">
+          <button onclick="deleteStudent()" class="tbtn tbtn-red" style="flex-shrink:0">حذف</button>
+        </div>
+        <p style="font-size:.68rem;color:rgba(255,255,255,.3);margin-top:6px">⚠️ لا يمكن التراجع عن الحذف</p>
+      </div>
+    </div>
+
+    <!-- WHATSAPP -->
+    <div id="tp-whatsapp" class="t-pane">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>📱 إرسال واتساب جماعي</div></div>
+        <div style="margin-bottom:14px">
+          <label class="form-label">الفئة المستهدفة</label>
+          <select id="waTarget" class="tselect">
+            <option value="all">جميع الطلاب</option>
+            <option value="pending">لم يمتحنوا بعد</option>
+            <option value="done">أنهوا الامتحان</option>
+          </select>
+        </div>
+        <div style="margin-bottom:14px">
+          <label class="form-label">نص الرسالة</label>
+          <textarea id="waMsg" class="tinput" rows="4" placeholder="اكتب رسالتك هنا..." style="resize:vertical">السلام عليكم ورحمة الله،
+أذكركم بالامتحان على منصة Edu Stream.
+كودك الشخصي يُفتح به الامتحان.
+— الأستاذ رؤوف بركات</textarea>
+        </div>
+        <div id="waList" style="margin-bottom:14px;max-height:200px;overflow-y:auto"></div>
+        <div style="display:flex;gap:8px">
+          <button onclick="prepareWaList()" class="tbtn tbtn-ghost" style="flex:1">👁️ معاينة القائمة</button>
+          <button onclick="sendWaToAll()" class="tbtn tbtn-gold" style="flex:1">📤 إرسال للكل</button>
+        </div>
+        <p style="font-size:.68rem;color:rgba(255,255,255,.3);margin-top:8px;text-align:center">سيُفتح واتساب لكل رقم على حدة</p>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tp-settings" class="t-pane">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span class="dot"></span>إعدادات الامتحان</div></div>
+        <div id="settMsg" class="alert alert-ok"></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div><label class="form-label">🔑 كود الامتحان الحالي</label>
+            <div style="display:flex;gap:8px">
+              <input id="setExamCode" type="text" class="tinput" placeholder="EX002" style="flex:1;letter-spacing:3px;font-weight:900;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+              <button onclick="saveExamCode()" class="tbtn tbtn-gold">حفظ</button>
+            </div></div>
+          <div><label class="form-label">🔓 كود فتح القفل (للمعلم)</label>
+            <div style="display:flex;gap:8px">
+              <input id="setUnlockCode" type="text" class="tinput" placeholder="31020" style="flex:1;letter-spacing:2px;font-weight:700">
+              <button onclick="saveUnlockCode()" class="tbtn tbtn-ghost">حفظ</button>
+            </div></div>
+        </div>
+      </div>
+      <div class="panel" style="border-color:rgba(185,28,28,.2)">
+        <div class="panel-hdr"><div class="panel-title" style="color:#fca5a5"><span class="dot" style="background:#e11d48"></span>⚠️ منطقة خطرة</div></div>
+        <button onclick="resetAllResults()" class="tbtn tbtn-red tbtn-full">🗑️ حذف جميع النتائج (تصفير الامتحانات)</button>
+        <p style="font-size:.68rem;color:rgba(255,255,255,.3);text-align:center;margin-top:8px">لا يمكن التراجع عن هذا الإجراء</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LESSON DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-top">
+    <div>
+      <div id="drawerTitle" style="font-size:1.1rem;font-weight:900"></div>
+      <div id="drawerMeta" style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:3px"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18L18 6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer">
+    <span class="drawer-prog-txt">التقدم: <strong id="drawerProg">0%</strong></span>
+    <div style="display:flex;gap:8px">
+      <button onclick="markDone()" class="tbtn tbtn-ghost tbtn-sm">✅ تم الدرس</button>
+      <button onclick="closeDrawer()" class="tbtn tbtn-gold tbtn-sm">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modalDel" class="modal-bg">
+  <div class="modal-box">
+    <span class="modal-icon">🗑️</span>
+    <div class="modal-title" style="color:#fca5a5">تأكيد الحذف</div>
+    <div class="modal-msg">هل أنت متأكد من حذف هذا الطالب نهائياً؟<br><strong id="delName" style="color:#fff;display:block;margin-top:6px"></strong></div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-ghost" onclick="closeModal('modalDel')">إلغاء</button>
+      <button class="mbtn mbtn-red" onclick="confirmDelete()">حذف نهائياً</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalExam" class="modal-bg">
+  <div class="modal-box">
+    <span class="modal-icon">🔑</span>
+    <div class="modal-title">أدخل كود الامتحان</div>
+    <div class="modal-msg">أدخل الكود الذي أعطاك إياه الأستاذ رؤوف لبدء الامتحان</div>
+    <input id="examCodeIn" class="modal-input" placeholder="EX002" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')verifyExam()">
+    <div id="examModalErr" class="modal-err"></div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-ghost" onclick="closeModal('modalExam')">إلغاء</button>
+      <button class="mbtn mbtn-gold" onclick="verifyExam()">ابدأ الامتحان ←</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toast"><div class="toast-inner" id="toastTxt">رسالة</div></div>
+
+<script>
+// ============================================================
+// FIREBASE
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyB2SA0Y-mxg0YDXx0g3_WHK7WLZqWvbkSM",
+  authDomain: "raouf-edu-strem.firebaseapp.com",
+  databaseURL: "https://raouf-edu-strem-default-rtdb.firebaseio.com",
+  projectId: "raouf-edu-strem",
+  storageBucket: "raouf-edu-strem.firebasestorage.app",
+  messagingSenderId: "565224729476",
+  appId: "1:565224729476:web:b62fac6e1815f0613b4bd1"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ============================================================
+// STATE
+// ============================================================
+const TEACHER_PASS = "RaoufB@2026";
+let currentStudent = null;
+let allStudents = [];
+let allResults = [];
+let examSettings = { examCode:"EX002", unlockCode:"31020" };
+let pendingDelCode = null;
+let openLessonId = null;
+let progressMap = {};
+let chartBarInst = null;
+let chartDoughnutInst = null;
+let toastTimer = null;
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('yr1').textContent = new Date().getFullYear();
+createParticles();
+
+window.addEventListener('load', async () => {
+  try {
+    const snap = await db.collection('settings').doc('exam').get();
+    if (snap.exists) examSettings = { ...examSettings, ...snap.data() };
+    else await db.collection('settings').doc('exam').set(examSettings);
+  } catch(e) {}
+  renderLessons();
+});
+
+// ============================================================
+// PARTICLES
+// ============================================================
+function createParticles() {
+  const bg = document.getElementById('particles-bg');
+  const colors = ['rgba(201,168,76,.4)','rgba(91,124,250,.35)','rgba(138,91,250,.3)','rgba(31,181,169,.3)','rgba(255,255,255,.2)'];
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 3 + Math.random() * 6;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${12+Math.random()*18}s;
+      animation-delay:${Math.random()*15}s;
+    `;
+    bg.appendChild(p);
+  }
+}
+
+// ============================================================
+// SCREEN SWITCHER
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  el.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// LOGIN TAB
+// ============================================================
+function switchRole(role) {
+  document.getElementById('roleStudent').classList.toggle('active', role==='student');
+  document.getElementById('roleTeacher').classList.toggle('active', role==='teacher');
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('ltab-' + role).classList.add('active');
+  document.getElementById('loginErr').style.display = 'none';
+  document.getElementById('teacherErr').style.display = 'none';
+  // Update head icon
+  const icon = document.querySelector('.lfh-icon');
+  const title = document.querySelector('.lfh-title');
+  if (role === 'student') { icon.textContent='🎓'; title.textContent='أهلاً بك في المنصة'; }
+  else { icon.textContent='👨‍🏫'; title.textContent='لوحة تحكم المعلم'; }
+}
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('ltab-' + tab).classList.add('active');
+  document.getElementById('loginErr').style.display = 'none';
+  document.getElementById('teacherErr').style.display = 'none';
+}
+
+// ============================================================
+// STUDENT LOGIN
+// ============================================================
+async function doStudentLogin() {
+  const code = document.getElementById('stuCodeIn').value.trim().toUpperCase();
+  const errEl = document.getElementById('loginErr');
+  const btn = document.querySelector('#ltab-student .btn-submit');
+  const btnTxt = document.getElementById('loginBtnTxt');
+  errEl.style.display = 'none';
+  if (!code) { showErr(errEl,'⚠️ أدخل الكود الخاص بك'); return; }
+  btnTxt.innerHTML = '<span class="spin">⏳</span> جاري التحقق...';
+  btn.disabled = true;
+  try {
+    const qsnap = await db.collection('students').where('code','==',code).limit(1).get();
+    const snap = qsnap.empty ? null : qsnap.docs[0];
+    if (!snap || !snap.exists) {
+      showErr(errEl,'❌ الكود غير صحيح — تواصل مع الأستاذ رؤوف');
+    } else {
+      const data = snap.data();
+      if (data.locked) {
+        showErr(errEl,'🔒 هذا الحساب موقوف — تواصل مع الأستاذ رؤوف');
+      } else {
+        currentStudent = { code, ...data };
+        // Save last login
+        db.collection('students').doc(snap.id).update({
+          lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(()=>{});
+        initStudentScreen();
+        showScreen('screenStudent');
+        stuRoute('home');
+      }
+    }
+  } catch(e) {
+    const errMsg = e.code || e.message || String(e);
+    showErr(errEl,'❌ ' + errMsg + ' | ' + (typeof firebase !== 'undefined' ? 'FB:OK' : 'FB:MISSING'));
+  }
+  btnTxt.textContent = 'دخول المنصة';
+  btn.disabled = false;
+}
+
+function showErr(el, msg) {
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.animation = 'none';
+  setTimeout(() => el.style.animation = '', 10);
+}
+
+function initStudentScreen() {
+  const name = currentStudent.name || '—';
+  const initials = name.trim().charAt(0) || 'ط';
+  const isFemale = currentStudent.gender === 'female';
+  const genderIcon = isFemale ? '👧' : '👦';
+  const grade = currentStudent.grade || '';
+
+  document.getElementById('stuTopName').textContent = name;
+  document.getElementById('stuAvatar').textContent = initials;
+  document.getElementById('stuWelcomeAvatar').textContent = initials;
+  document.getElementById('stuWelcomeName').textContent = 'أهلاً، ' + name + '!';
+  document.getElementById('stuWelcomeMeta').textContent = genderIcon + ' ' + grade + ' — كود: ' + currentStudent.code;
+
+  // Last login
+  if (currentStudent.lastLogin) {
+    try {
+      const d = currentStudent.lastLogin.toDate ? currentStudent.lastLogin.toDate() : new Date(currentStudent.lastLogin);
+      document.getElementById('stuLastLogin').textContent = 'آخر دخول: ' + d.toLocaleDateString('ar-EG');
+    } catch(e) {}
+  }
+  loadStudentExamStatus();
+}
+
+async function loadStudentExamStatus() {
+  try {
+    const snap = await db.collection('results').doc(currentStudent.code).get();
+    if (snap.exists) {
+      const d = snap.data();
+      const score = d.score || 0;
+      const pct = d.percentage || 0;
+      document.getElementById('stuScoreBadge').style.display = 'block';
+      document.getElementById('stuScoreNum').textContent = score + '/60';
+      document.getElementById('homeScoreTitle').textContent = 'درجتك: ' + score + '/60';
+      document.getElementById('homeScoreSub').textContent = pct + '% — ' + (pct >= 50 ? '✅ ناجح' : '⚠️ مراجعة');
+    }
+    renderExamCards(snap.exists ? snap.data() : null);
+  } catch(e) { renderExamCards(null); }
+}
+
+function renderExamCards(result) {
+  const el = document.getElementById('examsList');
+  const done = !!result;
+  const score = result ? result.score : 0;
+  const pct = result ? result.percentage : 0;
+  el.innerHTML = `
+    <div class="exam-card ${done ? 'done' : ''}" onclick="${done ? '' : 'openExamModal()'}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px">
+        <div>
+          <div style="font-size:1rem;font-weight:900;margin-bottom:6px">📝 امتحان اللغة العربية الشامل</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="exam-chip">⏱ 150 دقيقة</span>
+            <span class="exam-chip">❓ 60 سؤال</span>
+            <span class="exam-chip">📚 الثاني الثانوي</span>
+          </div>
+        </div>
+        <div style="font-size:2rem;flex-shrink:0">${done ? '✅' : '📋'}</div>
+      </div>
+      ${done ? `
+        <div style="background:rgba(5,150,105,.12);border:1px solid rgba(5,150,105,.2);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.5);font-weight:700;margin-bottom:2px">نتيجتك</div>
+            <div style="font-size:1.1rem;font-weight:900;color:#6ee7b7">${score}/60 <span style="font-size:.75rem;opacity:.7">(${pct}%)</span></div>
+          </div>
+          <div style="font-size:.75rem;color:#6ee7b7;font-weight:700">✅ تم الامتحان</div>
+        </div>` :
+        `<div style="font-size:.78rem;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--b1);display:inline-block;animation:pulse 1.5s infinite"></span>
+          اضغط للبدء بعد إدخال كود الامتحان
+        </div>`}
+    </div>
+    <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>`;
+}
+
+function stuLogout() {
+  currentStudent = null;
+  document.getElementById('stuCodeIn').value = '';
+  showScreen('screenLogin');
+}
+
+// ============================================================
+// STUDENT ROUTING
+// ============================================================
+const stuViews = ['home','lessons','exercises','exams'];
+function stuRoute(view, btn) {
+  stuViews.forEach(v => {
+    document.getElementById('sv-' + v).style.display = v === view ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tnav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (view === 'exams') loadStudentExamStatus();
+  document.getElementById('stuMobileMenu').classList.remove('open');
+}
+
+function toggleStuMobile() {
+  document.getElementById('stuMobileMenu').classList.toggle('open');
+}
+
+// ============================================================
+// TEACHER LOGIN
+// ============================================================
+async function doTeacherLogin() {
+  const pass = document.getElementById('teacherPassIn').value;
+  const errEl = document.getElementById('teacherErr');
+  const btn = document.querySelector('#ltab-teacher .btn-submit');
+  const btnTxt = document.getElementById('teacherBtnTxt');
+  errEl.style.display = 'none';
+  if (!pass) { showErr(errEl,'⚠️ أدخل كلمة المرور'); return; }
+  if (pass !== TEACHER_PASS) { showErr(errEl,'❌ كلمة المرور غير صحيحة'); return; }
+  btnTxt.innerHTML = '<span class="spin">⏳</span> جاري الدخول...';
+  btn.disabled = true;
+  await loadTeacherData();
+  showScreen('screenTeacher');
+  tTab('students', document.querySelector('.t-tab'));
+  btnTxt.textContent = 'دخول لوحة التحكم';
+  btn.disabled = false;
+  document.getElementById('teacherPassIn').value = '';
+}
+
+function teacherLogout() { showScreen('screenLogin'); }
+
+// ============================================================
+// TEACHER DATA
+// ============================================================
+async function loadTeacherData() {
+  try {
+    const [sSnap, rSnap] = await Promise.all([
+      db.collection('students').get(),
+      db.collection('results').get()
+    ]);
+    allStudents = sSnap.docs.map(d => ({ code: d.id, ...d.data() }));
+    allResults = rSnap.docs.map(d => ({ code: d.id, ...d.data() }));
+    updateStats();
+  } catch(e) { console.error(e); }
+}
+
+function updateStats() {
+  const total = allStudents.length;
+  const done = allResults.length;
+  const pending = Math.max(0, total - done);
+  let sum = 0;
+  allResults.forEach(r => sum += (r.score || 0));
+  const avg = done > 0 ? (sum / done).toFixed(1) : '—';
+  document.getElementById('tS1').textContent = total;
+  document.getElementById('tS2').textContent = done;
+  document.getElementById('tS3').textContent = done > 0 ? avg : '—';
+  document.getElementById('tS4').textContent = pending;
+}
+
+// ============================================================
+// TEACHER TABS
+// ============================================================
+function tTab(tab, btn) {
+  document.querySelectorAll('.t-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.t-pane').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    const found = Array.from(document.querySelectorAll('.t-tab')).find(b => b.getAttribute('onclick').includes(`'${tab}'`));
+    if (found) found.classList.add('active');
+  }
+  document.getElementById('tp-' + tab).classList.add('active');
+  if (tab === 'students') loadStudents();
+  if (tab === 'results') loadResults();
+  if (tab === 'chart') renderCharts();
+  if (tab === 'settings') loadSettings();
+}
+
+// ============================================================
+// STUDENTS TABLE
+// ============================================================
+async function loadStudents() {
+  const tbody = document.getElementById('stuTableBody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:rgba(255,255,255,.35)">⏳ جاري التحميل...</td></tr>';
+  try {
+    const snap = await db.collection('students').orderBy('createdAt','desc').get();
+    allStudents = snap.docs.map(d => ({ code: d.id, ...d.data() }));
+    renderStuTable(allStudents);
+    updateStats();
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#fca5a5">❌ خطأ في التحميل</td></tr>';
+  }
+}
+
+function renderStuTable(list) {
+  const tbody = document.getElementById('stuTableBody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:rgba(255,255,255,.3)">لا يوجد طلاب بعد</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map((s, i) => {
+    const done = allResults.some(r => r.code === s.code);
+    const result = allResults.find(r => r.code === s.code);
+    const badge = s.locked
+      ? '<span class="badge badge-lock">🔒 موقوف</span>'
+      : done ? '<span class="badge badge-done">✅ امتحن</span>'
+      : '<span class="badge badge-pend">⏳ لم يمتحن</span>';
+    return `<tr>
+      <td style="color:rgba(255,255,255,.4);font-size:.72rem">${i+1}</td>
+      <td><strong>${s.name||'—'}</strong>${result ? `<br><span style="font-size:.65rem;color:#6ee7b7">${result.score}/60 (${result.percentage}%)</span>` : ''}</td>
+      <td><span class="code-chip">${s.code}</span></td>
+      <td style="font-size:.74rem;color:rgba(255,255,255,.55)">${s.grade||'—'}</td>
+      <td>${s.gender==='female'?'👧':'👦'}</td>
+      <td>${badge}</td>
+      <td style="white-space:nowrap;display:flex;gap:4px">
+        <button class="tbtn ${s.locked?'tbtn-green':'tbtn-red'} tbtn-sm" onclick="toggleLock('${s.code}',${!!s.locked})">${s.locked?'تفعيل':'إيقاف'}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterStu() {
+  const q = document.getElementById('stuSearch').value.toLowerCase();
+  if (!q) { renderStuTable(allStudents); return; }
+  renderStuTable(allStudents.filter(s =>
+    (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q)
+  ));
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+async function loadResults() {
+  const el = document.getElementById('resultsList2');
+  el.innerHTML = '<div class="empty-state"><span class="empty-icon">⏳</span><div class="empty-txt">جاري التحميل...</div></div>';
+  try {
+    const snap = await db.collection('results').orderBy('submittedAt','desc').get();
+    allResults = snap.docs.map(d => ({ code: d.id, ...d.data() }));
+    if (!allResults.length) {
+      el.innerHTML = '<div class="empty-state"><span class="empty-icon">📊</span><div class="empty-txt">لا توجد نتائج بعد</div></div>';
+      return;
+    }
+    el.innerHTML = allResults.map(r => {
+      const pct = Math.round((r.score||0)/60*100);
+      const clr = pct>=85?'#6ee7b7':pct>=65?'#fcd34d':'#fca5a5';
+      const bg = pct>=85?'rgba(5,150,105,.1)':pct>=65?'rgba(251,191,36,.08)':'rgba(185,28,28,.1)';
+      const mins = r.timeTaken ? Math.round(r.timeTaken/60) : '—';
+      const date = r.submittedAt ? new Date(r.submittedAt.toDate?r.submittedAt.toDate():r.submittedAt).toLocaleDateString('ar-EG') : '—';
+      return `<div class="result-item">
+        <div>
+          <div class="result-name">${r.studentName||r.code}</div>
+          <div class="result-sub">⏱ ${mins} دقيقة · 📅 ${date} · ${r.grade||''}</div>
+        </div>
+        <div style="text-align:left">
+          <div class="result-score">${r.score||0}/60</div>
+          <span class="result-pct" style="background:${bg};color:${clr}">${pct}%</span>
+        </div>
+      </div>`;
+    }).join('');
+    updateStats();
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">❌</span><div class="empty-txt">خطأ في التحميل</div></div>';
+  }
+}
+
+// ============================================================
+// CHARTS
+// ============================================================
+async function renderCharts() {
+  if (!allResults.length) {
+    try {
+      const snap = await db.collection('results').get();
+      allResults = snap.docs.map(d => ({ code: d.id, ...d.data() }));
+    } catch(e) {}
+  }
+
+  // Bar chart — distribution
+  const ranges = [
+    { label:'0-24%', min:0, max:24, color:'rgba(185,28,28,.7)' },
+    { label:'25-49%', min:25, max:49, color:'rgba(234,88,12,.7)' },
+    { label:'50-64%', min:50, max:64, color:'rgba(201,168,76,.7)' },
+    { label:'65-79%', min:65, max:79, color:'rgba(91,124,250,.7)' },
+    { label:'80-89%', min:80, max:89, color:'rgba(31,181,169,.7)' },
+    { label:'90-100%', min:90, max:100, color:'rgba(5,150,105,.7)' },
+  ];
+  const counts = ranges.map(r =>
+    allResults.filter(res => {
+      const p = res.percentage || Math.round((res.score||0)/60*100);
+      return p >= r.min && p <= r.max;
+    }).length
+  );
+
+  const barCtx = document.getElementById('chartBar').getContext('2d');
+  if (chartBarInst) chartBarInst.destroy();
+  chartBarInst = new Chart(barCtx, {
+    type:'bar',
+    data:{
+      labels: ranges.map(r=>r.label),
+      datasets:[{
+        label:'عدد الطلاب',
+        data: counts,
+        backgroundColor: ranges.map(r=>r.color),
+        borderRadius:8,
+        borderWidth:0
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false },
+        tooltip:{ callbacks:{ label: ctx => ctx.parsed.y + ' طالب' } }
+      },
+      scales:{
+        x:{ ticks:{ color:'rgba(255,255,255,.6)', font:{ family:'Tajawal', size:11 } },
+            grid:{ color:'rgba(255,255,255,.05)' } },
+        y:{ ticks:{ color:'rgba(255,255,255,.6)', font:{ family:'Tajawal', size:11 }, stepSize:1 },
+            grid:{ color:'rgba(255,255,255,.07)' } }
+      }
+    }
+  });
+
+  // Doughnut — pass/fail
+  const passed = allResults.filter(r => (r.percentage||0) >= 50).length;
+  const failed = allResults.length - passed;
+  const total = allStudents.length;
+  const notYet = Math.max(0, total - allResults.length);
+
+  const dCtx = document.getElementById('chartDoughnut').getContext('2d');
+  if (chartDoughnutInst) chartDoughnutInst.destroy();
+  chartDoughnutInst = new Chart(dCtx, {
+    type:'doughnut',
+    data:{
+      labels:['ناجح ✅','راسب ❌','لم يمتحن ⏳'],
+      datasets:[{
+        data:[passed, failed, notYet],
+        backgroundColor:['rgba(5,150,105,.75)','rgba(185,28,28,.75)','rgba(201,168,76,.5)'],
+        borderWidth:2, borderColor:'rgba(255,255,255,.1)',
+        hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:'68%',
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{ label: ctx => ctx.label + ': ' + ctx.parsed + ' طالب' } }
+      }
+    }
+  });
+
+  // Legend
+  document.getElementById('chartLegend').innerHTML = [
+    { label:'ناجح', val:passed, clr:'#6ee7b7' },
+    { label:'راسب', val:failed, clr:'#fca5a5' },
+    { label:'لم يمتحن', val:notYet, clr:'#e8c96a' },
+  ].map(item => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="width:12px;height:12px;border-radius:3px;background:${item.clr};display:inline-block;flex-shrink:0"></span>
+      <span style="font-size:.82rem;color:rgba(255,255,255,.7)">${item.label}</span>
+      <span style="font-size:.95rem;font-weight:900;color:#fff;margin-right:auto">${item.val}</span>
+    </div>`).join('');
+}
+
+// ============================================================
+// ADD STUDENT
+// ============================================================
+async function addStudent() {
+  const name = document.getElementById('nName').value.trim();
+  const code = document.getElementById('nCode').value.trim().toUpperCase();
+  const gender = document.getElementById('nGender').value;
+  const grade = document.getElementById('nGrade').value;
+  const phone = document.getElementById('nPhone').value.trim();
+  const errEl = document.getElementById('addErr');
+  const okEl = document.getElementById('addOk');
+  errEl.style.display='none'; okEl.style.display='none';
+
+  if (!name) { errEl.textContent='⚠️ أدخل اسم الطالب'; errEl.style.display='block'; return; }
+  if (!code||code.length<3) { errEl.textContent='⚠️ الكود يجب أن يكون 3 أحرف على الأقل'; errEl.style.display='block'; return; }
+
+  try {
+    const exists = await db.collection('students').doc(code).get();
+    if (exists.exists) { errEl.textContent='❌ هذا الكود مستخدم بالفعل!'; errEl.style.display='block'; return; }
+    await db.collection('students').doc(code).set({
+      name, gender, grade, phone: phone||null, locked:false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    okEl.textContent = `✅ تم إضافة "${name}" — الكود: ${code}`;
+    okEl.style.display = 'block';
+    document.getElementById('nName').value='';
+    document.getElementById('nCode').value='';
+    document.getElementById('nPhone').value='';
+    allStudents.push({ code, name, gender, grade, phone:phone||null, locked:false });
+    updateStats();
+    showToast('✅ تم إضافة الطالب بنجاح');
+    setTimeout(()=>{ okEl.style.display='none'; }, 4000);
+  } catch(e) { errEl.textContent='❌ خطأ: '+e.message; errEl.style.display='block'; }
+}
+
+function genCode() {
+  const L='ABCDEFGHJKLMNPQRSTUVWXYZ', N='0123456789';
+  let c='RB'+L[Math.floor(Math.random()*L.length)];
+  for(let i=0;i<3;i++) c+=N[Math.floor(Math.random()*N.length)];
+  document.getElementById('nCode').value = c;
+}
+
+// ============================================================
+// DELETE
+// ============================================================
+function deleteStudent() {
+  const code = document.getElementById('delCode').value.trim().toUpperCase();
+  if (!code) { showToast('⚠️ أدخل كود الطالب'); return; }
+  const s = allStudents.find(x=>x.code===code);
+  document.getElementById('delName').textContent = (s?s.name:code) + ' (' + code + ')';
+  pendingDelCode = code;
+  openModal('modalDel');
+}
+
+async function confirmDelete() {
+  if (!pendingDelCode) return;
+  try {
+    await db.collection('students').doc(pendingDelCode).delete();
+    await db.collection('results').doc(pendingDelCode).delete().catch(()=>{});
+    allStudents = allStudents.filter(s=>s.code!==pendingDelCode);
+    allResults = allResults.filter(r=>r.code!==pendingDelCode);
+    closeModal('modalDel');
+    document.getElementById('delCode').value='';
+    pendingDelCode = null;
+    renderStuTable(allStudents);
+    updateStats();
+    showToast('✅ تم حذف الطالب');
+  } catch(e) { showToast('❌ خطأ: '+e.message); }
+}
+
+// ============================================================
+// TOGGLE LOCK
+// ============================================================
+async function toggleLock(code, isLocked) {
+  try {
+    await db.collection('students').doc(snap.id).update({ locked: !isLocked });
+    const s = allStudents.find(x=>x.code===code);
+    if (s) s.locked = !isLocked;
+    renderStuTable(allStudents);
+    showToast(isLocked?'✅ تم تفعيل الحساب':'🔒 تم إيقاف الحساب');
+  } catch(e) { showToast('❌ خطأ: '+e.message); }
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+async function loadSettings() {
+  try {
+    const snap = await db.collection('settings').doc('exam').get();
+    if (snap.exists) {
+      examSettings = snap.data();
+      document.getElementById('setExamCode').value = examSettings.examCode||'EX002';
+      document.getElementById('setUnlockCode').value = examSettings.unlockCode||'31020';
+    }
+  } catch(e) {}
+}
+
+async function saveExamCode() {
+  const code = document.getElementById('setExamCode').value.trim().toUpperCase();
+  if (!code) { showToast('⚠️ أدخل الكود'); return; }
+  try {
+    await db.collection('settings').doc('exam').set({ ...examSettings, examCode:code }, { merge:true });
+    examSettings.examCode = code;
+    showSettMsg('✅ تم تحديث كود الامتحان');
+  } catch(e) { showToast('❌ خطأ'); }
+}
+
+async function saveUnlockCode() {
+  const code = document.getElementById('setUnlockCode').value.trim();
+  if (!code) { showToast('⚠️ أدخل الكود'); return; }
+  try {
+    await db.collection('settings').doc('exam').set({ ...examSettings, unlockCode:code }, { merge:true });
+    examSettings.unlockCode = code;
+    showSettMsg('✅ تم تحديث كود فتح القفل');
+  } catch(e) { showToast('❌ خطأ'); }
+}
+
+function showSettMsg(msg) {
+  const el = document.getElementById('settMsg');
+  el.textContent=msg; el.style.display='block';
+  setTimeout(()=>{ el.style.display='none'; }, 3000);
+}
+
+async function resetAllResults() {
+  if (!confirm('⚠️ هل أنت متأكد من حذف جميع النتائج؟')) return;
+  if (!confirm('تأكيد أخير — لا يمكن التراجع!')) return;
+  try {
+    const snap = await db.collection('results').get();
+    const batch = db.batch();
+    snap.docs.forEach(d=>batch.delete(d.ref));
+    await batch.commit();
+    allResults = [];
+    updateStats();
+    showToast('✅ تم حذف جميع النتائج');
+  } catch(e) { showToast('❌ خطأ: '+e.message); }
+}
+
+// ============================================================
+// WHATSAPP BULK
+// ============================================================
+async function prepareWaList() {
+  const target = document.getElementById('waTarget').value;
+  if (!allStudents.length) await loadTeacherData();
+  let list = allStudents.filter(s => s.phone);
+  if (target === 'pending') list = list.filter(s => !allResults.some(r=>r.code===s.code));
+  if (target === 'done') list = list.filter(s => allResults.some(r=>r.code===s.code));
+  const el = document.getElementById('waList');
+  if (!list.length) { el.innerHTML='<div style="font-size:.78rem;color:rgba(255,255,255,.4);text-align:center;padding:10px">لا يوجد طلاب بأرقام واتساب في هذه الفئة</div>'; return; }
+  el.innerHTML = `<div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-bottom:6px">سيتم الإرسال لـ ${list.length} طالب:</div>` +
+    list.map(s=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem">
+      <span style="color:#6ee7b7">✓</span>
+      <span style="font-weight:700">${s.name}</span>
+      <span style="color:rgba(255,255,255,.4);font-size:.7rem;direction:ltr">${s.phone}</span>
+    </div>`).join('');
+}
+
+async function sendWaToAll() {
+  const target = document.getElementById('waTarget').value;
+  const msg = document.getElementById('waMsg').value.trim();
+  if (!msg) { showToast('⚠️ اكتب الرسالة أولاً'); return; }
+  if (!allStudents.length) await loadTeacherData();
+  let list = allStudents.filter(s => s.phone);
+  if (target === 'pending') list = list.filter(s => !allResults.some(r=>r.code===s.code));
+  if (target === 'done') list = list.filter(s => allResults.some(r=>r.code===s.code));
+  if (!list.length) { showToast('⚠️ لا يوجد طلاب بأرقام واتساب'); return; }
+  if (!confirm(`سيتم فتح واتساب لـ ${list.length} طالب — هل تريد الاستمرار؟`)) return;
+  list.forEach((s, i) => {
+    setTimeout(() => {
+      const phone = s.phone.replace(/^0/,'20').replace(/\s/g,'');
+      window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    }, i * 800);
+  });
+  showToast('📤 جاري فتح واتساب...');
+}
+
+// ============================================================
+// CSV
+// ============================================================
+function exportCSV() {
+  if (!allResults.length) { showToast('لا توجد نتائج'); return; }
+  const rows = [['الكود','الاسم','الصف','الدرجة','النسبة%','الوقت(دقيقة)','التاريخ']];
+  allResults.forEach(r => {
+    const pct = Math.round((r.score||0)/60*100);
+    const mins = r.timeTaken ? Math.round(r.timeTaken/60) : '';
+    const date = r.submittedAt ? new Date(r.submittedAt.toDate?r.submittedAt.toDate():r.submittedAt).toLocaleDateString('ar-EG') : '';
+    rows.push([r.code, r.studentName||'', r.grade||'', r.score||0, pct+'%', mins, date]);
+  });
+  const csv = '\uFEFF' + rows.map(r=>r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download = 'نتائج_الامتحان.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ============================================================
+// EXAM MODAL
+// ============================================================
+function openExamModal() {
+  document.getElementById('examCodeIn').value='';
+  document.getElementById('examModalErr').style.display='none';
+  openModal('modalExam');
+  setTimeout(()=>document.getElementById('examCodeIn').focus(),200);
+}
+
+async function verifyExam() {
+  const entered = document.getElementById('examCodeIn').value.trim().toUpperCase();
+  const errEl = document.getElementById('examModalErr');
+  errEl.style.display='none';
+  try {
+    const snap = await db.collection('settings').doc('exam').get();
+    if (snap.exists) examSettings = snap.data();
+  } catch(e) {}
+  if (entered !== (examSettings.examCode||'EX002').toUpperCase()) {
+    errEl.textContent='❌ كود الامتحان غير صحيح!';
+    errEl.style.display='block';
+    return;
+  }
+  closeModal('modalExam');
+  window.open('اختبار_شامل_الصف_الثاني_الثانوي-_الاستاذ_رؤوف_بركات_.html','_blank');
+  showToast('✅ تم فتح الامتحان في نافذة جديدة');
+}
+
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const wrap = document.getElementById('toast');
+  document.getElementById('toastTxt').textContent = msg;
+  wrap.style.display='block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ wrap.style.display='none'; }, 2800);
+}
+
+// ============================================================
+// LESSONS DATA
+// ============================================================
+const lessons = [
+  { id:101, title:"المنادى وأحكامه", stage:"إعدادي", subject:"لغة عربية", unit:"1",
+    icon:"📢", color:"rgba(91,124,250,.1)", border:"rgba(91,124,250,.25)",
+    summary:"قواعد النداء وأنواعه الخمسة وأحكام إعراب المنادى مع أمثلة من المنهج." },
+  { id:102, title:"البدل وأنواعه", stage:"إعدادي", subject:"لغة عربية", unit:"1",
+    icon:"🔄", color:"rgba(138,91,250,.1)", border:"rgba(138,91,250,.25)",
+    summary:"البدل المطابق وبدل البعض وبدل الاشتمال مع تطبيقات إعرابية متنوعة." },
+  { id:103, title:"أسلوب المدح والذم", stage:"إعدادي", subject:"لغة عربية", unit:"1",
+    icon:"👍", color:"rgba(31,181,169,.1)", border:"rgba(31,181,169,.25)",
+    summary:"نِعْم وبِئْس وحَبَّذا ولا حَبَّذا وإعرابها وأمثلتها من القرآن والأدب." },
+  { id:104, title:"الممنوع من الصرف", stage:"إعدادي", subject:"لغة عربية", unit:"1",
+    icon:"🚫", color:"rgba(244,63,94,.1)", border:"rgba(244,63,94,.25)",
+    summary:"أسباب المنع وأوزان الممنوع والأسماء الأعجمية والأوزان الشائعة في المنهج." },
+  { id:105, title:"عباد الرحمن", stage:"إعدادي", subject:"لغة عربية", unit:"2",
+    icon:"📖", color:"rgba(5,150,105,.1)", border:"rgba(5,150,105,.25)",
+    summary:"دراسة الآيات وصفات عباد الرحمن من سورة الفرقان مع المفردات والتفسير." },
+  { id:106, title:"الكنيسة المعلقة وقلعة قايتباي", stage:"إعدادي", subject:"لغة عربية", unit:"2",
+    icon:"🏛️", color:"rgba(201,168,76,.1)", border:"rgba(201,168,76,.25)",
+    summary:"التراث المعماري المصري ودلالته على التسامح الديني والعمق الحضاري." },
+];
+
+function matchLesson(l) {
+  const stage = document.getElementById('fsStage')?.value||'';
+  const subject = document.getElementById('fsSubject')?.value||'';
+  const unit = document.getElementById('fsUnit')?.value||'';
+  const q = (document.getElementById('fsSearch')?.value||'').toLowerCase();
+  if (stage && l.stage!==stage) return false;
+  if (subject && l.subject!==subject) return false;
+  if (unit && l.unit!==unit) return false;
+  if (q && !l.title.toLowerCase().includes(q) && !l.summary.toLowerCase().includes(q)) return false;
+  return true;
+}
+
+function renderLessons() {
+  const grid = document.getElementById('lessonsGrid');
+  const empty = document.getElementById('lessonsEmpty');
+  const countEl = document.getElementById('lessonsCount');
+  if (!grid) return;
+  const list = lessons.filter(matchLesson);
+  if (countEl) countEl.textContent = list.length;
+  if (!list.length) { grid.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if (empty) empty.style.display='none';
+  grid.innerHTML = list.map((l, i) => {
+    const prog = progressMap[l.id]||0;
+    return `<div class="lesson-card" style="border-color:${l.border};animation-delay:${i*0.06}s">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:42px;height:42px;border-radius:12px;background:${l.color};border:1px solid ${l.border};display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">${l.icon}</div>
+        <div style="flex:1">
+          <div class="lesson-title">${l.title}</div>
+          <div class="lesson-meta"><span>${l.stage}</span><span>${l.subject}</span><span>و${l.unit}</span></div>
+        </div>
+      </div>
+      <p class="lesson-summary">${l.summary}</p>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${prog}%"></div></div>
+      <div class="lesson-prog-txt">${prog===100?'✅ مكتمل':prog>0?'جاري — '+prog+'%':'لم تبدأ بعد'}</div>
+      <div class="lesson-btns">
+        <button onclick="openLesson(${l.id})" class="tbtn tbtn-blue" style="flex:1;font-size:.8rem;padding:9px">فتح الدرس</button>
+        ${prog===100?'<button class="tbtn tbtn-ghost tbtn-sm" style="flex-shrink:0" onclick="resetLesson('+l.id+')">↺</button>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function resetFilters() {
+  ['fsStage','fsSubject','fsUnit'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const s=document.getElementById('fsSearch'); if(s) s.value='';
+  renderLessons();
+}
+
+function resetLesson(id) {
+  progressMap[id]=0;
+  renderLessons();
+  showToast('↺ تم إعادة تعيين الدرس');
+}
+
+// ============================================================
+// LESSON DRAWER
+// ============================================================
+function openLesson(id) {
+  const l = lessons.find(x=>x.id===id);
+  if (!l) return;
+  openLessonId = id;
+  document.getElementById('drawerTitle').textContent = l.icon + ' ' + l.title;
+  document.getElementById('drawerMeta').textContent = l.stage + ' · ' + l.subject + ' · الوحدة ' + l.unit;
+  document.getElementById('drawerProg').textContent = (progressMap[id]||0) + '%';
+  document.getElementById('drawerBody').innerHTML = getLessonHTML(id);
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+  attachLessonQuiz(id);
+  if ((progressMap[id]||0) === 0) { progressMap[id]=30; renderLessons(); document.getElementById('drawerProg').textContent='30%'; }
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+function markDone() {
+  if (!openLessonId) return;
+  progressMap[openLessonId]=100;
+  document.getElementById('drawerProg').textContent='100%';
+  renderLessons();
+  showToast('🎉 أحسنت! تم إكمال الدرس');
+}
+
+function getLessonHTML(id) {
+  const content = {
+    101:`<div>
+      <div style="background:rgba(91,124,250,.1);border:1px solid rgba(91,124,250,.2);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#a5b4fc;margin-bottom:8px">📢 تعريف المنادى</div>
+        <p style="font-size:.84rem;color:rgba(255,255,255,.8);line-height:1.7">اسم يُذكر بعد أداة من أدوات النداء لطلب الإقبال والانتباه من المخاطَب.</p>
+        <div style="margin-top:10px;font-size:.8rem;color:rgba(255,255,255,.65)"><strong style="color:#a5b4fc">أدوات النداء:</strong> يا (الأشيع) · أيا / هيا (للبعيد) · أيْ / الهمزة (للقريب) · وا (للندبة)</div>
+      </div>
+      <div style="background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.15);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#6ee7b7;margin-bottom:10px">📋 أنواع المنادى الخمسة</div>
+        ${[['المفرد العلم','مبني على الضم','يا محمدُ — يا فاطمةُ'],['النكرة المقصودة','مبني على الضم','يا طالبُ! (لشخص بعينه)'],['النكرة غير المقصودة','منصوب بالفتحة','يا رجلاً أعنّي'],['المضاف','منصوب بالفتحة','يا طالبَ العلم'],['الشبيه بالمضاف','منصوب بالفتحة','يا طالبًا للعلم']].map(([t,i,e])=>`
+        <div style="background:rgba(255,255,255,.05);border-right:3px solid #6ee7b7;border-radius:8px;padding:10px;margin-bottom:8px">
+          <div style="font-weight:700;color:#6ee7b7;font-size:.82rem">${t}</div>
+          <div style="font-size:.73rem;color:#fcd34d;margin:3px 0">⚡ ${i}</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.55)">مثال: ${e}</div>
+        </div>`).join('')}
+      </div>
+      <div id="lq-${id}"></div></div>`,
+    102:`<div>
+      <div style="background:rgba(138,91,250,.1);border:1px solid rgba(138,91,250,.2);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#c4b5fd;margin-bottom:8px">🔄 تعريف البدل</div>
+        <p style="font-size:.84rem;color:rgba(255,255,255,.8);line-height:1.7">تابع يأتي بعد اسم قبله ليوضحه أو يبيّنه، ويُعرب مثله تمامًا.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;margin-bottom:10px">أنواع البدل الثلاثة</div>
+        ${[['البدل المطابق (الكل من الكل)','يطابق المبدل منه تمامًا في المعنى','جاء الطالبُ محمدٌ'],['بدل البعض من الكل','يدل على جزء من المبدل منه','أعجبني الكتابُ نصفُه'],['بدل الاشتمال','يشتمل عليه المبدل منه اشتمالاً معنويًا','أعجبني الطالبُ خلقُه']].map(([t,d,e])=>`
+        <div style="background:rgba(255,255,255,.05);padding:12px;border-radius:8px;margin-bottom:8px">
+          <div style="font-weight:700;color:#c4b5fd;font-size:.83rem">${t}</div>
+          <div style="font-size:.76rem;color:rgba(255,255,255,.55);margin:4px 0">${d}</div>
+          <div style="font-size:.8rem;color:#fcd34d;font-weight:600">مثال: ${e}</div>
+        </div>`).join('')}
+      </div>
+      <div id="lq-${id}"></div></div>`,
+    103:`<div>
+      <div style="background:rgba(31,181,169,.1);border:1px solid rgba(31,181,169,.2);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#5eead4;margin-bottom:8px">👍👎 أسلوب المدح والذم</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:rgba(5,150,105,.1);padding:12px;border-radius:8px;text-align:center"><div style="color:#6ee7b7;font-weight:800;font-size:.9rem">المدح</div><div style="font-size:.82rem;margin-top:4px;color:rgba(255,255,255,.75)">نِعْم · حَبَّذا</div></div>
+          <div style="background:rgba(185,28,28,.1);padding:12px;border-radius:8px;text-align:center"><div style="color:#fca5a5;font-weight:800;font-size:.9rem">الذم</div><div style="font-size:.82rem;margin-top:4px;color:rgba(255,255,255,.75)">بِئْس · لا حَبَّذا</div></div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;margin-bottom:10px">أمثلة وإعراب</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.82rem">
+          <div style="background:rgba(255,255,255,.05);padding:10px;border-radius:8px"><span style="color:#fcd34d;font-weight:700">نِعْمَ</span> الطالبُ المجتهدُ — فعل مدح جامد + فاعل مرفوع + مخصوص</div>
+          <div style="background:rgba(255,255,255,.05);padding:10px;border-radius:8px"><span style="color:#fca5a5;font-weight:700">بِئْسَ</span> الخُلُقُ الكذبُ — فعل ذم جامد + فاعل + مخصوص</div>
+          <div style="background:rgba(255,255,255,.05);padding:10px;border-radius:8px"><span style="color:#fcd34d;font-weight:700">حَبَّذا</span> الصدقُ — حبَّ فعل + ذا فاعل (اسم إشارة) + مخصوص</div>
+        </div>
+      </div>
+      <div id="lq-${id}"></div></div>`,
+    104:`<div>
+      <div style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#fda4af;margin-bottom:8px">🚫 الممنوع من الصرف</div>
+        <p style="font-size:.84rem;color:rgba(255,255,255,.8);line-height:1.7">اسم لا يُنوَّن ويُجَرُّ بالفتحة نيابةً عن الكسرة ما لم يُضَف أو يُحَلَّ بـ"أل".</p>
+      </div>
+      <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;margin-bottom:10px">أسباب المنع الشائعة</div>
+        ${[['العلمية + التأنيث','فاطمةُ، زينبُ، مصرُ'],['العلمية + العجمة','إبراهيمُ، إسماعيلُ، يوسفُ'],['العلمية + وزن الفعل','أحمدُ، يزيدُ، تَغلِبُ'],['الصفة + وزن أفعل','أكبرُ، أحمرُ، أجملُ'],['صيغة منتهى الجموع','مساجدُ، مدارسُ، كتاتيبُ']].map(([s,e])=>`
+        <div style="background:rgba(255,255,255,.05);padding:10px;border-radius:8px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span style="color:#fda4af;font-weight:700;font-size:.8rem">${s}</span>
+          <span style="color:rgba(255,255,255,.6);font-size:.78rem">${e}</span>
+        </div>`).join('')}
+      </div>
+      <div id="lq-${id}"></div></div>`,
+    105:`<div>
+      <div style="background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#6ee7b7;margin-bottom:8px">📖 الآيات الكريمة</div>
+        <div style="font-family:serif;font-size:1rem;line-height:2.1;background:rgba(255,255,255,.04);padding:14px;border-radius:10px;text-align:center;color:rgba(255,255,255,.9)">﴿وَعِبَادُ الرَّحْمَٰنِ الَّذِينَ يَمْشُونَ عَلَى الْأَرْضِ هَوْنًا وَإِذَا خَاطَبَهُمُ الْجَاهِلُونَ قَالُوا سَلَامًا ۝ وَالَّذِينَ يَبِيتُونَ لِرَبِّهِمْ سُجَّدًا وَقِيَامًا ۝ وَالَّذِينَ لَمْ يُسْرِفُوا وَلَمْ يَقْتُرُوا وَكَانَ بَيْنَ ذَٰلِكَ قَوَامًا﴾</div>
+      </div>
+      <div style="background:rgba(91,124,250,.08);border:1px solid rgba(91,124,250,.15);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#a5b4fc;margin-bottom:10px">🌟 صفات عباد الرحمن</div>
+        ${[['التواضع','يَمْشُونَ عَلَى الْأَرْضِ هَوْنًا','السير بوقار بلا تكبر'],['الحِلم','قَالُوا سَلَامًا','مقابلة الجاهل بالكلام الطيب'],['قيام الليل','يَبِيتُونَ سُجَّدًا وَقِيَامًا','العبادة والتهجد في الليل'],['الاعتدال في الإنفاق','لَمْ يُسْرِفُوا وَلَمْ يَقْتُرُوا','التوسط بين الإسراف والبخل']].map(([t,v,d])=>`
+        <div style="border-right:3px solid #a5b4fc;padding:10px;margin-bottom:8px;background:rgba(255,255,255,.03);border-radius:0 8px 8px 0">
+          <div style="font-weight:700;color:#a5b4fc;font-size:.83rem">${t}</div>
+          <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin:3px 0;font-family:serif">﴿${v}﴾</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.55)">${d}</div>
+        </div>`).join('')}
+      </div>
+      <div id="lq-${id}"></div></div>`,
+    106:`<div>
+      <div style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#e8c96a;margin-bottom:10px">🕍 الكنيسة المعلقة</div>
+        ${[['الموقع','حي مصر القديمة — بجوار جامع عمرو بن العاص'],['سبب التسمية','مبنيةٌ على برجين من أبراج الحصن الروماني القديم'],['الدلالة','رمز التسامح الديني في مصر عبر العصور']].map(([k,v])=>`
+        <div style="display:flex;gap:8px;margin-bottom:7px;font-size:.82rem">
+          <span style="color:#e8c96a;font-weight:700;white-space:nowrap">${k}:</span>
+          <span style="color:rgba(255,255,255,.75)">${v}</span>
+        </div>`).join('')}
+      </div>
+      <div style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);border-radius:12px;padding:16px;margin-bottom:14px">
+        <div style="font-weight:800;color:#67e8f9;margin-bottom:10px">🏰 قلعة قايتباي</div>
+        ${[['الموقع','على موقع منارة الإسكندرية القديمة (إحدى عجائب الدنيا)'],['التاريخ','بُنيت في العصر المملوكي على مساحة 17550 م²'],['الأهمية','حصن دفاعي ومزار سياحي تاريخي حتى اليوم']].map(([k,v])=>`
+        <div style="display:flex;gap:8px;margin-bottom:7px;font-size:.82rem">
+          <span style="color:#67e8f9;font-weight:700;white-space:nowrap">${k}:</span>
+          <span style="color:rgba(255,255,255,.75)">${v}</span>
+        </div>`).join('')}
+      </div>
+      <div id="lq-${id}"></div></div>`,
+  };
+  return content[id] || `<div style="padding:20px;color:rgba(255,255,255,.6);font-size:.85rem">محتوى الدرس قيد الإعداد...</div>`;
+}
+
+// ============================================================
+// LESSON QUIZZES
+// ============================================================
+const lessonQuizzes = {
+  101:[
+    {q:'في "يا أحمدُ" نوع المنادى:',opts:['مفرد علم — مبني على الضم','نكرة مقصودة','مضاف'],ans:0},
+    {q:'إعراب "طالبَ" في "يا طالبَ العلم":',opts:['مبني على الضم','منصوب بالفتحة — مضاف','مجرور بالكسرة'],ans:1},
+    {q:'في "يا رجلاً ساعدني" المنادى:',opts:['مفرد علم','نكرة مقصودة','نكرة غير مقصودة — منصوب'],ans:2},
+  ],
+  102:[
+    {q:'في "جاء الطالبُ محمدٌ" البدل نوعه:',opts:['مطابق','بعض من كل','اشتمال'],ans:0},
+    {q:'في "أعجبني الكتابُ نصفُه" البدل:',opts:['مطابق','بعض من كل','اشتمال'],ans:1},
+    {q:'في "أعجبني الطالبُ خُلُقُه" البدل:',opts:['مطابق','بعض من كل','اشتمال'],ans:2},
+  ],
+  103:[
+    {q:'الفعل في "نِعْمَ الطالبُ المجتهدُ":',opts:['فعل ناقص','فعل جامد للمدح','فعل مضارع'],ans:1},
+    {q:'في "حَبَّذا الصدقُ" — "ذا" هي:',opts:['اسم إشارة فاعل','مفعول به','خبر'],ans:0},
+  ],
+  104:[
+    {q:'لماذا "أحمد" ممنوع من الصرف؟',opts:['علمية + عجمة','علمية + وزن الفعل','علمية + تأنيث'],ans:1},
+    {q:'لماذا "فاطمة" ممنوعة من الصرف؟',opts:['صيغة منتهى الجموع','علمية + تأنيث','صفة على وزن أفعل'],ans:1},
+    {q:'لماذا "مدارس" ممنوعة من الصرف؟',opts:['علمية + عجمة','صيغة منتهى الجموع','علمية + وزن الفعل'],ans:1},
+  ],
+  105:[
+    {q:'معنى "هَوْنًا" في الآية:',opts:['بسرعة وعجلة','بتواضع وسكينة','بكسل وفتور'],ans:1},
+    {q:'المقصود بـ"قَوَامًا" في الإنفاق:',opts:['الإسراف','البخل الشديد','الاعتدال والتوسط'],ans:2},
+    {q:'كيف يرد عباد الرحمن على الجاهلين؟',opts:['يردون بالمثل','يقولون سَلامًا','يتجاهلونهم'],ans:1},
+  ],
+  106:[
+    {q:'سبب تسمية الكنيسة بـ"المعلقة":',opts:['مبنية على برجين رومانيين','مبنية على جبل مرتفع','معلقة بين جبلين'],ans:0},
+    {q:'قلعة قايتباي بُنيت على موقع:',opts:['قصر كليوباترا','منارة الإسكندرية القديمة','معبد فرعوني'],ans:1},
+    {q:'ما الدلالة الرمزية للكنيسة المعلقة؟',opts:['القوة العسكرية','التسامح الديني في مصر','الثروة الاقتصادية'],ans:1},
+  ],
+};
+
+function attachLessonQuiz(id) {
+  const qs = lessonQuizzes[id];
+  const container = document.getElementById('lq-' + id);
+  if (!qs || !container) return;
+  container.innerHTML = `
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:.8rem;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:12px;letter-spacing:.5px">اختبر فهمك</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        ${qs.map((q,qi)=>`
+        <div class="quiz-card">
+          <div class="quiz-q">س${qi+1}: ${q.q}</div>
+          <div class="quiz-opts">
+            ${q.opts.map((o,oi)=>`<button class="quiz-opt" data-qi="${qi}" data-oi="${oi}" data-ans="${q.ans}" onclick="handleLQ(this,${oi},${q.ans})">${o}</button>`).join('')}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function handleLQ(btn, oi, ans) {
+  const card = btn.closest('.quiz-card');
+  card.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+  if (oi === ans) {
+    btn.classList.add('correct');
+    showToast('✅ إجابة صحيحة!');
+  } else {
+    btn.classList.add('wrong');
+    card.querySelectorAll('.quiz-opt')[ans].classList.add('correct');
+    showToast('❌ إجابة خاطئة — راجع الدرس');
+  }
+  // Update progress
+  if (openLessonId && (progressMap[openLessonId]||0) < 70) {
+    progressMap[openLessonId] = 70;
+    renderLessons();
+    document.getElementById('drawerProg').textContent = '70%';
+  }
+}
+
+// ============================================================
+// QUIZ EXERCISES
+// ============================================================
+function handleQuizOpt(btn) {
+  const card = btn.closest('.quiz-card') || btn.closest('[id^="quiz"]') || btn.parentElement.parentElement;
+  const opts = card.querySelectorAll('.quiz-opt');
+  opts.forEach(b => b.disabled = true);
+  const isCorrect = btn.getAttribute('data-answer') === 'correct';
+  if (isCorrect) { btn.classList.add('correct'); showToast('✅ إجابة صحيحة!'); }
+  else { btn.classList.add('wrong'); opts.forEach(b=>{ if(b.getAttribute('data-answer')==='correct') b.classList.add('correct'); }); showToast('❌ راجع مرة أخرى'); }
+}
+</script>
+</body>
+</html>
