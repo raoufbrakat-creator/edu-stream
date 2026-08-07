@@ -14,7 +14,7 @@
 <style>
 :root{--navy:#0f1f3d;--navy2:#1a3260;--gold:#c9a84c;--gold2:#e8c96a;--cream:#faf7f0;--cream2:#f0ead8;--text:#1a1a2e;--muted:#5a6170;--green:#1a7a4a;--greenl:#e8f7ef;--red:#b91c1c;--redl:#fee2e2;--bdr:#ddd5c0;--white:#fff}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;direction:rtl}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;direction:rtl;overscroll-behavior-x:none}
 .screen{display:none!important;min-height:100vh}
 .screen.active{display:flex!important}
 
@@ -238,7 +238,9 @@ td{padding:10px 10px;color:var(--text);font-size:.76rem}
 .nav-legend{display:flex;gap:12px;padding:8px 13px 10px;font-size:.68rem;color:var(--muted);font-weight:600}
 .ldot{width:10px;height:10px;border-radius:3px;display:inline-block;margin-left:4px}
 .sec-badge{display:inline-block;background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--gold2);font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;margin:12px 14px 0;letter-spacing:.3px}
-.qcard{margin:12px 14px 0;background:var(--white);border-radius:18px;box-shadow:0 4px 20px rgba(15,31,61,.08);overflow:hidden;border:1px solid var(--bdr)}
+.qcard{margin:12px 14px 0;background:var(--white);border-radius:18px;box-shadow:0 4px 20px rgba(15,31,61,.08);overflow:hidden;border:1px solid var(--bdr);-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;user-select:none;position:relative}
+.exam-watermark{position:fixed;inset:-60% -20%;width:140%;height:220%;pointer-events:none;z-index:5;display:flex;flex-wrap:wrap;align-content:flex-start;transform:rotate(-28deg);opacity:.07}
+.exam-watermark span{display:inline-block;font-size:.62rem;font-weight:800;color:#000;white-space:nowrap;padding:20px 26px}
 .qnumbar{background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--gold2);font-size:.72rem;font-weight:700;padding:8px 16px;letter-spacing:.3px}
 .qbody{padding:16px}
 .poet-label{display:block;text-align:center;font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:6px;letter-spacing:.3px}
@@ -409,6 +411,9 @@ td{padding:10px 10px;color:var(--text);font-size:.76rem}
 .slbl{font-size:.75rem;color:var(--muted)}
 .sval{font-size:.82rem;font-weight:700}
 #celebrationCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;display:none}
+.time-alert-toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;font-weight:900;font-size:.9rem;padding:12px 22px;border-radius:40px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:9996;display:flex;align-items:center;gap:8px;animation:timeAlertPop .35s ease;white-space:nowrap}
+.time-alert-toast.warning{background:linear-gradient(135deg,#d97706,#92400e)}
+@keyframes timeAlertPop{0%{opacity:0;transform:translateX(-50%) translateY(-16px) scale(.9)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
 .balloon{position:fixed;bottom:-120px;font-size:2.4rem;animation:balloonRise linear forwards;pointer-events:none;z-index:9997;user-select:none}
 @keyframes balloonRise{0%{bottom:-120px;opacity:1}80%{opacity:1}100%{bottom:110vh;opacity:0}}
 .confetti-piece{position:fixed;top:-10px;width:10px;height:10px;animation:confettiFall linear forwards;pointer-events:none;z-index:9997;border-radius:2px}
@@ -503,18 +508,13 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
       <span class="sub">🎓 اللغة العربية — الإعدادية والثانوية</span>
     </div>
     <div class="wbody">
-      <div class="tab-row">
-        <button class="tab-btn active" onclick="switchTab('student')">🎓 دخول الطالب</button>
-        <button class="tab-btn" onclick="switchTab('teacher')">👨‍🏫 دخول المعلم</button>
-      </div>
-
-      <!-- STUDENT TAB -->
+      <!-- UNIFIED LOGIN -->
       <div id="tab-student" class="tab-pane active">
         <div id="authError" class="auth-error"></div>
         <div id="authSuccess" class="auth-success"></div>
         <div class="fgroup">
           <label class="flabel"><span>🔑</span> كودك الشخصي</label>
-          <input type="text" id="studentCode" class="finput" placeholder="أدخل الكود الخاص بك" maxlength="10" style="text-align:center;letter-spacing:3px;font-weight:900;font-size:1.1rem;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+          <input type="text" id="studentCode" class="finput" placeholder="أدخل الكود الخاص بك" maxlength="20" autocomplete="off" style="text-align:center;letter-spacing:2px;font-weight:900;font-size:1.1rem" onkeydown="if(event.key==='Enter')studentLogin()">
           <span class="finput-icon">🔒</span>
         </div>
         <button class="btnstart" onclick="studentLogin()">
@@ -524,25 +524,6 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
           </div>
         </button>
         <p style="text-align:center;font-size:.68rem;color:var(--muted);margin-top:10px">الكود يُعطى من الأستاذ رؤوف — تواصل معه إذا نسيته</p>
-      </div>
-
-      <!-- TEACHER TAB -->
-      <div id="tab-teacher" class="tab-pane">
-        <div class="teacher-badge">
-          <span>👨‍🏫 منطقة المعلم — الأستاذ رؤوف بركات</span>
-        </div>
-        <div id="teacherAuthError" class="auth-error"></div>
-        <div class="fgroup">
-          <label class="flabel"><span>🔐</span> كلمة مرور المعلم</label>
-          <input type="password" id="teacherPassword" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')teacherLogin()">
-          <span class="finput-icon">🔒</span>
-        </div>
-        <button class="btnstart" onclick="teacherLogin()">
-          <div class="btnstart-inner">
-            <span id="teacherLoginBtnText">دخول لوحة التحكم</span>
-            <span>←</span>
-          </div>
-        </button>
       </div>
     </div>
     <div class="wfooter">
@@ -794,7 +775,10 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
               <label class="flabel" style="font-size:.72rem;margin-bottom:4px">توضيح الإجابة (اختياري)</label>
               <input type="text" id="qbExp" class="tinput" placeholder="يظهر للطالب بعد الامتحان">
             </div>
-            <button class="tbtn gold full" onclick="addQuestionToEditor()">➕ أضف السؤال</button>
+            <div style="display:flex;gap:8px">
+              <button class="tbtn gold full" id="addQuestionBtn" onclick="addQuestionToEditor()">➕ أضف السؤال</button>
+              <button class="tbtn navy" id="cancelEditQuestionBtn" style="display:none;white-space:nowrap" onclick="cancelEditQuestion()">✖️ إلغاء</button>
+            </div>
           </div>
         </div>
 
@@ -837,7 +821,7 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
             </div>
             <div>
               <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الكود الشخصي</label>
-              <input type="text" id="newStudentCode" class="tinput" placeholder="مثال: RB001" maxlength="10" oninput="this.value=this.value.toUpperCase()">
+              <input type="text" id="newStudentCode" class="tinput" placeholder="مثال: RB-7X9K2" maxlength="12" oninput="this.value=this.value.toUpperCase()">
             </div>
           </div>
           <div class="form-row">
@@ -941,6 +925,11 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
         </div>
       </div>
       <div class="panel">
+        <div class="section-hdr">💾 نسخة احتياطية</div>
+        <p style="font-size:.72rem;color:var(--muted);margin-bottom:10px">تحميل نسخة من كل بيانات المنصة (الطلاب، الامتحانات، النتائج) في ملف واحد على جهازك، للطمأنينة.</p>
+        <button class="tbtn navy full" onclick="exportFullBackup()">⬇️ تحميل نسخة احتياطية كاملة (JSON)</button>
+      </div>
+      <div class="panel">
         <div class="section-hdr">⚠️ منطقة خطرة</div>
         <button class="tbtn red full" onclick="resetAllExams()">🗑️ حذف جميع النتائج (تصفير الامتحانات)</button>
         <p style="font-size:.68rem;color:var(--muted);margin-top:6px;text-align:center">لا يمكن التراجع عن هذا الإجراء</p>
@@ -951,6 +940,7 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
 
 <!-- ===== EXAM SCREEN ===== -->
 <div id="examScreen" class="screen" style="flex-direction:column;">
+  <div id="examWatermark" class="exam-watermark"></div>
   <div class="topbar">
     <div class="topbar-main">
       <span class="exam-ttl">امتحان اللغة العربية — الثاني الثانوي</span>
@@ -1033,6 +1023,10 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
       <div class="cert-analysis">
         <div class="cert-analysis-title">📋 تقريرك التفصيلي</div>
         <div id="detailedAnalysis"></div>
+        <div id="teacherNoteBox" style="display:none;background:#fffbeb;border-right:4px solid var(--gold);border-radius:9px;padding:11px 13px;margin:10px 0;font-size:.8rem;line-height:1.7">
+          <strong style="color:var(--navy)">💬 ملاحظة الأستاذ:</strong>
+          <div id="teacherNoteText" style="margin-top:4px;color:#333"></div>
+        </div>
         <div class="qdetail-toggle" id="qdetailToggle" onclick="toggleQuestionDetails()">
           <span>📝 عرض تحليل كل سؤال على حدة</span>
           <span class="qdetail-arrow" id="qdetailArrow">▼</span>
@@ -1167,8 +1161,11 @@ let examsCache = [];         // exams shown to the logged-in student (matching t
 let teacherExamsCache = [];  // all exams, for the teacher management tab
 let editingExamId = null;    // exam currently open in the question-builder
 let editingExamQuestions = []; // working copy of questions while editing an exam
+let editingQuestionIndex = null; // index of the question currently being edited (null = adding new)
 let pendingDeleteExamId = null;
 let pendingStartExamId = null;
+let extraTimeUnsub = null;
+let sessionUnsub = null;
 let importedExamQuestions = null; // questions parsed from an uploaded exam file, staged before exam creation
 
 const SECTION_PALETTE = [
@@ -1205,15 +1202,6 @@ function showScreen(id) {
 // ============================================================
 // TAB SWITCHERS
 // ============================================================
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.getElementById('authError').style.display = 'none';
-  document.getElementById('teacherAuthError').style.display = 'none';
-}
-
 function switchTeacherTab(tab) {
   document.querySelectorAll('.tnav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tpane').forEach(p => p.classList.remove('active'));
@@ -1229,13 +1217,28 @@ function switchTeacherTab(tab) {
 // STUDENT LOGIN
 // ============================================================
 async function studentLogin() {
-  const code = document.getElementById('studentCode').value.trim().toUpperCase();
+  const raw = document.getElementById('studentCode').value.trim();
   const errEl = document.getElementById('authError');
   const btn = document.getElementById('loginBtnText');
   errEl.style.display = 'none';
 
-  if (!code) { showAuthError(errEl, '⚠️ من فضلك أدخل الكود الخاص بك'); return; }
+  if (!raw) { showAuthError(errEl, '⚠️ من فضلك أدخل الكود الخاص بك'); return; }
 
+  // Hidden teacher access: typing the exact teacher password logs into the dashboard instead
+  const teacherPass = examSettings.teacherPassword || TEACHER_PASSWORD;
+  if (raw === teacherPass) {
+    document.getElementById('studentCode').value = '';
+    btn.innerHTML = '<span class="loading-spin">⏳</span> جاري الدخول...';
+    document.querySelector('#tab-student .btnstart').disabled = true;
+    await loadDashboardStats();
+    showScreen('teacherDashboard');
+    switchTeacherTab('students');
+    btn.innerHTML = 'دخول المنصة';
+    document.querySelector('#tab-student .btnstart').disabled = false;
+    return;
+  }
+
+  const code = raw.toUpperCase();
   btn.innerHTML = '<span class="loading-spin">⏳</span> جاري التحقق...';
   document.querySelector('#tab-student .btnstart').disabled = true;
 
@@ -1249,6 +1252,10 @@ async function studentLogin() {
         showAuthError(errEl, '🔒 هذا الحساب موقوف — تواصل مع الأستاذ رؤوف');
       } else {
         currentStudent = { code, ...data };
+        const sessionId = Date.now() + '-' + Math.random().toString(36).slice(2);
+        sessionStorage.setItem('myEduStreamSession', sessionId);
+        try { await db.collection('students').doc(code).update({ activeSessionId: sessionId }); } catch(e) {}
+        attachSessionListener();
         showStudentDashboard();
       }
     }
@@ -1276,6 +1283,30 @@ async function showStudentDashboard() {
   showScreen('studentDashboard');
   loadExamCards();
   loadStudentPerformanceSummary();
+  retryPendingResults();
+}
+
+async function retryPendingResults() {
+  if (!currentStudent) return;
+  const suffix = '_' + currentStudent.code;
+  const keysToRetry = Object.keys(localStorage).filter(k => k.startsWith('pendingResult_') && k.endsWith(suffix));
+  for (const key of keysToRetry) {
+    try {
+      const data = JSON.parse(localStorage.getItem(key));
+      const { savedLocallyAt, ...payload } = data;
+      const examId = key.replace('pendingResult_', '').replace(suffix, '');
+      await db.collection('results').doc(examId + '_' + currentStudent.code).set({
+        ...payload,
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      localStorage.removeItem(key);
+      showTimeAlert('✅ اترفعت نتيجة كانت متأخرة بسبب النت', 'warning');
+      loadExamCards();
+      loadStudentPerformanceSummary();
+    } catch(e) {
+      console.error('Still failing to upload pending result:', e);
+    }
+  }
 }
 
 async function loadStudentPerformanceSummary() {
@@ -1406,46 +1437,53 @@ async function viewPastResult(examId) {
     document.querySelectorAll('.exam-ttl').forEach(el => el.textContent = currentExamTitle);
     document.querySelectorAll('.cert-subtitle').forEach(el => el.textContent = currentExamTitle);
 
-    showResults(r.score || 0, r.percentage ?? 0, r.timeTaken || 0, r.sectionScores || {});
+    showResults(r.score || 0, r.percentage ?? 0, r.timeTaken || 0, r.sectionScores || {}, r.teacherNote || null);
   } catch(e) { alert('❌ خطأ في عرض النتيجة: ' + e.message); }
 }
 
+function attachSessionListener() {
+  detachSessionListener();
+  if (!currentStudent) return;
+  sessionUnsub = db.collection('students').doc(currentStudent.code).onSnapshot(snap => {
+    if (!snap.exists) return;
+    const serverSession = snap.data().activeSessionId;
+    const mySession = sessionStorage.getItem('myEduStreamSession');
+    if (serverSession && mySession && serverSession !== mySession) {
+      forceLogoutDueToNewSession();
+    }
+  });
+}
+
+function detachSessionListener() {
+  if (sessionUnsub) { sessionUnsub(); sessionUnsub = null; }
+}
+
+function forceLogoutDueToNewSession() {
+  detachSessionListener();
+  detachExtraTimeListener();
+  stopTimer();
+  exitExamFullscreen();
+  sessionStorage.removeItem('myEduStreamSession');
+  currentStudent = null;
+  showScreen('platformScreen');
+  alert('⚠️ تم تسجيل الدخول بنفس الكود من جهاز تاني، فتم إنهاء الجلسة دي لحمايتك. لو مش انت، غيّر كودك مع الأستاذ فورًا.');
+}
+
 function studentLogout() {
+  detachExtraTimeListener();
+  detachSessionListener();
+  sessionStorage.removeItem('myEduStreamSession');
   currentStudent = null;
   document.getElementById('studentCode').value = '';
   showScreen('platformScreen');
 }
 
 // ============================================================
-// TEACHER LOGIN
+// TEACHER LOGOUT
 // ============================================================
-async function teacherLogin() {
-  const pass = document.getElementById('teacherPassword').value;
-  const errEl = document.getElementById('teacherAuthError');
-  const btn = document.getElementById('teacherLoginBtnText');
-  errEl.style.display = 'none';
-
-  if (!pass) { showAuthError(errEl, '⚠️ أدخل كلمة المرور'); return; }
-  if (pass !== (examSettings.teacherPassword || TEACHER_PASSWORD)) {
-    showAuthError(errEl, '❌ كلمة المرور غير صحيحة');
-    return;
-  }
-
-  btn.innerHTML = '<span class="loading-spin">⏳</span> جاري الدخول...';
-  document.querySelector('#tab-teacher .btnstart').disabled = true;
-
-  await loadDashboardStats();
-  showScreen('teacherDashboard');
-  switchTeacherTab('students');
-
-  btn.innerHTML = 'دخول لوحة التحكم';
-  document.querySelector('#tab-teacher .btnstart').disabled = false;
-  document.getElementById('teacherPassword').value = '';
-}
-
 function teacherLogout() {
   showScreen('platformScreen');
-  document.getElementById('teacherPassword').value = '';
+  document.getElementById('studentCode').value = '';
 }
 
 // ============================================================
@@ -1517,6 +1555,9 @@ function renderStudentsTable(students) {
       <td>${statusBadge}</td>
       <td style="white-space:nowrap;display:flex;gap:5px;flex-wrap:wrap">
         ${hasDone ? `<button class="tbtn navy" style="font-size:.65rem;padding:4px 8px" onclick="openStudentReport('${s.code}')">📊 التقرير</button>` : ''}
+        <button class="tbtn navy" style="font-size:.65rem;padding:4px 8px" onclick="openEditStudentModal('${s.code}')" title="تعديل البيانات">✏️ تعديل</button>
+        <button class="tbtn navy" style="font-size:.65rem;padding:4px 8px" onclick="requestEditStudentCode('${s.code}','${safeName}')" title="تعديل الكود">🔑 الكود</button>
+        <button class="tbtn green" style="font-size:.65rem;padding:4px 8px" onclick="grantExtraTime('${s.code}','${safeName}')" title="وقت إضافي">⏱️ وقت</button>
         <button class="tbtn ${s.locked?'green':'red'}" style="font-size:.65rem;padding:4px 8px" onclick="toggleStudentLock('${s.code}',${!!s.locked})">${s.locked?'تفعيل':'إيقاف'}</button>
         <button class="tbtn red" style="font-size:.65rem;padding:4px 8px" onclick="requestDeleteStudent('${s.code}','${safeName}')">🗑️ حذف</button>
       </td>
@@ -1624,12 +1665,11 @@ function sendWelcomeWhatsApp(name, code, phone) {
 }
 
 function generateRandomCode() {
-  const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-  const nums = '0123456789';
-  let code = 'RB';
-  code += letters[Math.floor(Math.random() * letters.length)];
-  for (let i = 0; i < 3; i++) code += nums[Math.floor(Math.random() * nums.length)];
-  return code;
+  // 8-character code: RB- + 5 random chars (letters/digits, ambiguous chars like I/O/0/1 excluded)
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let suffix = '';
+  for (let i = 0; i < 5; i++) suffix += chars[Math.floor(Math.random() * chars.length)];
+  return 'RB-' + suffix;
 }
 
 function generateCode() {
@@ -1717,6 +1757,101 @@ function requestDeleteStudent(code, name) {
   showModal('confirmDeleteModal');
 }
 
+async function grantExtraTime(code, name) {
+  const input = prompt('كام دقيقة إضافية تحب تديها لـ"' + name + '"؟\n(هتتضاف على طول لو بيمتحن دلوقتي، أو أول ما يبدأ أي امتحان جاي)', '5');
+  if (!input) return;
+  const minutes = parseInt(input);
+  if (!minutes || minutes <= 0) { alert('⚠️ أدخل رقم دقايق صحيح'); return; }
+  try {
+    await db.collection('students').doc(code).update({ pendingExtraSeconds: minutes * 60 });
+    alert('✅ اتضافت ' + minutes + ' دقيقة إضافية لـ"' + name + '"');
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
+function openEditStudentModal(code) {
+  const s = allStudentsCache.find(st => st.code === code);
+  if (!s) return;
+  document.getElementById('reportStudentName').textContent = '✏️ تعديل بيانات الطالب';
+  const contentEl = document.getElementById('reportContent');
+  contentEl.innerHTML = `
+    <div class="add-student-form">
+      <div>
+        <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الاسم</label>
+        <input type="text" id="editStudentName" class="tinput" value="${(s.name || '').replace(/"/g, '&quot;')}">
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الجنس</label>
+          <select id="editStudentGender" class="tselect">
+            <option value="male" ${s.gender === 'male' ? 'selected' : ''}>ذكر 👦</option>
+            <option value="female" ${s.gender === 'female' ? 'selected' : ''}>أنثى 👧</option>
+          </select>
+        </div>
+        <div>
+          <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الصف</label>
+          <select id="editStudentGrade" class="tselect">
+            ${GRADES_LIST.map(g => `<option value="${g}" ${s.grade === g ? 'selected' : ''}>${g}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="flabel" style="font-size:.72rem;margin-bottom:4px">رقم واتساب (اختياري)</label>
+        <input type="tel" id="editStudentPhone" class="tinput" value="${s.phone || ''}" placeholder="01XXXXXXXXX">
+      </div>
+      <button class="tbtn gold full" onclick="saveStudentEdit('${code}')">💾 حفظ التعديلات</button>
+    </div>`;
+  showModal('studentReportModal');
+}
+
+async function saveStudentEdit(code) {
+  const name = document.getElementById('editStudentName').value.trim();
+  const gender = document.getElementById('editStudentGender').value;
+  const grade = document.getElementById('editStudentGrade').value;
+  const phone = document.getElementById('editStudentPhone').value.trim() || null;
+  if (!name) { alert('⚠️ أدخل اسم الطالب'); return; }
+  try {
+    await db.collection('students').doc(code).update({ name, gender, grade, phone });
+    closeModal('studentReportModal');
+    await loadStudents();
+    alert('✅ اتحفظت بيانات الطالب');
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
+async function requestEditStudentCode(oldCode, name) {
+  const input = prompt('كود جديد لـ"' + name + '":\n(احرف كبيرة وأرقام، مينفعش يتكرر مع كود طالب تاني)', oldCode);
+  if (!input) return;
+  const newCode = input.trim().toUpperCase();
+  if (!newCode || newCode === oldCode) return;
+
+  if (!confirm('هيتغيّر كود "' + name + '" من ' + oldCode + ' لـ' + newCode + '. الطالب لازم يستخدم الكود الجديد من أول مرة بعد كده. متأكد؟')) return;
+
+  try {
+    const existing = await db.collection('students').doc(newCode).get();
+    if (existing.exists) { alert('❌ الكود ده مستخدم بالفعل لطالب تاني'); return; }
+
+    const oldDoc = await db.collection('students').doc(oldCode).get();
+    if (!oldDoc.exists) { alert('❌ الطالب مش موجود'); return; }
+    const data = oldDoc.data();
+
+    const batch = db.batch();
+    batch.set(db.collection('students').doc(newCode), data);
+    batch.delete(db.collection('students').doc(oldCode));
+
+    // Migrate this student's past results to the new code so history isn't lost
+    const resSnap = await db.collection('results').where('studentCode', '==', oldCode).get();
+    resSnap.docs.forEach(d => {
+      const rData = d.data();
+      const newResId = (rData.examId || 'exam') + '_' + newCode;
+      batch.set(db.collection('results').doc(newResId), { ...rData, studentCode: newCode });
+      batch.delete(d.ref);
+    });
+
+    await batch.commit();
+    alert('✅ الكود اتغيّر لـ' + newCode);
+    await loadStudents();
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
 async function confirmDeleteStudent() {
   if (!pendingDeleteCode) return;
   try {
@@ -1751,6 +1886,7 @@ async function toggleStudentLock(code, isLocked) {
 // ============================================================
 let reportResultsCache = [];
 let reportExamsCache = {};
+let reportStudentCode = null;
 
 async function openStudentReport(code) {
   const student = allStudentsCache.find(s => s.code === code);
@@ -1758,6 +1894,7 @@ async function openStudentReport(code) {
   const contentEl = document.getElementById('reportContent');
   contentEl.innerHTML = '<div class="empty-state">⏳ جاري التحميل...</div>';
   showModal('studentReportModal');
+  reportStudentCode = code;
 
   try {
     const resSnap = await db.collection('results').where('studentCode', '==', code).get();
@@ -1793,11 +1930,52 @@ async function openStudentReport(code) {
           </div>
           <button class="tbtn navy full" style="font-size:.72rem;margin-top:4px" onclick="toggleReportDetail(${idx})">📋 عرض تفاصيل كل سؤال</button>
           <div id="reportDetail${idx}" style="display:none;margin-top:8px"></div>
+
+          <div style="margin-top:8px">
+            <label class="flabel" style="font-size:.68rem;margin-bottom:3px">💬 ملاحظتك للطالب على النتيجة دي</label>
+            <textarea id="reportNote${idx}" class="tinput" rows="2" style="font-size:.72rem" placeholder="اكتب ملاحظة تظهر للطالب في نتيجته...">${r.teacherNote || ''}</textarea>
+            <button class="tbtn navy" style="font-size:.68rem;padding:5px 10px;margin-top:4px" onclick="saveTeacherNote(${idx})">💾 حفظ الملاحظة</button>
+          </div>
+
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="tbtn green" style="font-size:.68rem;padding:6px 10px;flex:1" onclick="allowRetake(${idx})">🔁 السماح بإعادة المحاولة</button>
+            <button class="tbtn red" style="font-size:.68rem;padding:6px 10px" onclick="deleteSingleResult(${idx})">🗑️ حذف النتيجة</button>
+          </div>
         </div>`;
     }).join('');
   } catch(e) {
     contentEl.innerHTML = '<div class="empty-state">❌ خطأ في التحميل: ' + e.message + '</div>';
   }
+}
+
+async function saveTeacherNote(idx) {
+  const r = reportResultsCache[idx];
+  const note = document.getElementById('reportNote' + idx).value.trim();
+  try {
+    await db.collection('results').doc(r.id).update({ teacherNote: note });
+    reportResultsCache[idx].teacherNote = note;
+    alert('✅ اتحفظت الملاحظة');
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
+async function allowRetake(idx) {
+  const r = reportResultsCache[idx];
+  if (!confirm('هيتم حذف نتيجة "' + (r.examTitle||'الامتحان') + '" دي، والطالب هيقدر يمتحنه تاني من الأول. متأكد؟')) return;
+  try {
+    await db.collection('results').doc(r.id).delete();
+    alert('✅ اتفتحت إعادة المحاولة — الامتحان هيظهر للطالب زي أول مرة');
+    openStudentReport(reportStudentCode);
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
+async function deleteSingleResult(idx) {
+  const r = reportResultsCache[idx];
+  if (!confirm('هيتم حذف نتيجة "' + (r.examTitle||'الامتحان') + '" نهائيًا (من غير ما تفتح إعادة محاولة). متأكد؟')) return;
+  try {
+    await db.collection('results').doc(r.id).delete();
+    openStudentReport(reportStudentCode);
+    await loadDashboardStats();
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
 }
 
 function toggleReportDetail(idx) {
@@ -1858,6 +2036,7 @@ async function loadTeacherExams() {
           <button class="tbtn navy" style="font-size:.72rem;padding:7px 12px;flex:1" onclick="openExamEditor('${ex.id}')">✏️ تعديل الأسئلة</button>
           <button class="tbtn navy" style="font-size:.72rem;padding:7px 12px" onclick="cloneExam('${ex.id}')" title="نسخ الامتحان">📄 نسخ</button>
           <button class="tbtn green" style="font-size:.72rem;padding:7px 12px" onclick="openDifficultyAnalysis('${ex.id}')" title="تحليل أصعب الأسئلة">📉 تحليل</button>
+          <button class="tbtn green" style="font-size:.72rem;padding:7px 12px" onclick="notifyGradeAboutExam('${ex.id}')" title="إشعار الطلاب بالواتساب">📢 إشعار</button>
           <button class="tbtn red" style="font-size:.72rem;padding:7px 12px" onclick="deleteExamDoc('${ex.id}')">🗑️</button>
         </div>
       </div>`;
@@ -2132,6 +2311,42 @@ async function openDifficultyAnalysis(examId) {
   }
 }
 
+async function notifyGradeAboutExam(examId) {
+  const ex = teacherExamsCache.find(e => e.id === examId);
+  if (!ex) return;
+  document.getElementById('reportStudentName').textContent = '📢 إشعار طلاب ' + (ex.grade || '');
+  const contentEl = document.getElementById('reportContent');
+  contentEl.innerHTML = '<div class="empty-state">⏳ جاري التحميل...</div>';
+  showModal('studentReportModal');
+
+  try {
+    const snap = await db.collection('students').where('grade', '==', ex.grade).get();
+    const withPhone = snap.docs.map(d => ({ code: d.id, ...d.data() })).filter(s => s.phone);
+    if (!withPhone.length) {
+      contentEl.innerHTML = '<div class="empty-state"><span class="eicon">📭</span>مفيش طلاب في صف "' + (ex.grade||'') + '" معاهم رقم واتساب مسجّل</div>';
+      return;
+    }
+    contentEl.innerHTML = `<p style="font-size:.72rem;color:var(--muted);margin-bottom:10px">هيتفتح واتساب لكل طالب لوحده — دوس "إرسال" جوه واتساب وارجع هنا للي بعده (${withPhone.length} طالب).</p>` +
+      withPhone.map(s => `
+        <div class="exammgmt-card" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <span style="font-weight:800;font-size:.8rem">${s.name}</span>
+          <button class="tbtn green" style="font-size:.68rem;padding:6px 12px;white-space:nowrap" onclick="sendExamNotifyWhatsApp('${(s.name||'').replace(/'/g,"\\'")}', '${s.phone}', '${(ex.title||'').replace(/'/g,"\\'")}')">📲 إرسال</button>
+        </div>`).join('');
+  } catch(e) {
+    contentEl.innerHTML = '<div class="empty-state">❌ خطأ: ' + e.message + '</div>';
+  }
+}
+
+function sendExamNotifyWhatsApp(name, phone, examTitle) {
+  const msg = encodeURIComponent(
+    `مرحبًا ${name} 👋\n\n` +
+    `📝 امتحان جديد اتاح ليك على منصة Edu Stream:\n"${examTitle}"\n\n` +
+    `🔗 ادخل من هنا: https://raoufbrakat-creator.github.io/edu-stream/\n\n` +
+    `👨‍🏫 الأستاذ رؤوف بركات`
+  );
+  window.open('https://wa.me/' + phone.replace(/^0/, '20') + '?text=' + msg, '_blank');
+}
+
 function openExamEditor(examId) {
   const ex = teacherExamsCache.find(e => e.id === examId);
   if (!ex) return;
@@ -2204,6 +2419,7 @@ async function saveExamMeta() {
 function closeExamEditor() {
   editingExamId = null;
   editingExamQuestions = [];
+  editingQuestionIndex = null;
   document.getElementById('examsListView').style.display = 'block';
   document.getElementById('examEditorView').style.display = 'none';
 }
@@ -2219,12 +2435,41 @@ function renderEditorQuestionsList() {
     <div class="qb-row">
       <div class="qb-row-top">
         <div><strong>${i+1}.</strong> ${q.q}${q.sec ? ' <span class="exammgmt-chip">'+q.sec+'</span>' : ''}</div>
-        <button class="tbtn red" style="font-size:.65rem;padding:5px 9px;white-space:nowrap" onclick="deleteQuestionFromEditor(${i})">🗑️</button>
+        <div style="display:flex;gap:5px;white-space:nowrap">
+          <button class="tbtn navy" style="font-size:.65rem;padding:5px 9px" onclick="startEditQuestion(${i})">✏️</button>
+          <button class="tbtn red" style="font-size:.65rem;padding:5px 9px" onclick="deleteQuestionFromEditor(${i})">🗑️</button>
+        </div>
       </div>
       <div class="qb-opts">
         ${q.opts.map((o, oi) => `<div class="${oi===q.ans ? 'qb-opt-correct' : ''}">${oi===q.ans ? '✔️' : '○'} ${o}</div>`).join('')}
       </div>
     </div>`).join('');
+}
+
+function startEditQuestion(index) {
+  const q = editingExamQuestions[index];
+  editingQuestionIndex = index;
+  document.getElementById('qbSection').value = (q.sec && q.sec !== 'عام') ? q.sec : '';
+  document.getElementById('qbPassage').value = q.passage || '';
+  document.getElementById('qbQuestion').value = q.q;
+  [0,1,2,3].forEach(i => document.getElementById('qbOpt'+i).value = q.opts[i] || '');
+  document.querySelector('input[name="qbCorrect"][value="'+q.ans+'"]').checked = true;
+  document.getElementById('qbExp').value = q.exp || '';
+  document.getElementById('addQuestionBtn').textContent = '💾 حفظ التعديل';
+  document.getElementById('cancelEditQuestionBtn').style.display = 'inline-block';
+  document.getElementById('qbQuestion').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEditQuestion() {
+  editingQuestionIndex = null;
+  document.getElementById('qbSection').value = '';
+  document.getElementById('qbPassage').value = '';
+  document.getElementById('qbQuestion').value = '';
+  [0,1,2,3].forEach(i => document.getElementById('qbOpt'+i).value = '');
+  document.getElementById('qbExp').value = '';
+  document.querySelector('input[name="qbCorrect"][value="0"]').checked = true;
+  document.getElementById('addQuestionBtn').textContent = '➕ أضف السؤال';
+  document.getElementById('cancelEditQuestionBtn').style.display = 'none';
 }
 
 async function addQuestionToEditor() {
@@ -2240,31 +2485,31 @@ async function addQuestionToEditor() {
   if (!q) { msgEl.textContent = '⚠️ أدخل نص السؤال'; msgEl.style.display = 'block'; return; }
   if (opts.some(o => !o)) { msgEl.textContent = '⚠️ أدخل الاختيارات الأربعة كاملة'; msgEl.style.display = 'block'; return; }
 
+  const isEditing = editingQuestionIndex !== null;
   const newQ = {
-    id: editingExamQuestions.length + 1,
+    id: isEditing ? editingExamQuestions[editingQuestionIndex].id : editingExamQuestions.length + 1,
     sec: sec || 'عام',
     q, opts, ans,
     exp: exp || ''
   };
   if (passage) { newQ.passage = passage; newQ.type = 'passage'; }
 
-  editingExamQuestions.push(newQ);
+  const previousState = [...editingExamQuestions];
+  if (isEditing) {
+    editingExamQuestions[editingQuestionIndex] = newQ;
+  } else {
+    editingExamQuestions.push(newQ);
+  }
 
   try {
     await db.collection('exams').doc(editingExamId).update({ questions: editingExamQuestions });
     const idx = teacherExamsCache.findIndex(e => e.id === editingExamId);
     if (idx > -1) teacherExamsCache[idx].questions = editingExamQuestions;
 
-    document.getElementById('qbSection').value = '';
-    document.getElementById('qbPassage').value = '';
-    document.getElementById('qbQuestion').value = '';
-    [0,1,2,3].forEach(i => document.getElementById('qbOpt'+i).value = '');
-    document.getElementById('qbExp').value = '';
-    document.querySelector('input[name="qbCorrect"][value="0"]').checked = true;
-
+    cancelEditQuestion();
     renderEditorQuestionsList();
   } catch(e) {
-    editingExamQuestions.pop();
+    editingExamQuestions = previousState;
     msgEl.textContent = '❌ خطأ في الحفظ: ' + e.message;
     msgEl.style.display = 'block';
   }
@@ -2272,6 +2517,7 @@ async function addQuestionToEditor() {
 
 async function deleteQuestionFromEditor(index) {
   if (!confirm('حذف هذا السؤال؟')) return;
+  if (editingQuestionIndex === index) cancelEditQuestion();
   const removed = editingExamQuestions.splice(index, 1);
   editingExamQuestions.forEach((q, i) => q.id = i + 1);
   try {
@@ -2341,6 +2587,35 @@ async function resetAllExams() {
     await loadDashboardStats();
     loadResults();
   } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
+async function exportFullBackup() {
+  try {
+    const [studSnap, examSnap, resSnap] = await Promise.all([
+      db.collection('students').get(),
+      db.collection('exams').get(),
+      db.collection('results').get()
+    ]);
+    const backup = {
+      exportedAt: new Date().toISOString(),
+      students: studSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+      exams: examSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+      results: resSnap.docs.map(d => {
+        const data = d.data();
+        if (data.submittedAt && data.submittedAt.toDate) data.submittedAt = data.submittedAt.toDate().toISOString();
+        return { id: d.id, ...data };
+      })
+    };
+    const json = JSON.stringify(backup, null, 2);
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = 'edu_stream_backup_' + dateStr + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) { alert('❌ خطأ أثناء التصدير: ' + e.message); }
 }
 
 // ============================================================
@@ -2714,21 +2989,86 @@ async function startExam(examId, examData) {
 
   // Restore from localStorage if exists
   const saved = localStorage.getItem('eduStreamExam_' + currentExamId + '_' + currentStudent.code);
+  let restoredLock = false;
   if (saved) {
     try {
       const s = JSON.parse(saved);
       currentAnswers = s.answers || {};
       timeLeft = s.timeLeft || TOTAL_TIME;
       currentQuestion = s.currentQuestion || 0;
+      lockCount = s.lockCount || 0;
+      restoredLock = !!s.examLocked;
     } catch(e) {}
   }
 
+  // Apply any extra time granted before the student started
+  try {
+    const studSnap = await db.collection('students').doc(currentStudent.code).get();
+    const pendingExtra = studSnap.exists ? (studSnap.data().pendingExtraSeconds || 0) : 0;
+    if (pendingExtra > 0) {
+      timeLeft += pendingExtra;
+      TOTAL_TIME += pendingExtra;
+      await db.collection('students').doc(currentStudent.code).update({ pendingExtraSeconds: 0 });
+    }
+  } catch(e) {}
+
   showScreen('examScreen');
+  renderExamWatermark();
+  requestExamFullscreen();
   renderQuestion(currentQuestion);
   startTimer();
   setupLockDetection();
+  attachExtraTimeListener();
   updateProgressBar();
   updateNavPanel();
+
+  if (restoredLock) {
+    examLocked = true;
+    showModal('lockScreen');
+  }
+}
+
+function renderExamWatermark() {
+  const container = document.getElementById('examWatermark');
+  if (!container || !currentStudent) return;
+  const wmText = (currentStudent.name || '') + ' — ' + (currentStudent.code || '') + ' — ' +
+    new Date().toLocaleString('ar-EG', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  let html = '';
+  for (let i = 0; i < 70; i++) html += `<span>${wmText}</span>`;
+  container.innerHTML = html;
+}
+
+function requestExamFullscreen() {
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+  if (req) { try { req.call(el).catch(() => {}); } catch(e) {} }
+}
+
+function exitExamFullscreen() {
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    if (exit) { try { exit.call(document).catch(() => {}); } catch(e) {} }
+  }
+}
+
+function attachExtraTimeListener() {
+  detachExtraTimeListener();
+  if (!currentStudent) return;
+  extraTimeUnsub = db.collection('students').doc(currentStudent.code).onSnapshot(snap => {
+    if (!snap.exists) return;
+    const extra = snap.data().pendingExtraSeconds || 0;
+    if (extra > 0) {
+      timeLeft += extra;
+      TOTAL_TIME += extra;
+      showTimeAlert('🎁 الأستاذ أضافلك ' + Math.round(extra / 60) + ' دقيقة إضافية!', 'warning');
+      updateTimerDisplay();
+      db.collection('students').doc(currentStudent.code).update({ pendingExtraSeconds: 0 }).catch(() => {});
+    }
+  });
+}
+
+function detachExtraTimeListener() {
+  if (extraTimeUnsub) { extraTimeUnsub(); extraTimeUnsub = null; }
 }
 
 // ============================================================
@@ -2741,11 +3081,22 @@ function startTimer() {
     timeLeft--;
     updateTimerDisplay();
     saveExamProgress();
+    if (timeLeft === 300) showTimeAlert('⚠️ تبقّى 5 دقايق بس على انتهاء الوقت!', 'warning');
+    if (timeLeft === 60) showTimeAlert('⏰ تبقّت دقيقة واحدة بس!', 'danger');
     if (timeLeft <= 0) {
       stopTimer();
       autoFinish();
     }
   }, 1000);
+}
+
+function showTimeAlert(msg, level) {
+  document.querySelectorAll('.time-alert-toast').forEach(el => el.remove());
+  const el = document.createElement('div');
+  el.className = 'time-alert-toast' + (level === 'warning' ? ' warning' : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4500);
 }
 
 function stopTimer() {
@@ -2775,6 +3126,7 @@ function saveExamProgress() {
   if (!currentStudent || !currentExamId) return;
   localStorage.setItem('eduStreamExam_' + currentExamId + '_' + currentStudent.code, JSON.stringify({
     answers: currentAnswers, timeLeft, currentQuestion,
+    lockCount, examLocked,
     savedAt: Date.now()
   }));
 }
@@ -2969,6 +3321,8 @@ function proceedToFinish() {
 
 async function finishExam() {
   stopTimer();
+  detachExtraTimeListener();
+  exitExamFullscreen();
   const timeTaken = TOTAL_TIME - timeLeft;
 
   // Calculate results
@@ -2988,27 +3342,37 @@ async function finishExam() {
 
   const pct = TOTAL_QUESTIONS ? Math.round(score / TOTAL_QUESTIONS * 100) : 0;
 
+  const resultPayload = {
+    examId: currentExamId,
+    examTitle: currentExamTitle,
+    totalQuestions: TOTAL_QUESTIONS,
+    studentName: currentStudent.name,
+    studentCode: currentStudent.code,
+    gender: currentStudent.gender,
+    grade: currentStudent.grade,
+    score,
+    percentage: pct,
+    timeTaken,
+    sectionScores,
+    answers: currentAnswers
+  };
+
   // Save to Firestore
   try {
     await db.collection('results').doc(currentExamId + '_' + currentStudent.code).set({
-      examId: currentExamId,
-      examTitle: currentExamTitle,
-      totalQuestions: TOTAL_QUESTIONS,
-      studentName: currentStudent.name,
-      studentCode: currentStudent.code,
-      gender: currentStudent.gender,
-      grade: currentStudent.grade,
-      score,
-      percentage: pct,
-      timeTaken,
-      sectionScores,
-      answers: currentAnswers,
+      ...resultPayload,
       submittedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     // Clear localStorage
     localStorage.removeItem('eduStreamExam_' + currentExamId + '_' + currentStudent.code);
+    localStorage.removeItem('pendingResult_' + currentExamId + '_' + currentStudent.code);
   } catch(e) {
-    console.error('Error saving result:', e);
+    console.error('Error saving result, storing locally to retry later:', e);
+    try {
+      localStorage.setItem('pendingResult_' + currentExamId + '_' + currentStudent.code, JSON.stringify({
+        ...resultPayload, savedLocallyAt: Date.now()
+      }));
+    } catch(e2) {}
   }
 
   // Show results
@@ -3018,11 +3382,19 @@ async function finishExam() {
 // ============================================================
 // RESULTS SCREEN
 // ============================================================
-function showResults(score, pct, timeTaken, sectionScores) {
+function showResults(score, pct, timeTaken, sectionScores, teacherNote) {
   showScreen('resultsScreen');
   document.getElementById('qdetailContent').innerHTML = '';
   document.getElementById('qdetailContent').classList.remove('open');
   document.getElementById('qdetailArrow').classList.remove('open');
+
+  const noteBox = document.getElementById('teacherNoteBox');
+  if (teacherNote) {
+    document.getElementById('teacherNoteText').textContent = teacherNote;
+    noteBox.style.display = 'block';
+  } else {
+    noteBox.style.display = 'none';
+  }
 
   const name = currentStudent ? currentStudent.name : 'الطالب';
   const gender = currentStudent ? currentStudent.gender : 'male';
@@ -3123,6 +3495,7 @@ function handleVisibilityChange() {
       examLocked = true;
       showModal('lockScreen');
     }
+    saveExamProgress();
   }
 }
 
@@ -3135,6 +3508,7 @@ async function unlockExam() {
     if (code === unlockCode) {
       lockCount = 0;
       examLocked = false;
+      saveExamProgress();
       closeModal('lockScreen');
       document.getElementById('adminCodeInput').value = '';
     } else {
@@ -3143,6 +3517,7 @@ async function unlockExam() {
   } catch(e) {
     if (code === '31020') {
       lockCount = 0; examLocked = false;
+      saveExamProgress();
       closeModal('lockScreen');
     } else {
       alert('❌ الكود غير صحيح');
