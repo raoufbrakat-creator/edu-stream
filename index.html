@@ -150,14 +150,16 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 
 /* students table */
 .students-search{display:flex;gap:8px;margin-bottom:12px}
-.students-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--bdr)}
-table{width:100%;border-collapse:collapse;font-size:.78rem}
-thead{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff}
-th{padding:10px 10px;text-align:right;font-weight:700;font-size:.72rem}
-tbody tr{border-bottom:1px solid var(--cream2);transition:background .15s}
-tbody tr:hover{background:var(--cream)}
-tbody tr:last-child{border-bottom:none}
-td{padding:10px 10px;color:var(--text);font-size:.76rem}
+.student-card{background:var(--white);border:1px solid var(--bdr);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.student-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.student-card-name{font-weight:800;font-size:.9rem;color:var(--navy)}
+.student-card-meta{font-size:.7rem;color:var(--muted);margin-top:2px}
+.student-card-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.student-actions-row{display:flex;gap:6px;flex-wrap:wrap}
+.icon-btn{width:34px;height:34px;border-radius:9px;border:none;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon-btn.navy{background:var(--navy);color:#fff}
+.icon-btn.green{background:var(--greenl);color:var(--green);border:1px solid #6ee7b7}
+.icon-btn.red{background:var(--redl);color:var(--red);border:1px solid #fca5a5}
 .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.65rem;font-weight:700}
 .badge.done{background:#d1fae5;color:#065f46}
 .badge.pending{background:#fef3c7;color:#92400e}
@@ -628,25 +630,14 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
             <option value="تاني ثانوي">تاني ثانوي</option>
             <option value="تالت ثانوي">تالت ثانوي</option>
           </select>
+          <select id="filterGenderSelect" class="tselect" onchange="filterStudentsTable()" style="flex:1;min-width:110px">
+            <option value="">الكل (ولاد وبنات)</option>
+            <option value="male">👦 الولاد بس</option>
+            <option value="female">👧 البنات بس</option>
+          </select>
         </div>
         <div id="studentsCountLabel" style="font-size:.68rem;color:var(--muted);margin:8px 2px 4px;font-weight:700"></div>
-        <div class="students-table-wrap">
-          <table id="studentsTable">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>الاسم</th>
-                <th>الكود</th>
-                <th>الجنس</th>
-                <th>الحالة</th>
-                <th>إجراء</th>
-              </tr>
-            </thead>
-            <tbody id="studentsTableBody">
-              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">⏳ جاري التحميل...</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <div id="studentsCardsList"></div>
       </div>
     </div>
 
@@ -922,6 +913,33 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
             </div>
           </div>
           <div id="settingsMsg" class="auth-success" style="display:none"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="section-hdr">📱 جروبات الواتساب</div>
+        <p style="font-size:.72rem;color:var(--muted);margin-bottom:10px">لو عندك جروب واتساب منفصل للولاد وجروب للبنات في كل صف، حط الروابط هنا — هتظهرلك زراير سريعة لفتحهم لما تبعت إشعار امتحان جديد.</p>
+        <div id="waGroupsMsg" class="auth-success" style="display:none"></div>
+        <div class="add-student-form">
+          <div>
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الصف</label>
+            <select id="waGroupGrade" class="tselect" onchange="fillWhatsappGroupFields()">
+              <option value="أول إعدادي">أول إعدادي</option>
+              <option value="تاني إعدادي">تاني إعدادي</option>
+              <option value="تالت إعدادي">تالت إعدادي</option>
+              <option value="أول ثانوي">أول ثانوي</option>
+              <option value="تاني ثانوي" selected>تاني ثانوي</option>
+              <option value="تالت ثانوي">تالت ثانوي</option>
+            </select>
+          </div>
+          <div>
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">👦 رابط جروب الولاد</label>
+            <input type="text" id="waGroupBoysLink" class="tinput" placeholder="https://chat.whatsapp.com/....">
+          </div>
+          <div>
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">👧 رابط جروب البنات</label>
+            <input type="text" id="waGroupGirlsLink" class="tinput" placeholder="https://chat.whatsapp.com/....">
+          </div>
+          <button class="tbtn gold full" onclick="saveWhatsappGroupLinks()">💾 حفظ روابط الصف ده</button>
         </div>
       </div>
       <div class="panel">
@@ -1233,6 +1251,7 @@ async function studentLogin() {
     await loadDashboardStats();
     showScreen('teacherDashboard');
     switchTeacherTab('students');
+    attachTeacherResultNotifications();
     btn.innerHTML = 'دخول المنصة';
     document.querySelector('#tab-student .btnstart').disabled = false;
     return;
@@ -1417,9 +1436,10 @@ function confirmStartExam() {
 async function viewPastResult(examId) {
   stopTimer();
   try {
-    const [resDoc, examDoc] = await Promise.all([
+    const [resDoc, examDoc, answerMap] = await Promise.all([
       db.collection('results').doc(examId + '_' + currentStudent.code).get(),
-      db.collection('exams').doc(examId).get()
+      db.collection('exams').doc(examId).get(),
+      fetchAnswerKey(examId)
     ]);
     if (!resDoc.exists) { alert('❌ مفيش نتيجة محفوظة لهذا الامتحان'); return; }
     if (!examDoc.exists) { alert('❌ الامتحان الأصلي محذوف، مينفعش نعرض التفاصيل الكاملة'); return; }
@@ -1430,6 +1450,7 @@ async function viewPastResult(examId) {
     currentExamId = examId;
     currentExamTitle = r.examTitle || examData.title || 'امتحان';
     questions = examData.questions || [];
+    mergeAnswerKeyIntoQuestions(questions, answerMap);
     examSections = deriveSections(questions);
     TOTAL_QUESTIONS = r.totalQuestions || questions.length;
     currentAnswers = r.answers || {};
@@ -1482,8 +1503,34 @@ function studentLogout() {
 // TEACHER LOGOUT
 // ============================================================
 function teacherLogout() {
+  detachTeacherResultNotifications();
   showScreen('platformScreen');
   document.getElementById('studentCode').value = '';
+}
+
+let teacherResultsUnsub = null;
+let teacherNotifyBaselineTime = 0;
+
+function attachTeacherResultNotifications() {
+  detachTeacherResultNotifications();
+  teacherNotifyBaselineTime = Date.now();
+  teacherResultsUnsub = db.collection('results').orderBy('submittedAt', 'desc').limit(1)
+    .onSnapshot(snap => {
+      if (snap.empty) return;
+      const data = snap.docs[0].data();
+      if (!data.submittedAt || !data.submittedAt.toMillis) return;
+      const submittedMs = data.submittedAt.toMillis();
+      if (submittedMs > teacherNotifyBaselineTime) {
+        teacherNotifyBaselineTime = submittedMs;
+        showTimeAlert('🔔 ' + (data.studentName || 'طالب') + ' خلّص "' + (data.examTitle || 'امتحان') + '" — ' + (data.score ?? 0) + '/' + (data.totalQuestions ?? '؟'), 'warning');
+        if (document.getElementById('tpane-students').classList.contains('active')) loadStudents();
+        if (document.getElementById('tpane-results').classList.contains('active')) loadResults();
+      }
+    }, () => {});
+}
+
+function detachTeacherResultNotifications() {
+  if (teacherResultsUnsub) { teacherResultsUnsub(); teacherResultsUnsub = null; }
 }
 
 // ============================================================
@@ -1519,27 +1566,27 @@ async function loadDashboardStats() {
 // LOAD STUDENTS TABLE
 // ============================================================
 async function loadStudents() {
-  const tbody = document.getElementById('studentsTableBody');
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--muted)">⏳ جاري التحميل...</td></tr>';
+  const listEl = document.getElementById('studentsCardsList');
+  listEl.innerHTML = '<div class="empty-state"><span class="eicon">⏳</span>جاري التحميل...</div>';
   try {
     const snap = await db.collection('students').orderBy('createdAt', 'desc').get();
     allStudentsCache = snap.docs.map(d => ({ code: d.id, ...d.data() }));
     filterStudentsTable();
     await loadDashboardStats();
   } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--red)">❌ خطأ في التحميل</td></tr>';
+    listEl.innerHTML = '<div class="empty-state"><span class="eicon">❌</span>خطأ في التحميل</div>';
   }
 }
 
 function renderStudentsTable(students) {
-  const tbody = document.getElementById('studentsTableBody');
+  const listEl = document.getElementById('studentsCardsList');
   const countEl = document.getElementById('studentsCountLabel');
   if (countEl) countEl.textContent = '👥 ' + students.length + ' طالب';
   if (!students.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">لا يوجد طلاب مطابقين</td></tr>';
+    listEl.innerHTML = '<div class="empty-state"><span class="eicon">👤</span>لا يوجد طلاب مطابقين</div>';
     return;
   }
-  tbody.innerHTML = students.map((s, i) => {
+  listEl.innerHTML = students.map(s => {
     const hasDone = allResultsCache.some(r => r.studentCode === s.code);
     const statusBadge = s.locked
       ? '<span class="badge locked">🔒 موقوف</span>'
@@ -1547,29 +1594,36 @@ function renderStudentsTable(students) {
         ? '<span class="badge done">✅ امتحن</span>'
         : '<span class="badge pending">⏳ لم يمتحن</span>';
     const safeName = (s.name || '').replace(/'/g, "\\'");
-    return `<tr>
-      <td>${i+1}</td>
-      <td><strong>${s.name||'—'}</strong><br><span style="font-size:.65rem;color:var(--muted)">${s.grade||''}</span></td>
-      <td><span class="code-chip">${s.code}</span></td>
-      <td>${s.gender==='female'?'👧 أنثى':'👦 ذكر'}</td>
-      <td>${statusBadge}</td>
-      <td style="white-space:nowrap;display:flex;gap:5px;flex-wrap:wrap">
-        ${hasDone ? `<button class="tbtn navy" style="font-size:.65rem;padding:4px 8px" onclick="openStudentReport('${s.code}')">📊 التقرير</button>` : ''}
-        <button class="tbtn navy" style="font-size:.65rem;padding:4px 8px" onclick="openEditStudentModal('${s.code}')" title="تعديل البيانات">✏️ تعديل</button>
-        <button class="tbtn navy" style="font-size:.65rem;padding:4px 8px" onclick="requestEditStudentCode('${s.code}','${safeName}')" title="تعديل الكود">🔑 الكود</button>
-        <button class="tbtn green" style="font-size:.65rem;padding:4px 8px" onclick="grantExtraTime('${s.code}','${safeName}')" title="وقت إضافي">⏱️ وقت</button>
-        <button class="tbtn ${s.locked?'green':'red'}" style="font-size:.65rem;padding:4px 8px" onclick="toggleStudentLock('${s.code}',${!!s.locked})">${s.locked?'تفعيل':'إيقاف'}</button>
-        <button class="tbtn red" style="font-size:.65rem;padding:4px 8px" onclick="requestDeleteStudent('${s.code}','${safeName}')">🗑️ حذف</button>
-      </td>
-    </tr>`;
+    return `<div class="student-card">
+      <div class="student-card-top">
+        <div>
+          <div class="student-card-name">${s.name || '—'}</div>
+          <div class="student-card-meta">${s.gender==='female'?'👧 أنثى':'👦 ذكر'} · ${s.grade||''}</div>
+        </div>
+        ${statusBadge}
+      </div>
+      <div class="student-card-row">
+        <span class="code-chip">${s.code}</span>
+      </div>
+      <div class="student-actions-row">
+        ${hasDone ? `<button class="icon-btn navy" onclick="openStudentReport('${s.code}')" title="التقرير">📊</button>` : ''}
+        <button class="icon-btn navy" onclick="openEditStudentModal('${s.code}')" title="تعديل البيانات">✏️</button>
+        <button class="icon-btn navy" onclick="requestEditStudentCode('${s.code}','${safeName}')" title="تعديل الكود">🔑</button>
+        <button class="icon-btn green" onclick="grantExtraTime('${s.code}','${safeName}')" title="وقت إضافي">⏱️</button>
+        <button class="icon-btn ${s.locked?'green':'red'}" onclick="toggleStudentLock('${s.code}',${!!s.locked})" title="${s.locked?'تفعيل':'إيقاف'}">${s.locked?'▶️':'⏸️'}</button>
+        <button class="icon-btn red" onclick="requestDeleteStudent('${s.code}','${safeName}')" title="حذف">🗑️</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
 function filterStudentsTable() {
   const q = document.getElementById('searchStudents').value.trim().toLowerCase();
   const gradeFilter = document.getElementById('filterGradeSelect').value;
+  const genderFilter = document.getElementById('filterGenderSelect').value;
   let filtered = allStudentsCache;
   if (gradeFilter) filtered = filtered.filter(s => s.grade === gradeFilter);
+  if (genderFilter) filtered = filtered.filter(s => s.gender === genderFilter);
   if (q) filtered = filtered.filter(s => (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q));
   renderStudentsTable(filtered);
 }
@@ -1911,8 +1965,14 @@ async function openStudentReport(code) {
 
     const examIds = [...new Set(reportResultsCache.map(r => r.examId).filter(Boolean))];
     const examDocs = await Promise.all(examIds.map(id => db.collection('exams').doc(id).get()));
+    const answerMaps = await Promise.all(examIds.map(id => fetchAnswerKey(id)));
     reportExamsCache = {};
-    examDocs.forEach(d => { if (d.exists) reportExamsCache[d.id] = d.data(); });
+    examDocs.forEach((d, i) => {
+      if (!d.exists) return;
+      const data = d.data();
+      mergeAnswerKeyIntoQuestions(data.questions, answerMaps[i]);
+      reportExamsCache[d.id] = data;
+    });
 
     contentEl.innerHTML = reportResultsCache.map((r, idx) => {
       const examData = reportExamsCache[r.examId];
@@ -2007,12 +2067,68 @@ function toggleReportDetail(idx) {
 // ============================================================
 // EXAMS MANAGEMENT (teacher)
 // ============================================================
+// ============================================================
+// ANSWER KEY SEPARATION (security: answers live apart from public exam data)
+// ============================================================
+function splitQuestionsForStorage(fullQuestions) {
+  const publicQuestions = (fullQuestions || []).map(q => {
+    const copy = { ...q };
+    delete copy.ans;
+    delete copy.exp;
+    return copy;
+  });
+  const answerMap = {};
+  (fullQuestions || []).forEach(q => { answerMap[q.id] = { ans: q.ans, exp: q.exp || '' }; });
+  return { publicQuestions, answerMap };
+}
+
+async function saveExamQuestions(examId, fullQuestions) {
+  const { publicQuestions, answerMap } = splitQuestionsForStorage(fullQuestions);
+  await db.collection('exams').doc(examId).update({ questions: publicQuestions });
+  await db.collection('examAnswers').doc(examId).set({ answers: answerMap });
+}
+
+function mergeAnswerKeyIntoQuestions(questionsArr, answerMap) {
+  if (!answerMap) return questionsArr;
+  (questionsArr || []).forEach(q => {
+    const a = answerMap[q.id] ?? answerMap[String(q.id)];
+    if (a) { q.ans = a.ans; q.exp = a.exp || q.exp || ''; }
+  });
+  return questionsArr;
+}
+
+async function fetchAnswerKey(examId) {
+  try {
+    const snap = await db.collection('examAnswers').doc(examId).get();
+    return snap.exists ? (snap.data().answers || {}) : null;
+  } catch(e) { return null; }
+}
+
+async function secureLegacyExam(examId) {
+  const ex = teacherExamsCache.find(e => e.id === examId);
+  if (!ex) return;
+  if (!confirm('هيتم فصل الإجابات الصحيحة عن الامتحان ده في مكان محمي منفصل، عشان متوصلش لموبايل الطالب وهو بيمتحن. الشكل هيفضل زي ما هو تمامًا. تكمل؟')) return;
+  try {
+    await saveExamQuestions(examId, ex.questions || []);
+    alert('✅ الامتحان بقى مؤمّن');
+    await loadTeacherExams();
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
 async function loadTeacherExams() {
   const listEl = document.getElementById('teacherExamsList');
   listEl.innerHTML = '<div class="empty-state"><span class="eicon">⏳</span>جاري التحميل...</div>';
   try {
     const snap = await db.collection('exams').orderBy('grade').get();
     teacherExamsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Merge in each exam's separated answer key (if present) so the teacher's editor/analysis views work normally
+    await Promise.all(teacherExamsCache.map(async ex => {
+      const answerMap = await fetchAnswerKey(ex.id);
+      ex.secured = !!answerMap; // already migrated to the protected answer-key model
+      mergeAnswerKeyIntoQuestions(ex.questions, answerMap);
+    }));
+
     if (!teacherExamsCache.length) {
       listEl.innerHTML = '<div class="empty-state"><span class="eicon">📝</span>لسه مفيش امتحانات — أنشئ أول امتحان من فوق</div>';
       return;
@@ -2022,6 +2138,9 @@ async function loadTeacherExams() {
       const deadlineChip = ex.availableUntil
         ? `<span class="exammgmt-chip" style="${deadlinePassed ? 'color:#b91c1c' : ''}">⏰ ${deadlinePassed ? 'انتهى في' : 'يتاح لحد'} ${new Date(ex.availableUntil).toLocaleString('ar-EG', {dateStyle:'medium', timeStyle:'short'})}</span>`
         : '';
+      const securityChip = ex.secured
+        ? '<span class="exammgmt-chip" style="color:#065f46">🔒 مؤمّن</span>'
+        : '<span class="exammgmt-chip" style="color:#b91c1c">🔓 غير مؤمّن</span>';
       return `
       <div class="exammgmt-card">
         <div class="exammgmt-title">${ex.title || 'بدون عنوان'}</div>
@@ -2030,13 +2149,16 @@ async function loadTeacherExams() {
           <span class="exammgmt-chip">⏱ ${ex.duration || 60} د</span>
           <span class="exammgmt-chip">❓ ${(ex.questions||[]).length} سؤال</span>
           <span class="exammgmt-chip">🔑 ${ex.examCode || 'بدون كود'}</span>
+          ${securityChip}
           ${deadlineChip}
         </div>
         <div class="exammgmt-actions" style="flex-wrap:wrap">
           <button class="tbtn navy" style="font-size:.72rem;padding:7px 12px;flex:1" onclick="openExamEditor('${ex.id}')">✏️ تعديل الأسئلة</button>
           <button class="tbtn navy" style="font-size:.72rem;padding:7px 12px" onclick="cloneExam('${ex.id}')" title="نسخ الامتحان">📄 نسخ</button>
           <button class="tbtn green" style="font-size:.72rem;padding:7px 12px" onclick="openDifficultyAnalysis('${ex.id}')" title="تحليل أصعب الأسئلة">📉 تحليل</button>
+          <button class="tbtn green" style="font-size:.72rem;padding:7px 12px" onclick="openLiveAttendance('${ex.id}')" title="الحضور لحظيًا">👁 الحضور</button>
           <button class="tbtn green" style="font-size:.72rem;padding:7px 12px" onclick="notifyGradeAboutExam('${ex.id}')" title="إشعار الطلاب بالواتساب">📢 إشعار</button>
+          ${!ex.secured ? `<button class="tbtn gold" style="font-size:.72rem;padding:7px 12px" onclick="secureLegacyExam('${ex.id}')" title="تأمين الإجابات">🔒 تأمين</button>` : ''}
           <button class="tbtn red" style="font-size:.72rem;padding:7px 12px" onclick="deleteExamDoc('${ex.id}')">🗑️</button>
         </div>
       </div>`;
@@ -2208,11 +2330,15 @@ async function createNewExam() {
   const qsToSave = importedExamQuestions || [];
 
   try {
+    const { publicQuestions } = splitQuestionsForStorage(qsToSave);
     const docRef = await db.collection('exams').add({
       title, grade, duration, examCode, availableUntil,
-      questions: qsToSave,
+      questions: publicQuestions,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    if (qsToSave.length > 0) {
+      await saveExamQuestions(docRef.id, qsToSave);
+    }
     document.getElementById('newExamTitle').value = '';
     document.getElementById('newExamCode').value = '';
     document.getElementById('newExamDeadline').value = '';
@@ -2224,7 +2350,7 @@ async function createNewExam() {
     if (qsToSave.length > 0) {
       // Already has questions from the imported file — stay on the list and confirm success
       msgEl.className = 'auth-success';
-      msgEl.textContent = '✅ تم إنشاء "' + title + '" بـ' + qsToSave.length + ' سؤال بنجاح — لاقيه في قائمة الامتحانات تحت';
+      msgEl.textContent = '✅ تم إنشاء "' + title + '" بـ' + qsToSave.length + ' سؤال بنجاح (والإجابات اتخزنت في مكان محمي منفصل) — لاقيه في قائمة الامتحانات تحت';
       msgEl.style.display = 'block';
       msgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
@@ -2243,6 +2369,7 @@ function deleteExamDoc(examId) {
   const ex = teacherExamsCache.find(e => e.id === examId);
   if (!confirm('⚠️ هل أنت متأكد من حذف امتحان "' + (ex ? ex.title : '') + '" نهائياً؟ كل أسئلته هتتحذف.')) return;
   db.collection('exams').doc(examId).delete()
+    .then(() => db.collection('examAnswers').doc(examId).delete().catch(() => {}))
     .then(() => loadTeacherExams())
     .catch(e => alert('❌ خطأ: ' + e.message));
 }
@@ -2252,14 +2379,17 @@ async function cloneExam(examId) {
   if (!ex) return;
   if (!confirm('هيتعمل نسخة جديدة من "' + ex.title + '" بنفس الأسئلة (' + (ex.questions||[]).length + ' سؤال). تكمل؟')) return;
   try {
+    const fullQuestions = JSON.parse(JSON.stringify(ex.questions || []));
+    const { publicQuestions } = splitQuestionsForStorage(fullQuestions);
     const docRef = await db.collection('exams').add({
       title: (ex.title || 'امتحان') + ' (نسخة)',
       grade: ex.grade || 'تاني ثانوي',
       duration: ex.duration || 60,
       examCode: ex.examCode || '',
-      questions: JSON.parse(JSON.stringify(ex.questions || [])),
+      questions: publicQuestions,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    if (fullQuestions.length) await saveExamQuestions(docRef.id, fullQuestions);
     await loadTeacherExams();
     openExamEditor(docRef.id);
   } catch(e) { alert('❌ خطأ: ' + e.message); }
@@ -2311,6 +2441,84 @@ async function openDifficultyAnalysis(examId) {
   }
 }
 
+let attendanceUnsub = null;
+
+async function openLiveAttendance(examId) {
+  const ex = teacherExamsCache.find(e => e.id === examId);
+  if (!ex) return;
+  document.getElementById('reportStudentName').textContent = '👁 تقرير الحضور — ' + (ex.title || '');
+  const contentEl = document.getElementById('reportContent');
+  contentEl.innerHTML = '<div class="empty-state">⏳ جاري التحميل...</div>';
+  showModal('studentReportModal');
+  detachAttendanceListener();
+
+  try {
+    const studSnap = await db.collection('students').where('grade', '==', ex.grade).get();
+    const gradeStudents = studSnap.docs.map(d => ({ code: d.id, ...d.data() }));
+
+    const nameList = (arr) => arr.length
+      ? arr.map(s => `<div class="exammgmt-card" style="padding:8px 12px;margin-bottom:6px"><span style="font-size:.78rem;font-weight:700">${s.name}</span></div>`).join('')
+      : '<div class="empty-state" style="padding:10px">مفيش حد</div>';
+
+    const renderAttendance = (attendedCodes, finishedCodes) => {
+      const notStarted = gradeStudents.filter(s => !attendedCodes.has(s.code));
+      const inProgress = gradeStudents.filter(s => attendedCodes.has(s.code) && !finishedCodes.has(s.code));
+      const finished = gradeStudents.filter(s => finishedCodes.has(s.code));
+
+      window._attendanceReportData = { ex, gradeStudents, notStarted, inProgress, finished };
+
+      contentEl.innerHTML = `
+        <div class="perf-summary" style="margin-bottom:10px">
+          <div class="perf-stat"><span class="perf-num">${gradeStudents.length}</span><span class="perf-lbl">إجمالي صف ${ex.grade||''}</span></div>
+          <div class="perf-stat gold"><span class="perf-num">${inProgress.length}</span><span class="perf-lbl">🟡 بيمتحن دلوقتي</span></div>
+          <div class="perf-stat"><span class="perf-num">${finished.length}</span><span class="perf-lbl">✅ خلّص</span></div>
+        </div>
+        <button class="tbtn navy full" style="margin-bottom:12px" onclick="copyAttendanceReport()">📋 نسخ التقرير كامل كنص</button>
+
+        <p style="font-size:.7rem;color:var(--muted);margin-bottom:8px">✅ خلّصوا (${finished.length})</p>
+        ${nameList(finished)}
+
+        <p style="font-size:.7rem;color:var(--muted);margin:10px 0 8px">🟡 بيمتحنوا دلوقتي (${inProgress.length})</p>
+        ${nameList(inProgress)}
+
+        <p style="font-size:.7rem;color:var(--muted);margin:10px 0 8px">⬜ لسه ما دخلوش (${notStarted.length})</p>
+        ${nameList(notStarted)}
+      `;
+    };
+
+    attendanceUnsub = db.collection('examAttendance').where('examId', '==', examId).onSnapshot(attSnap => {
+      const attendedCodes = new Set(attSnap.docs.map(d => d.data().studentCode));
+      db.collection('results').where('examId', '==', examId).get().then(resSnap => {
+        const finishedCodes = new Set(resSnap.docs.map(d => d.data().studentCode));
+        renderAttendance(attendedCodes, finishedCodes);
+      });
+    });
+  } catch(e) {
+    contentEl.innerHTML = '<div class="empty-state">❌ خطأ: ' + e.message + '</div>';
+  }
+}
+
+function copyAttendanceReport() {
+  const d = window._attendanceReportData;
+  if (!d) return;
+  const line = (arr) => arr.length ? arr.map(s => '- ' + s.name).join('\n') : '(مفيش)';
+  const text =
+    `📊 تقرير حضور — ${d.ex.title || ''} (${d.ex.grade || ''})\n` +
+    `📅 ${new Date().toLocaleString('ar-EG')}\n\n` +
+    `✅ خلّصوا (${d.finished.length}):\n${line(d.finished)}\n\n` +
+    `🟡 بيمتحنوا دلوقتي (${d.inProgress.length}):\n${line(d.inProgress)}\n\n` +
+    `⬜ لسه ما دخلوش (${d.notStarted.length}):\n${line(d.notStarted)}`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ اتنسخ التقرير كامل — تقدر تلصقه فين ما عايز');
+  }).catch(() => {
+    prompt('انسخ التقرير ده يدويًا:', text);
+  });
+}
+
+function detachAttendanceListener() {
+  if (attendanceUnsub) { attendanceUnsub(); attendanceUnsub = null; }
+}
+
 async function notifyGradeAboutExam(examId) {
   const ex = teacherExamsCache.find(e => e.id === examId);
   if (!ex) return;
@@ -2320,21 +2528,50 @@ async function notifyGradeAboutExam(examId) {
   showModal('studentReportModal');
 
   try {
+    const waSnap = await db.collection('settings').doc('whatsappGroups').get();
+    const groups = waSnap.exists ? waSnap.data() : {};
+    const boysLink = groups[ex.grade + '_male'];
+    const girlsLink = groups[ex.grade + '_female'];
+
+    let groupsHtml = '';
+    if (boysLink || girlsLink) {
+      groupsHtml = `
+        <div class="exammgmt-card">
+          <div class="exammgmt-title">📱 جروبات الصف</div>
+          <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">دوس "نسخ الرسالة" الأول، بعدين افتح الجروب والصقها.</p>
+          <button class="tbtn navy full" style="margin-bottom:8px" onclick="copyExamNotifyMessage('${(ex.title||'').replace(/'/g,"\\'")}')">📋 نسخ نص الإشعار</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${boysLink ? `<button class="tbtn green" style="flex:1" onclick="window.open('${boysLink}','_blank')">👦 فتح جروب الولاد</button>` : ''}
+            ${girlsLink ? `<button class="tbtn green" style="flex:1" onclick="window.open('${girlsLink}','_blank')">👧 فتح جروب البنات</button>` : ''}
+          </div>
+        </div>`;
+    }
+
     const snap = await db.collection('students').where('grade', '==', ex.grade).get();
     const withPhone = snap.docs.map(d => ({ code: d.id, ...d.data() })).filter(s => s.phone);
-    if (!withPhone.length) {
-      contentEl.innerHTML = '<div class="empty-state"><span class="eicon">📭</span>مفيش طلاب في صف "' + (ex.grade||'') + '" معاهم رقم واتساب مسجّل</div>';
-      return;
-    }
-    contentEl.innerHTML = `<p style="font-size:.72rem;color:var(--muted);margin-bottom:10px">هيتفتح واتساب لكل طالب لوحده — دوس "إرسال" جوه واتساب وارجع هنا للي بعده (${withPhone.length} طالب).</p>` +
-      withPhone.map(s => `
-        <div class="exammgmt-card" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-          <span style="font-weight:800;font-size:.8rem">${s.name}</span>
-          <button class="tbtn green" style="font-size:.68rem;padding:6px 12px;white-space:nowrap" onclick="sendExamNotifyWhatsApp('${(s.name||'').replace(/'/g,"\\'")}', '${s.phone}', '${(ex.title||'').replace(/'/g,"\\'")}')">📲 إرسال</button>
-        </div>`).join('');
+
+    const individualHtml = withPhone.length
+      ? `<p style="font-size:.7rem;color:var(--muted);margin:10px 0 8px">أو ابعت لكل طالب لوحده (${withPhone.length}):</p>` +
+        withPhone.map(s => `
+          <div class="exammgmt-card" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <span style="font-weight:800;font-size:.8rem">${s.name}</span>
+            <button class="tbtn green" style="font-size:.68rem;padding:6px 12px;white-space:nowrap" onclick="sendExamNotifyWhatsApp('${(s.name||'').replace(/'/g,"\\'")}', '${s.phone}', '${(ex.title||'').replace(/'/g,"\\'")}')">📲 إرسال</button>
+          </div>`).join('')
+      : (groupsHtml ? '' : '<div class="empty-state"><span class="eicon">📭</span>مفيش طلاب في صف "' + (ex.grade||'') + '" معاهم رقم واتساب مسجّل، ومفيش جروب محفوظ للصف ده</div>');
+
+    contentEl.innerHTML = groupsHtml + individualHtml;
   } catch(e) {
     contentEl.innerHTML = '<div class="empty-state">❌ خطأ: ' + e.message + '</div>';
   }
+}
+
+function copyExamNotifyMessage(examTitle) {
+  const msg = `📝 امتحان جديد اتاح على منصة Edu Stream:\n"${examTitle}"\n\n🔗 ادخل من هنا: https://raoufbrakat-creator.github.io/edu-stream/\n\n👨‍🏫 الأستاذ رؤوف بركات`;
+  navigator.clipboard.writeText(msg).then(() => {
+    alert('✅ اتنسخت الرسالة — دلوقتي افتح الجروب والصقها');
+  }).catch(() => {
+    prompt('انسخ الرسالة دي يدويًا:', msg);
+  });
 }
 
 function sendExamNotifyWhatsApp(name, phone, examTitle) {
@@ -2502,9 +2739,9 @@ async function addQuestionToEditor() {
   }
 
   try {
-    await db.collection('exams').doc(editingExamId).update({ questions: editingExamQuestions });
+    await saveExamQuestions(editingExamId, editingExamQuestions);
     const idx = teacherExamsCache.findIndex(e => e.id === editingExamId);
-    if (idx > -1) teacherExamsCache[idx].questions = editingExamQuestions;
+    if (idx > -1) { teacherExamsCache[idx].questions = editingExamQuestions; teacherExamsCache[idx].secured = true; }
 
     cancelEditQuestion();
     renderEditorQuestionsList();
@@ -2521,9 +2758,9 @@ async function deleteQuestionFromEditor(index) {
   const removed = editingExamQuestions.splice(index, 1);
   editingExamQuestions.forEach((q, i) => q.id = i + 1);
   try {
-    await db.collection('exams').doc(editingExamId).update({ questions: editingExamQuestions });
+    await saveExamQuestions(editingExamId, editingExamQuestions);
     const idx = teacherExamsCache.findIndex(e => e.id === editingExamId);
-    if (idx > -1) teacherExamsCache[idx].questions = editingExamQuestions;
+    if (idx > -1) { teacherExamsCache[idx].questions = editingExamQuestions; teacherExamsCache[idx].secured = true; }
     renderEditorQuestionsList();
   } catch(e) {
     editingExamQuestions.splice(index, 0, removed[0]);
@@ -2534,6 +2771,8 @@ async function deleteQuestionFromEditor(index) {
 // ============================================================
 // SETTINGS
 // ============================================================
+let whatsappGroups = {};
+
 async function loadSettings() {
   try {
     const snap = await db.collection('settings').doc('exam').get();
@@ -2543,6 +2782,37 @@ async function loadSettings() {
       examSettings = d;
     }
   } catch(e) {}
+
+  try {
+    const waSnap = await db.collection('settings').doc('whatsappGroups').get();
+    whatsappGroups = waSnap.exists ? waSnap.data() : {};
+  } catch(e) { whatsappGroups = {}; }
+  fillWhatsappGroupFields();
+}
+
+function fillWhatsappGroupFields() {
+  const grade = document.getElementById('waGroupGrade').value;
+  document.getElementById('waGroupBoysLink').value = whatsappGroups[grade + '_male'] || '';
+  document.getElementById('waGroupGirlsLink').value = whatsappGroups[grade + '_female'] || '';
+}
+
+async function saveWhatsappGroupLinks() {
+  const grade = document.getElementById('waGroupGrade').value;
+  const boysLink = document.getElementById('waGroupBoysLink').value.trim();
+  const girlsLink = document.getElementById('waGroupGirlsLink').value.trim();
+  const msgEl = document.getElementById('waGroupsMsg');
+  try {
+    const update = {};
+    update[grade + '_male'] = boysLink;
+    update[grade + '_female'] = girlsLink;
+    await db.collection('settings').doc('whatsappGroups').set(update, { merge: true });
+    whatsappGroups[grade + '_male'] = boysLink;
+    whatsappGroups[grade + '_female'] = girlsLink;
+    msgEl.textContent = '✅ اتحفظت روابط جروبات "' + grade + '"';
+    msgEl.style.display = 'block';
+    msgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => msgEl.style.display = 'none', 3000);
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
 }
 
 async function updateUnlockCode() {
@@ -2591,15 +2861,17 @@ async function resetAllExams() {
 
 async function exportFullBackup() {
   try {
-    const [studSnap, examSnap, resSnap] = await Promise.all([
+    const [studSnap, examSnap, resSnap, answersSnap] = await Promise.all([
       db.collection('students').get(),
       db.collection('exams').get(),
-      db.collection('results').get()
+      db.collection('results').get(),
+      db.collection('examAnswers').get()
     ]);
     const backup = {
       exportedAt: new Date().toISOString(),
       students: studSnap.docs.map(d => ({ id: d.id, ...d.data() })),
       exams: examSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+      examAnswers: answersSnap.docs.map(d => ({ id: d.id, ...d.data() })),
       results: resSnap.docs.map(d => {
         const data = d.data();
         if (data.submittedAt && data.submittedAt.toDate) data.submittedAt = data.submittedAt.toDate().toISOString();
@@ -2643,7 +2915,10 @@ function exportCSV() {
 // MODAL HELPERS
 // ============================================================
 function showModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  if (id === 'studentReportModal') detachAttendanceListener();
+}
 function forceExit() { closeModal('exitWarningModal'); backToMainMenu(); }
 
 // ============================================================
@@ -2951,15 +3226,17 @@ const LEGACY_SAMPLE_QUESTIONS = [
 async function importLegacySampleExam() {
   if (!confirm('هيتم إنشاء امتحان جديد باسم "امتحان اللغة العربية الشامل (نموذج)" لصف تاني ثانوي، يحتوي على الـ60 سؤال الجاهزين. تكمل؟')) return;
   try {
-    await db.collection('exams').add({
+    const { publicQuestions } = splitQuestionsForStorage(LEGACY_SAMPLE_QUESTIONS);
+    const docRef = await db.collection('exams').add({
       title: 'امتحان اللغة العربية الشامل (نموذج)',
       grade: 'تاني ثانوي',
       duration: 150,
       examCode: 'EX002',
-      questions: LEGACY_SAMPLE_QUESTIONS,
+      questions: publicQuestions,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    alert('✅ تم إنشاء الامتحان بنجاح — هتلاقيه في قائمة الامتحانات');
+    await saveExamQuestions(docRef.id, LEGACY_SAMPLE_QUESTIONS);
+    alert('✅ تم إنشاء الامتحان بنجاح (والإجابات مؤمّنة من الأول) — هتلاقيه في قائمة الامتحانات');
     loadTeacherExams();
   } catch(e) { alert('❌ خطأ: ' + e.message); }
 }
@@ -2986,6 +3263,14 @@ async function startExam(examId, examData) {
 
   document.querySelectorAll('.exam-ttl').forEach(el => el.textContent = currentExamTitle);
   document.querySelectorAll('.cert-subtitle').forEach(el => el.textContent = currentExamTitle);
+
+  // Mark attendance: record that this student has started this exam (for teacher's live attendance view)
+  try {
+    await db.collection('examAttendance').doc(examId + '_' + currentStudent.code).set({
+      examId, studentCode: currentStudent.code, studentName: currentStudent.name,
+      startedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch(e) {}
 
   // Restore from localStorage if exists
   const saved = localStorage.getItem('eduStreamExam_' + currentExamId + '_' + currentStudent.code);
@@ -3106,7 +3391,7 @@ function stopTimer() {
 function updateTimerDisplay() {
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
-  const text = String(mins).padStart(3,'0') + ':' + String(secs).padStart(2,'0');
+  const text = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
   document.getElementById('timerText').textContent = text;
   const pill = document.getElementById('timerDisplay');
   pill.className = 'timer-pill';
@@ -3325,6 +3610,10 @@ async function finishExam() {
   exitExamFullscreen();
   const timeTaken = TOTAL_TIME - timeLeft;
 
+  // Fetch the answer key now (only at submission time — never earlier, never sent to the browser while the exam is in progress)
+  const answerMap = await fetchAnswerKey(currentExamId);
+  mergeAnswerKeyIntoQuestions(questions, answerMap);
+
   // Calculate results
   let score = 0;
   const sectionScores = {};
@@ -3491,7 +3780,7 @@ function setupLockDetection() {
 function handleVisibilityChange() {
   if (document.hidden) {
     lockCount++;
-    if (lockCount >= 2) {
+    if (lockCount >= 1) {
       examLocked = true;
       showModal('lockScreen');
     }
