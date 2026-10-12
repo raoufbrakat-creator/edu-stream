@@ -438,7 +438,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 @keyframes confettiFall{0%{top:-10px;opacity:1;transform:rotate(0deg) translateX(0)}100%{top:110vh;opacity:.3;transform:rotate(720deg) translateX(60px)}}
 
 /* ===== LOGIN PAGE (light, photo hero) ===== */
-#platformScreen{flex-direction:column;align-items:stretch;background:#faf6ec;overflow-x:hidden;padding:0}
+#platformScreen{flex-direction:column;align-items:stretch;background:#faf6ec;overflow-x:clip;padding:0}
 .ls-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:12px 16px;background:rgba(255,253,248,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(15,31,61,.07)}
 .ls-brand{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--navy);font-size:1rem}
 .ls-logo{width:66px;height:66px;border-radius:50%;border:2px solid var(--gold);overflow:hidden;background:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
@@ -497,6 +497,69 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .ls-st{font-weight:800;color:var(--navy);font-size:1.02rem;padding:0 20px;text-align:center}
 @media(prefers-reduced-motion:reduce){.ls-sl,.ls-sl::after,.ls-spin,.ls-err.shake{animation:none!important}.ls-photo{transition:none}}
 .ls-tag{display:inline-block;margin-bottom:14px;padding:6px 18px;border-radius:999px;background:var(--navy);color:#fff;font-weight:800;font-size:.82rem}.ls-h1{font-size:clamp(2.1rem,10.5vw,3.3rem)!important;line-height:1.3!important}.ls-h1 em{font-size:.62em;margin-top:8px}@media(min-width:760px){.ls-hero{padding-top:46px}}
+
+/* ===== STUDENT DASHBOARD (light) ===== */
+#studentDashboard{background:#faf6ec!important;padding:0!important;align-items:flex-start!important;justify-content:center!important}
+#studentDashboard .dash-card{background:transparent;box-shadow:none;border-radius:0;max-width:480px;min-height:100vh;display:flex;flex-direction:column;overflow:visible}
+#studentDashboard .dash-header{background:linear-gradient(180deg,#fbf7ee,#f1e6cb);padding:16px 18px 22px;text-align:right;border-radius:0 0 28px 28px;box-shadow:0 12px 30px rgba(15,31,61,.08);overflow:visible}
+.dash-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+#studentDashboard .dash-avatar{width:54px;height:54px;margin:0;background:#fff}
+.dash-out{border:1px solid rgba(15,31,61,.15);background:#fff;border-radius:999px;padding:8px 14px;font:700 .8rem 'Cairo',sans-serif;color:var(--navy);cursor:pointer}
+.dash-hello{font-weight:700;color:var(--muted);font-size:.9rem}
+#studentDashboard .dash-name{font-size:1.65rem;font-weight:900;color:var(--navy);margin:2px 0 10px;line-height:1.3}
+#studentDashboard .dash-meta{display:inline-block;background:var(--navy);color:#fff;border-radius:999px;padding:5px 14px;font-size:.78rem;font-weight:800}
+#studentDashboard .dash-body{flex:1;padding:22px 16px 10px}
+#studentDashboard .wfooter{background:none;border:0;padding:8px 0 22px}
+#examsList .exam-card{background:#fff;border:1px solid #eadfc4;border-radius:22px;padding:18px 16px;box-shadow:0 10px 28px rgba(15,31,61,.08);margin-bottom:14px}
+#examsList .exam-card::before,#examsList .exam-card.done::after{display:none}
+#examsList .exam-card.done{opacity:1}
+#examsList .exam-card:active{transform:scale(.99)}
+.ec-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+#examsList .exam-card-title{font-size:1.08rem;color:var(--navy);margin:0;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ec-sub{font-size:.8rem;color:var(--muted);font-weight:600;margin:4px 0 10px;line-height:1.7}
+.ec-badge{flex:none;font-size:.7rem;font-weight:800;border-radius:999px;padding:4px 12px;background:#fff6dc;color:#8a6410;border:1px solid #e8c96a}
+.ec-badge.ok{background:#e8f7ef;color:#1a7a4a;border-color:#a7e3c2}.ec-badge.off{background:#f1f1f1;color:#666;border-color:#ddd}
+#examsList .exam-chip{background:#faf6ec;border:1px solid #eadfc4;color:var(--navy);font-size:.74rem;padding:4px 11px}
+.ec-note{margin-top:12px;font-size:.78rem;font-weight:800;color:#8a6410}.ec-note.urgent,.ec-note.off{color:#b91c1c}.ec-note.ok{color:#1a7a4a}
+.ec-cta{margin-top:14px;text-align:center;padding:13px;border-radius:14px;font-weight:900;font-size:.98rem;background:linear-gradient(135deg,#c9a84c,#e8c96a 55%,#b8902f);color:var(--navy);box-shadow:0 8px 20px rgba(201,168,76,.35)}
+.ec-cta.alt{background:var(--navy);color:#fff;box-shadow:none}
+
+.ec-skel{background:#fff;border:1px solid #eadfc4;border-radius:22px;padding:18px 16px;margin-bottom:14px}
+.ec-skel i{display:block;height:14px;border-radius:8px;margin-bottom:12px;background:linear-gradient(90deg,#f1ead6 25%,#faf6ec 50%,#f1ead6 75%);background-size:200% 100%;animation:ecSk 1.3s infinite}
+.ec-skel i:nth-child(1){width:70%;height:18px}.ec-skel i:nth-child(2){width:45%}.ec-skel i:nth-child(3){width:100%;height:42px;border-radius:14px;margin:0}
+@keyframes ecSk{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.ec-skel i{animation:none}}
+.ec-retry{margin-top:10px;padding:9px 22px;border-radius:999px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);font:800 .85rem 'Cairo',sans-serif;cursor:pointer}
+.dash-empty{margin-top:6px;background:#fff;border:1.5px dashed #e0cf9f;border-radius:18px;padding:16px;text-align:center;color:var(--muted);font-weight:700;font-size:.86rem;line-height:1.9}
+#statsTitle{margin-top:24px}
+#studentDashboard .perf-stat{background:#fff;border:1px solid #eadfc4;border-radius:16px;padding:12px 6px;box-shadow:0 6px 16px rgba(15,31,61,.06)}
+#studentDashboard .perf-stat.gold{background:#fffbeb;border-color:var(--gold)}
+#studentDashboard .perf-num{font-size:1.25rem}
+.perf-weak{width:100%;margin:-6px 0 16px;padding:11px;border-radius:14px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);font:800 .88rem 'Cairo',sans-serif;cursor:pointer}
+
+/* ===== TEACHER DASHBOARD (light, compact) ===== */
+#teacherDashboard{background:#faf6ec}
+#teacherDashboard .teacher-topbar{height:60px;box-sizing:border-box;padding:0 16px;background:rgba(255,253,248,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 4px 18px rgba(15,31,61,.08);border-bottom:1px solid rgba(15,31,61,.07)}
+#teacherDashboard .teacher-topbar-title{color:var(--navy);font-size:.95rem}
+#teacherDashboard .teacher-topbar-logo{width:40px;height:40px}
+#teacherDashboard .tbtn-logout{background:#fff;border:1px solid rgba(15,31,61,.18);color:var(--navy)}
+#teacherDashboard .tbtn-logout:hover{background:#fee2e2;color:var(--red);border-color:#fca5a5}
+#teacherDashboard .teacher-body{padding-top:14px}
+#teacherDashboard .stat-grid{grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+#teacherDashboard .stat-card{padding:10px 4px 8px;border-radius:14px}
+#teacherDashboard .stat-num{font-size:1.4rem}
+#teacherDashboard .stat-lbl{font-size:.58rem;line-height:1.4;margin-top:3px}
+#teacherDashboard .teacher-nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;position:sticky;top:60px;z-index:90;box-shadow:0 6px 16px rgba(15,31,61,.1)}
+#teacherDashboard .teacher-nav::-webkit-scrollbar{display:none}
+#teacherDashboard .tnav-btn{flex:0 0 auto;padding:10px 14px;font-size:.8rem;white-space:nowrap}
+#teacherDashboard .student-card-row{display:flex;align-items:center;justify-content:flex-start;gap:8px;flex-wrap:wrap}
+
+.t-alerts{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.tal{display:flex;align-items:center;gap:8px;width:100%;text-align:right;background:#fff8e1;border:1px solid #f0d78c;border-radius:12px;padding:9px 12px;font:700 .78rem 'Cairo',sans-serif;color:#7a5a00;cursor:pointer}
+.tal.urgent{background:#fee2e2;border-color:#fca5a5;color:#b91c1c}
+.tal-t{flex:1}.tal-go{opacity:.55}
+.tnav-badge{display:inline-block;min-width:18px;padding:0 5px;margin-inline-start:5px;border-radius:999px;background:#b91c1c;color:#fff;font-size:.65rem;line-height:18px;font-weight:800}
+.ls-idle{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:99998;background:var(--navy);color:#fff;border-radius:14px;padding:11px 18px;font:700 .82rem 'Cairo',sans-serif;box-shadow:0 10px 30px rgba(15,31,61,.35);max-width:92vw;text-align:center}
 </style>
 <script>
 window.onbeforeunload=function(e){const s=document.getElementById('examScreen');if(s&&s.classList.contains('active')){e.preventDefault();e.returnValue='ستفقد تقدمك!';return'ستفقد تقدمك!';}};
@@ -506,7 +569,7 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
 <body>
 
 <!-- ===== LANDING / WELCOME SCREEN ===== -->
-<div id="lsSplash"><div class="ls-sl"><img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt=""></div><div class="ls-st">منصتك التعليمية في اللغة العربية...</div></div>
+<div id="lsSplash"><div class="ls-sl"><img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt=""></div><div class="ls-st">ثقتك في نفسك تبدأ من هنا...</div></div>
 <script>try{if(sessionStorage.getItem('esSplash'))document.getElementById('lsSplash').remove()}catch(e){}</script>
 <div id="platformScreen" class="screen active">
   <header class="ls-top">
@@ -561,8 +624,59 @@ document.addEventListener('keydown',function(e){const s=document.getElementById(
   </footer>
 </div>
 <script>
+/* ===== TEACHER ALERTS / IDLE ===== */
+function lsEssayBadge(n){const b=document.getElementById('essayBadge');if(!b)return;b.textContent=n>99?'99+':n;b.style.display=n>0?'':'none'}
+function lsEssayBump(){const b=document.getElementById('essayBadge');lsEssayBadge((parseInt(b&&b.textContent)||0)+1)}
+async function lsTeacherAlerts(total,finished,essays){
+  const box=document.getElementById('teacherAlerts');if(!box)return;
+  const items=[];
+  if(essays>0)items.push({ico:'✍️',txt:essays+' إجابة مقالية مستنية تصحيح',tab:'essayGrading'});
+  if(total-finished>0)items.push({ico:'⏳',txt:(total-finished)+' طالب لسه ما امتحنش',tab:'students'});
+  try{const es=await db.collection('exams').get();es.forEach(d=>{const e=d.data();if(!e.availableUntil)return;const diff=new Date(e.availableUntil)-Date.now();if(diff>0&&diff<3*864e5){const t=formatTimeRemaining(e.availableUntil);if(t)items.push({ico:'⏰',txt:'«'+(e.title||'امتحان')+'» — '+t.text,tab:'exams',urgent:t.urgent})}})}catch(e){}
+  box.innerHTML='';
+  items.forEach(it=>{const b=document.createElement('button');b.type='button';b.className='tal'+(it.urgent?' urgent':'');b.innerHTML='<span>'+it.ico+'</span><span class="tal-t"></span><span class="tal-go">←</span>';b.querySelector('.tal-t').textContent=it.txt;b.onclick=()=>switchTeacherTab(it.tab);box.appendChild(b)});
+  box.style.display=items.length?'':'none';
+}
+(function(){
+  const C=window.__idleCfg||{LIM:20*60e3,WARN:60e3,TICK:5000};let last=Date.now(),box=null;
+  const act=()=>{last=Date.now();if(box){box.remove();box=null}};
+  ['pointerdown','keydown','scroll','touchstart'].forEach(ev=>document.addEventListener(ev,act,{passive:true,capture:true}));
+  setInterval(()=>{
+    const td=document.getElementById('teacherDashboard');
+    if(!td||!td.classList.contains('active')){last=Date.now();if(box){box.remove();box=null}return}
+    const idle=Date.now()-last;
+    if(idle>=C.LIM){if(box){box.remove();box=null}teacherLogout();try{showTimeAlert('🔒 اتسجّل خروجك تلقائيًا لعدم النشاط','warning')}catch(e){}}
+    else if(idle>=C.LIM-C.WARN&&!box){box=document.createElement('div');box.className='ls-idle';box.textContent='⏳ هتخرج تلقائيًا بعد دقيقة لعدم النشاط — المس الشاشة للبقاء';document.body.appendChild(box)}
+  },C.TICK);
+})();
+/* ===== TEACHER HELPERS ===== */
+const LS_SITE='https://raoufbrakat-creator.github.io/edu-stream/';
+function toggleStudentsFilters(){const p=document.getElementById('studentsFilterPanel');p.style.display=p.style.display==='none'?'flex':'none'}
+function lsFilterBadge(){const a=document.getElementById('filterGradeSelect'),b=document.getElementById('filterGenderSelect'),t=document.getElementById('filterBadge');if(!a||!b||!t)return;const n=(a.value?1:0)+(b.value?1:0);t.textContent=n?' ('+n+')':''}
+function copyStudentCode(code,btn){
+  const done=()=>{const o=btn.textContent;btn.textContent='✓';setTimeout(()=>btn.textContent=o,1200)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(done,()=>{})}
+  else{const t=document.createElement('textarea');t.value=code;document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()}
+}
+function shareStudentCode(code){
+  const st=(allStudentsCache||[]).find(x=>x.code===code)||{};
+  const msg='أهلاً '+(st.name||'')+' 👋\nكودك الشخصي على منصة Edu Stream:\n'+code+'\n\nادخل من هنا: '+LS_SITE+'\nواكتب الكود وابدأ امتحانك. بالتوفيق 🌟\n— الأستاذ رؤوف بركات';
+  let ph=String(st.phone||'').replace(/\D/g,'');
+  if(ph.startsWith('00'))ph=ph.slice(2);else if(ph.startsWith('0'))ph='20'+ph.slice(1);
+  window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#teacherDashboard .tnav-btn');if(b)setTimeout(()=>b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}),30)});
+/* ===== DASHBOARD HELPERS ===== */
+function lsDash(has){
+  const g=id=>document.getElementById(id),t=g('statsTitle'),e=g('dashEmpty'),old=g('perfWeakBtn');if(old)old.remove();
+  if(t)t.style.display=has===true?'':'none';
+  if(e)e.style.display=has===false?'':'none';
+  const wb=g('weakPointsBox'),el=g('studentPerformanceSummary');
+  if(has===true&&wb&&el&&wb.style.display==='block')el.insertAdjacentHTML('afterend','<button id="perfWeakBtn" class="perf-weak" type="button" onclick="goWeakPoints()">📊 راجع نقاط ضعفك</button>');
+}
+function goWeakPoints(){const b=document.getElementById('weakPointsBox');if(!b)return;const c=b.querySelector('.qdetail-content'),tg=b.querySelector('.qdetail-toggle');if(c&&!c.classList.contains('open')&&tg)tg.click();b.scrollIntoView({behavior:'smooth',block:'center'})}
 /* ===== LOGIN UI ===== */
-const LS_PHOTOS=['hero.jpg','https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=70','https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=1200&q=70','https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=70','https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=70'];
+const LS_PHOTOS=['hero.jpg','https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=70','https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=70','https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=1200&q=70','https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=70'];
 const LS_KEY='eduStreamRemember',LS_LOCK='eduStreamLock';
 let lsTeacher=false,lsBusy=false,lsFails=0,lsTimer=null;
 const $ls=id=>document.getElementById(id);
@@ -620,6 +734,7 @@ async function studentLogin(){
   lg.addEventListener('pointerdown',()=>{pt=setTimeout(()=>{lsTeacherMode(!lsTeacher);$ls('lsLogin').scrollIntoView({behavior:'smooth'});el.focus()},800)});
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>lg.addEventListener(ev,()=>clearTimeout(pt)));
   lg.addEventListener('contextmenu',e=>e.preventDefault());
+  let tp=0,tt=null;lg.addEventListener('click',()=>{tp++;clearTimeout(tt);tt=setTimeout(()=>tp=0,1500);if(tp>=5){tp=0;lsTeacherMode(!lsTeacher);$ls('lsLogin').scrollIntoView({behavior:'smooth'});el.focus()}});
   // remembered student
   let sv=null;try{sv=JSON.parse(lsGet(LS_KEY)||'null')}catch(e){}
   if(sv&&sv.code){
@@ -644,29 +759,27 @@ async function studentLogin(){
 <div id="studentDashboard" class="screen">
   <div class="dash-card">
     <div class="dash-header">
-      <div class="dash-header-pattern"></div>
-      <div class="dash-header-divider"></div>
-      <div class="dash-avatar">
-        <img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt="">
+      <div class="dash-top">
+        <div class="dash-avatar"><img src="https://i.ibb.co/wZcPzqgw/1774218996997.png" alt=""></div>
+        <button class="dash-out" type="button" onclick="studentLogout()">خروج 🚪</button>
       </div>
+      <div class="dash-hello">أهلاً بيك 👋</div>
       <div class="dash-name" id="dashStudentName">—</div>
       <div class="dash-meta" id="dashStudentMeta">—</div>
     </div>
     <div class="dash-body">
       <div id="studentAnnouncementsBox"></div>
+      <div class="dash-section-title">📝 الامتحانات المتاحة</div>
+      <div id="examsList"><div class="ec-skel"><i></i><i></i><i></i></div></div>
+      <div id="dashEmpty" class="dash-empty" style="display:none">🌟 خلّص أول امتحان وهتظهر هنا مستواك ونقاط قوتك وضعفك</div>
+      <div class="dash-section-title" id="statsTitle" style="display:none">📈 مستواك</div>
       <div id="studentPerformanceSummary" style="display:none"></div>
       <div id="performanceTrendBox" style="display:none"></div>
       <div id="weakPointsBox" style="display:none"></div>
       <div id="certificatesGalleryBox" style="display:none"></div>
       <div id="studentLessonsBox" style="display:none"></div>
-      <div class="dash-section-title">📝 الامتحانات المتاحة</div>
-      <div id="examsList">
-        <div class="no-exams">⏳ جاري التحميل...</div>
-      </div>
-      <button class="dash-logout" onclick="studentLogout()">🚪 تسجيل الخروج</button>
     </div>
     <div class="wfooter">
-      <div class="wfooter-brand"><span class="wfooter-dot"></span><span class="wfooter-name">Edu Stream</span><span class="wfooter-dot"></span></div>
       <div class="wfooter-copy">All rights reserved ®</div>
     </div>
   </div>
@@ -702,13 +815,15 @@ async function studentLogin(){
       </div>
     </div>
 
+    <div id="teacherAlerts" class="t-alerts" style="display:none"></div>
+
     <!-- nav tabs -->
     <div class="teacher-nav">
       <button class="tnav-btn active" onclick="switchTeacherTab('students')">👥 الطلاب</button>
       <button class="tnav-btn" onclick="switchTeacherTab('exams')">📝 الامتحانات</button>
       <button class="tnav-btn" onclick="switchTeacherTab('lessons')">📚 الدروس</button>
       <button class="tnav-btn" onclick="switchTeacherTab('results')">📊 النتائج</button>
-      <button class="tnav-btn" onclick="switchTeacherTab('essayGrading')">✍️ تصحيح مقالي</button>
+      <button class="tnav-btn" onclick="switchTeacherTab('essayGrading')">✍️ تصحيح مقالي<span class="tnav-badge" id="essayBadge" style="display:none"></span></button>
       <button class="tnav-btn" onclick="switchTeacherTab('addStudent')">➕ إضافة</button>
       <button class="tnav-btn" onclick="switchTeacherTab('settings')">⚙️ إعدادات</button>
     </div>
@@ -720,8 +835,11 @@ async function studentLogin(){
           <span>قائمة الطلاب</span>
           <button class="tbtn navy" onclick="loadStudents()" style="font-size:.7rem;padding:6px 12px">🔄 تحديث</button>
         </div>
-        <div class="students-search" style="display:flex;gap:8px;flex-wrap:wrap">
-          <input type="text" id="searchStudents" class="tinput" placeholder="🔍 ابحث باسم الطالب أو الكود..." oninput="filterStudentsTable()" style="flex:2;min-width:150px">
+        <div class="students-search" style="display:flex;gap:8px;margin-bottom:0">
+          <input type="text" id="searchStudents" class="tinput" placeholder="🔍 ابحث باسم الطالب أو الكود..." oninput="filterStudentsTable()" style="flex:1;min-width:0">
+          <button class="tbtn navy" type="button" onclick="toggleStudentsFilters()" style="font-size:.78rem;padding:0 14px;white-space:nowrap">🎚️ فلتر<span id="filterBadge"></span></button>
+        </div>
+        <div id="studentsFilterPanel" style="display:none;gap:8px;flex-wrap:wrap;margin-top:8px">
           <select id="filterGradeSelect" class="tselect" onchange="filterStudentsTable()" style="flex:1;min-width:130px">
             <option value="">كل الصفوف</option>
             <option value="أول إعدادي">أول إعدادي</option>
@@ -1716,8 +1834,7 @@ function showAuthError(el, msg) {
 async function showStudentDashboard() {
   document.getElementById('dashStudentName').textContent = currentStudent.name || '—';
   document.getElementById('dashStudentMeta').textContent =
-    (currentStudent.gender === 'female' ? '👧 ' : '👦 ') +
-    (currentStudent.grade || 'ثاني ثانوي') + ' — كود: ' + currentStudent.code;
+    '📚 ' + (currentStudent.grade || 'ثاني ثانوي');
   showScreen('studentDashboard');
   loadExamCards();
   loadStudentPerformanceSummary();
@@ -1798,7 +1915,7 @@ async function loadStudentPerformanceSummary() {
   if (!el) return;
   try {
     const snap = await db.collection('results').where('studentCode', '==', currentStudent.code).get();
-    if (snap.empty) { el.style.display = 'none'; return; }
+    if (snap.empty) { el.style.display = 'none'; lsDash(false); return; }
     const results = snap.docs.map(d => d.data());
     const count = results.length;
     const avgPct = Math.round(results.reduce((sum, r) => sum + (r.percentage ?? 0), 0) / count);
@@ -1806,6 +1923,7 @@ async function loadStudentPerformanceSummary() {
     results.forEach(r => { if ((r.percentage ?? 0) > (best.percentage ?? 0)) best = r; });
 
     el.className = 'perf-summary';
+    el.style.display = '';
     el.innerHTML = `
       <div class="perf-stat"><span class="perf-num">${count}</span><span class="perf-lbl">امتحان خلّصته</span></div>
       <div class="perf-stat"><span class="perf-num">${avgPct}%</span><span class="perf-lbl">متوسطك العام</span></div>
@@ -1814,7 +1932,8 @@ async function loadStudentPerformanceSummary() {
     renderPerformanceTrend(results);
     renderWeakPoints(results);
     renderCertificatesGallery(results);
-  } catch(e) { el.style.display = 'none'; }
+    lsDash(true);
+  } catch(e) { el.style.display = 'none'; lsDash(null); }
 }
 
 function renderPerformanceTrend(results) {
@@ -1926,7 +2045,7 @@ function renderCertificatesGallery(results) {
 
 async function loadExamCards() {
   const listEl = document.getElementById('examsList');
-  listEl.innerHTML = '<div class="no-exams">⏳ جاري التحميل...</div>';
+  listEl.innerHTML = '<div class="ec-skel"><i></i><i></i><i></i></div>';
 
   try {
     // Load exams matching the student's grade
@@ -1967,19 +2086,21 @@ async function loadExamCards() {
     enriched.forEach(({ ex, doneSnap, hasDone, isExpired }) => {
       const qCount = (ex.questions || []).length;
       const timeLeftTxt = !hasDone && !isExpired ? formatTimeRemaining(ex.availableUntil) : null;
+      const titleParts = String(ex.title || 'امتحان').split(/\s[–—-]\s/);
       const card = document.createElement('div');
       card.className = 'exam-card' + (hasDone ? ' done' : '') + (isExpired && !hasDone ? ' done' : '');
       card.innerHTML = `
-        <div class="exam-card-title">📝 ${ex.title || 'امتحان'}</div>
+        <div class="ec-top"><div class="exam-card-title">${titleParts[0]}</div>${hasDone ? '<span class="ec-badge ok">✓ تم</span>' : (isExpired ? '<span class="ec-badge off">انتهى</span>' : '<span class="ec-badge">جديد</span>')}</div>
+        ${titleParts.length > 1 ? '<div class="ec-sub">' + titleParts.slice(1).join(' — ') + '</div>' : ''}
         <div class="exam-card-meta">
           <span class="exam-chip">⏱ ${ex.duration || 60} دقيقة</span>
           <span class="exam-chip">❓ ${qCount} سؤال</span>
-          <span class="exam-chip">📚 ${ex.grade || ''}</span>
           ${ex.availableUntil ? '<span class="exam-chip">⏰ لحد ' + new Date(ex.availableUntil).toLocaleString('ar-EG', {dateStyle:'medium', timeStyle:'short'}) + '</span>' : ''}
         </div>
-        ${timeLeftTxt ? '<div style="margin-top:8px;font-size:.72rem;font-weight:800;color:' + (timeLeftTxt.urgent ? '#fca5a5' : '#fde68a') + '">⏳ ' + timeLeftTxt.text + '</div>' : ''}
-        ${hasDone ? '<div style="margin-top:8px;font-size:.7rem;color:#6ee7b7;font-weight:700">✅ أنهيت هذا الامتحان — درجتك: ' + (doneSnap.data().score ?? '—') + '/' + (doneSnap.data().totalQuestions ?? qCount) + ' — اضغط لعرض تحليل إجاباتك 👆</div>' : ''}
-        ${!hasDone && isExpired ? '<div style="margin-top:8px;font-size:.7rem;color:#fca5a5;font-weight:700">⏰ انتهى وقت إتاحة هذا الامتحان</div>' : ''}
+        ${timeLeftTxt ? '<div class="ec-note' + (timeLeftTxt.urgent ? ' urgent' : '') + '">⏳ ' + timeLeftTxt.text + '</div>' : ''}
+        ${hasDone ? '<div class="ec-note ok">✅ درجتك: ' + (doneSnap.data().score ?? '—') + '/' + (doneSnap.data().totalQuestions ?? qCount) + '</div><div class="ec-cta alt">شوف تحليل إجاباتك ←</div>' : ''}
+        ${!hasDone && isExpired ? '<div class="ec-note off">⏰ انتهى وقت إتاحة هذا الامتحان</div>' : ''}
+        ${!hasDone && !isExpired && qCount > 0 ? '<div class="ec-cta">ابدأ الامتحان ←</div>' : ''}
       `;
       if (!hasDone && !isExpired && qCount > 0) {
         card.onclick = () => startExamFlow(ex.id);
@@ -1991,7 +2112,7 @@ async function loadExamCards() {
       listEl.appendChild(card);
     });
   } catch(e) {
-    listEl.innerHTML = '<div class="no-exams">❌ خطأ في تحميل الامتحانات</div>';
+    listEl.innerHTML = '<div class="no-exams">🌐 مش قادر يحمّل الامتحانات — تأكد من النت<br><button class="ec-retry" type="button" onclick="loadExamCards()">إعادة المحاولة</button></div>';
   }
 }
 
@@ -2148,6 +2269,7 @@ function attachTeacherResultNotifications() {
       const submittedMs = data.submittedAt.toMillis();
       if (submittedMs > teacherNotifyBaselineTime) {
         teacherNotifyBaselineTime = submittedMs;
+        if (data.needsGrading && data.essayAnswers && Object.keys(data.essayAnswers).length) lsEssayBump();
         showTimeAlert('🔔 ' + (data.studentName || 'طالب') + ' خلّص "' + (data.examTitle || 'امتحان') + '" — ' + (data.score ?? 0) + '/' + (data.totalQuestions ?? '؟'), 'warning');
         if (document.getElementById('tpane-students').classList.contains('active')) loadStudents();
         if (document.getElementById('tpane-results').classList.contains('active')) loadResults();
@@ -2169,22 +2291,26 @@ async function loadDashboardStats() {
       db.collection('results').get()
     ]);
     const total = studSnap.size;
-    const finished = resSnap.size;
+    const resCount = resSnap.size;
+    const finished = new Set(resSnap.docs.map(d => d.data().studentCode || d.id.split('_').pop())).size;
     const pending = total - finished;
+    const essaysPending = resSnap.docs.filter(d => { const r = d.data(); return r.needsGrading === true && r.essayAnswers && Object.keys(r.essayAnswers).length > 0; }).length;
     let totalPct = 0;
     resSnap.forEach(d => {
       const r = d.data();
       totalPct += r.percentage ?? Math.round((r.score||0)/(r.totalQuestions||60)*100);
     });
-    const avg = finished > 0 ? Math.round(totalPct / finished) : '—';
+    const avg = resCount > 0 ? Math.round(totalPct / resCount) : '—';
 
     document.getElementById('statTotalStudents').textContent = total;
     document.getElementById('statFinished').textContent = finished;
     document.getElementById('statPending').textContent = Math.max(0, pending);
-    document.getElementById('statAvgScore').textContent = finished > 0 ? avg + '%' : '—';
+    document.getElementById('statAvgScore').textContent = resCount > 0 ? avg + '%' : '—';
 
     allStudentsCache = studSnap.docs.map(d => ({ code: d.id, ...d.data() }));
     allResultsCache = resSnap.docs.map(d => ({ code: d.id, ...d.data() }));
+    lsEssayBadge(essaysPending);
+    lsTeacherAlerts(total, finished, essaysPending);
   } catch(e) { console.error('Stats error:', e); }
 }
 
@@ -2232,6 +2358,8 @@ function renderStudentsTable(students) {
       </div>
       <div class="student-card-row">
         <span class="code-chip">${s.code}</span>
+        <button class="icon-btn navy" type="button" onclick="copyStudentCode('${s.code}',this)" title="نسخ الكود">📋</button>
+        <button class="icon-btn green" type="button" onclick="shareStudentCode('${s.code}')" title="إرسال الكود واتساب">💬</button>
       </div>
       <div class="student-actions-row">
         ${hasDone ? `<button class="icon-btn navy" onclick="openStudentReport('${s.code}')" title="التقرير">📊</button>` : ''}
@@ -2302,6 +2430,7 @@ function filterStudentsTable() {
   if (genderFilter) filtered = filtered.filter(s => s.gender === genderFilter);
   if (q) filtered = filtered.filter(s => (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q));
   renderStudentsTable(filtered);
+  lsFilterBadge();
 }
 
 // ============================================================
@@ -2414,6 +2543,7 @@ async function loadEssayGrading() {
     if (filter === 'graded') {
       results = results.filter(r => Object.values(r.essayAnswers).some(ea => ea.score !== null && ea.score !== undefined));
     }
+    if (filter === 'pending') lsEssayBadge(results.length);
 
     if (!results.length) {
       listEl.innerHTML = `<div class="empty-state"><span class="eicon">✍️</span>${filter === 'pending' ? 'مفيش إجابات مقالية محتاجة تصحيح دلوقتي' : 'لسه معملتش تصحيح لأي سؤال مقالي'}</div>`;
