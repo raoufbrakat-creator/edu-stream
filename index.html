@@ -579,16 +579,6 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .share-step{width:100%;margin-top:8px}.share-step.done{opacity:.75}
 
 /* ===== EXAM READING COMFORT ===== */
-.qtxt{font-size:calc(.9rem*var(--fs,1))}
-.opttxt{font-size:calc(.82rem*var(--fs,1))}
-.reading-passage{font-size:calc(1.15rem*var(--fs,1));line-height:2;padding:15px}
-.reading-passage .pbreak{height:.55em}
-.reading-passage .poetry-line{margin:.3em 0;line-height:1.95;font-size:1em}
-.reading-passage .poetry-line .hemistich{font-size:1.1em;font-family:'Scheherazade New','Amiri',serif}
-.reading-passage .poetry-divider{margin:0 6px}
-@media(max-width:520px){.reading-passage .poetry-line{flex-direction:column;align-items:center;gap:0;padding:.3em 0;border-bottom:1px dotted rgba(184,144,47,.45)}.reading-passage .poetry-line:last-of-type{border-bottom:0}.reading-passage .poetry-line .hemistich{width:100%;text-align:center}.reading-passage .poetry-divider{display:none}}
-.shatr-r,.shatr-l{font-size:calc(1.2rem*var(--fs,1))}
-.pverse-single{font-size:calc(1.15rem*var(--fs,1))}
 .rp-box{margin-bottom:12px}.rp-box .reading-passage{margin-bottom:6px}
 .rp-box.hidden .reading-passage{display:none}
 .rp-toggle{display:block;margin:0 0 6px;border:1px solid var(--bdr);background:var(--cream2);color:var(--navy);border-radius:999px;padding:5px 14px;font:800 .72rem 'Cairo',sans-serif;cursor:pointer}
@@ -617,6 +607,68 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .cert-pending-msg small{display:block;font-weight:600;font-size:.78rem;margin-top:6px}
 #resultsScreen.pending .cert-pending-msg{display:block}
 #resultsScreen.pending .cert-grade-badge,#resultsScreen.pending .cert-score-big,#resultsScreen.pending .cert-score-sub,#resultsScreen.pending .cert-stats,#resultsScreen.pending .cert-meta,#resultsScreen.pending #reportToggle,#resultsScreen.pending #detailedAnalysis,#resultsScreen.pending #qdetailToggle,#resultsScreen.pending #qdetailContent,#resultsScreen.pending #reviewActions,#resultsScreen.pending .cert-student-wrap br{display:none!important}
+
+.aessay-img{display:block;width:190px;max-width:100%;margin-top:6px;border-radius:10px;border:1px solid #d9cfc0;cursor:pointer}
+.aessay-score{background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:6px 10px;font-size:.77rem;color:#3730a3;margin-bottom:5px}
+
+/* ===== QUESTION LOOK — ported from the reference exam file ===== */
+.topbar{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(15,31,61,.3)}
+.topbar-main{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;gap:10px}
+.exam-ttl{font-size:.72rem;color:rgba(255,255,255,.55);font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qcounter{font-size:.78rem;font-weight:700;color:var(--gold2);white-space:nowrap}
+.timer-pill{display:flex;align-items:center;gap:5px;background:var(--green);color:#fff;padding:6px 13px;border-radius:20px;font-size:.95rem;font-weight:900;font-family:'Cairo',monospace;transition:background .4s;white-space:nowrap;letter-spacing:1px}
+.prog-track{height:3px;background:rgba(255,255,255,.12)}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .4s ease}
+.poetry-box{background:#fffdf0;border:1px solid #fde68a;border-top:3px solid #d4a017;border-radius:9px;padding:12px;margin-bottom:12px}
+.poetry-bayt{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin:.3rem 0}
+.shatr-r{font-family:'Amiri',serif;font-size:calc(1rem*var(--fs,1));font-weight:700;color:#44370a;line-height:2.1;text-align:center;padding-left:4px}
+.shatr-l{font-family:'Amiri',serif;font-size:calc(1rem*var(--fs,1));font-weight:700;color:#44370a;line-height:2.1;text-align:center;padding-right:4px}
+.bdiv-v{width:2px;height:26px;background:linear-gradient(to bottom,transparent,#d4a017,transparent);border-radius:1px;flex-shrink:0}
+.bayt-sep{border:none;border-top:1px dashed #fde68a;margin:.25rem 0}
+.pverse-single{font-family:'Amiri',serif;font-size:calc(1rem*var(--fs,1));font-weight:700;color:#44370a;line-height:2.1;display:block;text-align:center}
+.poet-label{font-family:'Amiri','Cairo',serif;font-size:calc(0.8rem*var(--fs,1));color:#7c4d00;font-weight:700;text-align:center;margin-bottom:2px;display:block;background:rgba(255,253,240,0.7);padding:2px 8px;border-radius:8px;display:inline-block;width:fit-content;margin:0 auto 8px auto;}
+.balagha-box{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #8b5cf6;border-right:4px solid #6d28d9;border-radius:9px;padding:12px 14px;margin-bottom:12px;text-align:center;font-family:'Amiri','Cairo',serif;font-size:calc(1.05rem*var(--fs,1));font-weight:700;color:#3b0764;line-height:2}
+.quran-box{background:linear-gradient(160deg,#f0fdf4 0%,#ecfdf5 60%,#d1fae5 100%);border:1px solid #a7f3d0;border-right:4px solid #059669;border-radius:12px;padding:0;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 14px rgba(5,150,105,.12)}
+.quran-box-header{background:linear-gradient(135deg,#047857,#059669 50%,#10b981 100%);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.quran-box-title{font-size:.72rem;color:#fff;font-weight:800;letter-spacing:.5px}
+.quran-box-ref{font-size:.69rem;color:rgba(255,255,255,.93);font-weight:700;background:rgba(0,0,0,.18);padding:2px 10px;border-radius:10px;white-space:nowrap}
+.quran-box-body{padding:16px 16px 12px;text-align:center}
+.quran-text{font-family:'Scheherazade New',serif;font-size:calc(1.5rem*var(--fs,1));line-height:2.8;color:#064e3b;display:block}
+mark.txt-hl{background:linear-gradient(120deg,#fef08a,#fde047);color:#1a1a1a;border-radius:3px;padding:0 3px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+mark.qur-hl{background:linear-gradient(120deg,#d1fae5,#6ee7b7);color:#064e3b;border-radius:3px;padding:0 3px;font-weight:700}
+mark.poe-hl{background:linear-gradient(120deg,#fef9c3,#fde68a);color:#78350f;border-radius:3px;padding:0 2px;font-weight:900}
+.sec-badge{margin:14px 14px 0;background:var(--navy);color:var(--gold2);border-radius:9px;padding:7px 13px;font-size:.74rem;font-weight:700;display:inline-block}
+.qcard{margin:10px 14px 0;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.08);animation:fslide .28s ease}
+.qnumbar{background:var(--cream);border-bottom:1px solid var(--bdr);padding:8px 14px;font-size:.72rem;font-weight:700;color:var(--muted)}
+.qbody{padding:14px}
+.reading-passage{background:var(--cream);border:1px solid var(--bdr);border-right:4px solid var(--navy2);border-radius:9px;padding:12px;margin-bottom:12px;font-size:calc(.88rem*var(--fs,1));line-height:2;text-align:justify}
+.plabel{font-size:calc(.68rem*var(--fs,1));font-weight:700;color:var(--navy);margin-bottom:6px;display:block}
+.para-wrap{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--bdr)}
+.para-wrap:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.sentence-box{background:#fff8e1;border:2px solid #f59e0b;border-radius:9px;padding:10px 14px;margin-bottom:12px;font-size:calc(.95rem*var(--fs,1));font-weight:700;color:#78350f;text-align:center}
+.qtxt{font-size:calc(.9rem*var(--fs,1));font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.7}
+.opts{display:flex;flex-direction:column;gap:7px}
+.optlabel{display:flex;align-items:center;gap:9px;padding:11px 12px;border:2px solid var(--bdr);border-radius:11px;cursor:pointer;transition:all .17s;background:var(--white)}
+.optlabel:hover{border-color:var(--navy2);background:var(--cream)}
+.optlabel input{display:none}
+.optlabel.selected{border-color:var(--navy);background:#eef2ff}
+.optltr{width:26px;height:26px;border-radius:7px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:var(--navy);flex-shrink:0;transition:all .17s}
+.optlabel.selected .optltr{background:var(--navy);color:#fff}
+.opttxt{font-size:calc(.86rem*var(--fs,1));color:var(--text);line-height:1.5}
+.exam-nav{display:flex;gap:9px;padding:14px;margin-top:10px}
+.btnav{flex:1;padding:12px;border:none;border-radius:11px;font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .17s}
+.btn-prev{background:var(--cream2);color:var(--muted);border:1px solid var(--bdr)}
+.btn-prev:hover:not(:disabled){background:var(--bdr)}
+.btn-prev:disabled{opacity:.4;cursor:not-allowed}
+.btn-next{background:var(--navy);color:#fff;box-shadow:0 4px 12px rgba(15,31,61,.3)}
+.btn-next:hover{background:var(--navy2)}
+.btn-next.finish{background:linear-gradient(135deg,var(--gold),#b8943e);color:var(--navy)}
+.compare-box{background:linear-gradient(135deg,#fff8f0,#fff3e8);border:2px solid #c9a84c;border-right:5px solid #8b5e00;border-radius:10px;padding:13px 14px;margin-bottom:12px;position:relative;overflow:hidden}
+.compare-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#8b5e00,#c9a84c,#e8c96a,#c9a84c,#8b5e00)}
+.compare-label{font-size:calc(.65rem*var(--fs,1));font-weight:800;color:#8b5e00;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:2px 10px;display:inline-block;margin-bottom:7px;letter-spacing:.3px}
+.compare-text{font-family:'Amiri',serif;font-size:calc(.95rem*var(--fs,1));line-height:2.1;color:#3d2800;text-align:justify}
+.sec-badge{display:inline-block}#examScreen .qheader-sec{display:none!important}
+.qhead-stack{display:flex;align-items:center;gap:8px}
 </style>
 <script>
 window.onbeforeunload=function(e){const s=document.getElementById('examScreen');if(s&&s.classList.contains('active')){e.preventDefault();e.returnValue='ستفقد تقدمك!';return'ستفقد تقدمك!';}};
@@ -694,16 +746,16 @@ function parseFullExam(text){
   const optRe=/^[\(\[]?\s*([أإابجدabcd])\s*[\)\]]\s*(.+)$/;
   const LET={'أ':0,'إ':0,'ا':0,'a':0,'ب':1,'b':1,'ج':2,'c':2,'د':3,'d':3};
   const instr=/^(?:اقرأ|إقرأ|اقرا)[،,]?\s*ثم\s*أجب[ي]?\s*(?:عما\s*يأتي|عن\s*الأسئلة)?\s*[:：]?\s*/;
-  const warnings=[],list=[];let sec='عام',passLines=[],passage='',started=false,cur=null;
+  const warnings=[],list=[];let sec='عام',passLines=[],passage='',passPk='',passMeta='',started=false,cur=null;
   const cleanP=t=>t.replace(/^[«"]\s*/,'').replace(/\s*[»"]\.?$/,'').trim();
   const fin=()=>{if(!cur)return;const pm=extractPtsMarker(cur.q);cur.q=pm.text;cur.pts=pm.pts;list.push(cur);cur=null};
   for(const line of raw.slice(0,ki)){
     if(!line||div.test(line))continue;
-    if(secRe.test(strip(line))){fin();sec=secName(line)||sec;passLines=[];passage='';started=true;continue}
+    if(secRe.test(strip(line))){fin();sec=secName(line)||sec;passLines=[];passage='';passPk='';passMeta='';started=true;continue}
     const qm=line.match(qStart);
     if(!started&&!qm)continue;
-    if(qm){if(passLines.length){passage=cleanP(passLines.join('\n'));passLines=[]}fin();started=true;cur={num:+qm[1],q:qm[2].trim(),opts:[],sec,passage};continue}
-    if(!cur){const t=line.replace(instr,'').trim();if(t)passLines.push(t);continue}
+    if(qm){if(passLines.length){passage=cleanP(passLines.join('\n'));passLines=[]}fin();started=true;cur={num:+qm[1],q:qm[2].trim(),opts:[],sec,passage,pk:passPk,pmeta:passMeta};continue}
+    if(!cur){const t=line.replace(instr,'').trim();const mk=t.match(/^\[\s*(شعر|الشاعر|نثر|نص|قرآن|آية|جملة|مقارنة)\s*(?:[:：]\s*(.+?))?\s*\]$/);if(mk){const K={'شعر':'poetry','الشاعر':'poetry','نثر':'prose','نص':'reading','قرآن':'quran','آية':'quran','جملة':'sentence','مقارنة':'compare'};passPk=K[mk[1]];passMeta=(mk[2]||'').trim();continue}if(t)passLines.push(t);continue}
     const om=line.match(optRe);
     if(om){cur.opts.push({t:om[2].trim()});continue}
     if(!cur.opts.length)cur.q+='\n'+line;else cur.opts[cur.opts.length-1].t+=' '+line;
@@ -732,12 +784,12 @@ function parseFullExam(text){
       if(idx==null||idx>=q.opts.length){warnings.push('سؤال '+q.num+': مفيش له إجابة صحيحة واضحة في نموذج الإجابة، فاتخطّى');return}
       const o={id:++id,sec:q.sec,q:q.q,opts:q.opts.map(x=>x.t),ans:idx,exp:''};
       if(pts>0)o.pts=pts;
-      if(q.passage){o.passage=q.passage;o.type='passage'}
+      if(q.passage){o.passage=q.passage;o.type='passage';if(q.pk)o.pk=q.pk;if(q.pmeta)o.pmeta=q.pmeta}
       out.push(o);
     }else{
       const o={id:++id,sec:q.sec,q:q.q,type:'essay'};
       if(pts>0){o.maxGrade=pts;o.pts=pts}
-      if(q.passage)o.passage=q.passage;
+      if(q.passage){o.passage=q.passage;if(q.pk)o.pk=q.pk;if(q.pmeta)o.pmeta=q.pmeta}
       if(e){const m=[e.letter!=null?e.full:e.text,e.rub?'(معايير التصحيح: '+e.rub+')':''].filter(Boolean).join('\n');if(m)o.modelAnswer=m}
       else warnings.push('سؤال '+q.num+' (مقالي): مفيش له نموذج إجابة');
       out.push(o);
@@ -880,14 +932,95 @@ function lsFont(){
 (function(){let i=0;try{i=parseInt(localStorage.getItem('eduStreamFs'))||0}catch(e){}lsApplyFs(i)})();
 function lsPKey(p){let h=0;const t=String(p);for(let k=0;k<t.length;k++)h=(h*31+t.charCodeAt(k))|0;return String(h)}
 window.__rpHidden=window.__rpHidden||{};
-function lsPassageBox(p){
-  const key=lsPKey(p),hid=!!window.__rpHidden[key];
-  return '<div class="rp-box'+(hid?' hidden':'')+'" data-k="'+key+'"><button type="button" class="rp-toggle" onclick="lsTogglePassage(this)">'+(hid?'📖 إظهار النص':'📖 إخفاء النص')+'</button><div class="reading-passage">'+formatPassageText(p)+'</div></div>';
+/* ===== TYPED PASSAGES (look and structure of the reference exam file) ===== */
+const LS_SEP=/\*\*\*|\t| {3,}|\.{3,}|…/;
+function lsAutoKind(raw,isBal){
+  if(raw.indexOf('﴿')>-1)return 'quran';
+  const lines=raw.split('\n').map(x=>x.trim()).filter(Boolean);
+  const poetic=lines.filter(l=>{if(l.indexOf('***')>-1)return true;if(l.length>130)return false;const m=l.split(LS_SEP).filter(Boolean);return m.length===2&&m[0].trim().length>=5&&m[1].trim().length>=5}).length;
+  if(poetic&&poetic>=Math.ceil(lines.length/2))return 'poetry';
+  if(lines.length>=2)return 'reading';
+  return raw.length<=160?(isBal?'balagha':'sentence'):'prose';
 }
+function lsPoetryHtml(raw,meta){
+  const lines=raw.split('\n').map(x=>x.trim()).filter(Boolean);
+  let label=meta||'';
+  while(lines.length&&!label&&/[:：]$/.test(lines[0])&&!LS_SEP.test(lines[0])){const t=lines.shift().replace(/[:：]$/,'').trim();label=t.replace(/^قال\s+/,'')}
+  let h=label?'<span class="poet-label">— '+label+' —</span>':'';
+  h+='<div class="poetry-box">';
+  lines.forEach((v,i)=>{
+    const parts=(v.indexOf('***')>-1?v.split('***'):v.split(LS_SEP)).map(x=>x.trim()).filter(Boolean);
+    if(parts.length===2)h+='<div class="poetry-bayt"><span class="shatr-r">'+parts[0]+'</span><span class="bdiv-v"></span><span class="shatr-l">'+parts[1]+'</span></div>';
+    else h+='<span class="pverse-single">'+v.replace(/\*\*\*/g,' ')+'</span>';
+    if(i<lines.length-1)h+='<hr class="bayt-sep">';
+  });
+  return h+'</div>';
+}
+function lsPassageKind(q,secName){
+  const raw=String(q.passage||'').replace(/<br\s*\/?>/gi,'\n').trim();
+  return q.pk||lsAutoKind(raw,/البلاغة/.test(secName||q.sec||''));
+}
+function lsPassageHtml(q,secName){
+  const raw=String(q.passage||'').replace(/<br\s*\/?>/gi,'\n').trim();
+  if(!raw)return '';
+  const pk=lsPassageKind(q,secName),meta=q.pmeta||'';
+  const paras=t=>t.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  if(pk==='quran'){
+    const txt=raw.replace(/[﴿﴾]/g,'').replace(/\n+/g,' ').trim();
+    return '<div class="quran-box"><div class="quran-box-header"><span class="quran-box-title">قرآن كريم</span><span class="quran-box-ref">'+(meta||'آية كريمة')+'</span></div><div class="quran-box-body"><span class="quran-text">﴿ '+txt+' ﴾</span></div></div>';
+  }
+  if(pk==='poetry')return lsPoetryHtml(raw,meta);
+  if(pk==='verse')return '<div class="balagha-box" style="padding:16px 14px"><div class="poetry-box" style="background:transparent;border:none;padding:0;margin:0;box-shadow:none">'+lsPoetryHtml(raw,'').replace('<div class="poetry-box">','').replace(/<\/div>$/,'')+'</div></div>';
+  if(pk==='sentence')return '<div class="sentence-box">'+raw.replace(/\n/g,'<br>')+'</div>';
+  if(pk==='balagha')return '<div class="balagha-box">'+raw.replace(/\n/g,'<br>')+'</div>';
+  if(pk==='compare')return '<div class="compare-box"><span class="compare-label">📖 '+(meta||'نص للمقارنة')+'</span><p class="compare-text">'+raw.replace(/\n/g,'<br>')+'</p></div>';
+  if(pk==='prose')return '<div class="reading-passage"><span class="plabel">📜 النص:</span><div class="para-wrap">'+raw.replace(/\n/g,'<br>')+'</div></div>';
+  return '<div class="reading-passage"><span class="plabel">📄 النص:</span>'+paras(raw).map(p=>'<div class="para-wrap">'+p+'</div>').join('')+'</div>';
+}
+function lsPassageBox(q){
+  const pk=lsPassageKind(q,q.sec);
+  const html=lsPassageHtml(q,q.sec);
+  if(!(pk==='reading'||pk==='prose'||pk==='compare'))return html;
+  const key=lsPKey(q.passage),hid=!!window.__rpHidden[key];
+  return '<div class="rp-box'+(hid?' hidden':'')+'" data-k="'+key+'"><button type="button" class="rp-toggle" onclick="lsTogglePassage(this)">'+(hid?'📖 إظهار النص':'📖 إخفاء النص')+'</button>'+html+'</div>';
+}
+function lsSectionBanner(q){
+  const b=document.getElementById('sectionBadge');if(!b)return;
+  const idx=examSections.findIndex(s=>s.id===q.sec);
+  if(idx<0||examSections.length<2){b.style.display='none';return}
+  const sec=examSections[idx],n=questions.filter(x=>x.sec===sec.id).length;
+  const ORD=['أولاً','ثانياً','ثالثاً','رابعاً','خامساً','سادساً','سابعاً','ثامناً','تاسعاً','عاشراً'];
+  const cw=n===1?'سؤال واحد':n===2?'سؤالان':n<=10?n+' أسئلة':n+' سؤالاً';
+  b.textContent=(ORD[idx]?ORD[idx]+': ':'')+sec.name+' ('+cw+')';b.style.display='inline-block';
+}
+function lsImportPassage(q,sec){
+  const isBal=/البلاغة/.test(sec||'');
+  const blocks=[q.quran,q.verse,q.compare_highlight,q.sentence,q.text_highlight].filter(Boolean).length;
+  if(blocks===1){
+    if(q.quran)return {passage:String(q.quran).replace(/[﴿﴾]/g,'').trim(),pk:'quran',pmeta:(q.surah&&q.ayah)?(q.surah+' — '+q.ayah):(q.surah||'')};
+    if(q.verse&&Array.isArray(q.verse.lines)&&q.verse.lines.length)return {passage:q.verse.lines.map(l=>(l.hemistich1||'')+' *** '+(l.hemistich2||'')).join('\n'),pk:'verse',pmeta:''};
+    if(q.compare_highlight)return {passage:String(q.compare_highlight),pk:'compare',pmeta:q.compare_label||''};
+    if(q.sentence)return {passage:String(q.sentence),pk:isBal?'balagha':'sentence',pmeta:''};
+    const th=q.text_highlight;
+    if(Array.isArray(th))return {passage:th.join('\n\n'),pk:'reading',pmeta:''};
+    if(typeof th==='string'){
+      if(th.indexOf('***')>-1||th.indexOf('\n')>-1)return {passage:th,pk:'poetry',pmeta:q.poet||''};
+      return {passage:th,pk:isBal?'balagha':'prose',pmeta:''};
+    }
+  }
+  const old=buildPassageText(q);return old?{passage:old,pk:'',pmeta:''}:null;
+}
+
 function lsTogglePassage(btn){
   const box=btn.closest('.rp-box'),h=box.classList.toggle('hidden');
   window.__rpHidden[box.dataset.k]=h;btn.textContent=h?'📖 إظهار النص':'📖 إخفاء النص';
 }
+function lsEssayInfo(q){
+  const ea=(window.__essayAns||{})[q.id];if(!ea)return null;
+  const graded=ea.score!==null&&ea.score!==undefined,mx=ea.maxGrade||q.maxGrade||5;
+  return {ea,graded,mx,full:graded&&Number(ea.score)>=Number(mx)};
+}
+function lsEssayImg(url,cls){const u=safeUrl(url);return u?'<img src="'+u+'" class="'+cls+'" onclick="window.open(\''+u+'\',\'_blank\')">':'— لم تُرفع صورة'}
 /* ===== SAFE OUTPUT ===== */
 function escHtml(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function safeUrl(u){u=String(u||'');return /^https:\/\//i.test(u)?encodeURI(u).replace(/'/g,'%27'):''}
@@ -1348,7 +1481,17 @@ async function studentLogin(){
             </div>
             <div>
               <label class="flabel" style="font-size:.72rem;margin-bottom:4px">نص قرائي مرفق (اختياري)</label>
-              <textarea id="qbPassage" class="tinput" rows="3" placeholder="لو السؤال مبني على نص، الصقه هنا"></textarea>
+              <textarea id="qbPassage" class="tinput" rows="3" placeholder="لو السؤال مبني على نص، الصقه هنا. للشعر: كل بيت في سطر وبين الشطرين ***"></textarea>
+            </div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1">
+                <label class="flabel" style="font-size:.72rem;margin-bottom:4px">نوع النص المرفق</label>
+                <select id="qbPassageKind" class="tinput"><option value="">تلقائي</option><option value="reading">نص قرائي (فقرات)</option><option value="prose">نص نثري واحد</option><option value="poetry">شعر</option><option value="quran">آية قرآنية</option><option value="sentence">جملة / مثال</option><option value="compare">نص للمقارنة</option></select>
+              </div>
+              <div style="flex:1">
+                <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الشاعر / السورة والآية / العنوان</label>
+                <input type="text" id="qbPassageMeta" class="tinput" placeholder="اختياري">
+              </div>
             </div>
             <div>
               <label class="flabel" style="font-size:.72rem;margin-bottom:4px">نص السؤال</label>
@@ -1716,16 +1859,9 @@ async function studentLogin(){
 <div id="examScreen" class="screen" style="flex-direction:column;">
   <div id="examWatermark" class="exam-watermark"></div>
   <div class="topbar">
-    <div class="topbar-title-row">
-      <span class="exam-ttl">امتحان اللغة العربية — الثاني الثانوي</span>
-    </div>
-    <div class="topbar-main">
-      <div id="timerDisplay" class="timer-pill"><span>⏱</span><span id="timerText">150:00</span></div>
-      <div class="topbar-progress-wrap">
-        <div class="prog-track"><div id="progressBar" class="prog-fill" style="width:2%"></div></div>
-        <span class="prog-pct-text" id="progPctText">0%</span>
-      </div>
-    </div>
+    <div class="topbar-main"><span class="exam-ttl">امتحان اللغة العربية — الثاني الثانوي</span><span class="qcounter">السؤال <span id="currentQ">1</span>/<span id="totalQ">60</span></span><div id="timerDisplay" class="timer-pill"><span>⏱</span><span id="timerText">150:00</span></div></div>
+    <div class="prog-track"><div id="progressBar" class="prog-fill" style="width:2%"></div></div>
+    <span class="prog-pct-text" id="progPctText" style="display:none">0%</span>
     <div class="nav-dropdown">
       <button class="nav-toggle" id="navToggleBtn" onclick="toggleNavPanel()">
         <div class="nav-summary-txt"><span>📋 خريطة الأسئلة</span><span id="navSummaryText" style="font-weight:400;opacity:.75;font-size:.7rem">0/60 مجاب</span></div>
@@ -1744,8 +1880,9 @@ async function studentLogin(){
       </div>
     </div>
   </div>
+  <div id="sectionBadge" class="sec-badge" style="display:none"></div>
   <div class="qcard" id="questionCard">
-    <div class="qheader" id="qHeaderBar">
+    <div class="qheader qnumbar" id="qHeaderBar">
       <span class="qheader-sec" id="qHeaderSec" style="display:none">—</span>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="qheader-num" id="qHeaderNum">سؤال 1 من 60</span>
@@ -1837,8 +1974,7 @@ async function studentLogin(){
           <strong style="color:var(--navy)">💬 ملاحظة الأستاذ:</strong>
           <div id="teacherNoteText" style="margin-top:4px;color:#333"></div>
         </div>
-        <div id="essayResultBox" style="display:none;margin:10px 0"></div>
-        <div class="qdetail-toggle" id="qdetailToggle" onclick="toggleQuestionDetails()">
+                <div class="qdetail-toggle" id="qdetailToggle" onclick="toggleQuestionDetails()">
           <span>📝 عرض تحليل كل سؤال على حدة</span>
           <span class="qdetail-arrow" id="qdetailArrow">▼</span>
         </div>
@@ -2057,10 +2193,10 @@ function shuffleWithSeed(arr, seed) {
   return a;
 }
 
-// Returns an array where perm[displayPosition] = originalOptionIndex — never reveals which is correct
+// Returns an array where perm[displayPosition] = originalOptionIndex (identity: no shuffling)
 function getOptionPermutation(examId, code, qId, n) {
-  const seed = hashSeed(examId + '_' + code + '_' + qId);
-  return shuffleWithSeed(Array.from({ length: n }, (_, i) => i), seed);
+  // options are NOT shuffled: every student sees them in the order the teacher wrote
+  return Array.from({ length: n }, (_, i) => i);
 }
 
 function deriveSections(qs) {
@@ -2130,7 +2266,7 @@ function renderPreviewQuestion() {
   const letters = ['أ', 'ب', 'ج', 'د'];
   const sec = previewSections.find(s => s.id === q.sec);
   let html = '';
-  if (q.passage) html += `<div class="reading-passage">${formatPassageText(q.passage)}</div>`;
+  if (q.passage) html += lsPassageHtml(q, q.sec);
   html += `<div style="font-size:.68rem;font-weight:800;color:${sec ? sec.color : 'var(--navy)'};margin-bottom:6px">${sec ? sec.icon + ' ' + sec.name : ''} — سؤال ${previewIndex + 1} من ${previewQuestions.length}</div>`;
   html += `<div style="font-weight:800;font-size:.9rem;margin-bottom:10px;line-height:1.7">${formatInlineText(q.q)}</div>`;
   html += `<div style="display:flex;flex-direction:column;gap:8px">`;
@@ -2561,7 +2697,7 @@ async function viewPastResult(examId) {
     document.querySelectorAll('.cert-subtitle').forEach(el => el.textContent = currentExamTitle);
 
     showResults(r.score || 0, r.percentage ?? 0, r.timeTaken || 0, r.sectionScores || {}, r.teacherNote || null, !!r.needsGrading);
-    renderEssayResultBox(r);
+    window.__essayAns = r.essayAnswers || {};
   } catch(e) { alert('❌ خطأ في عرض النتيجة: ' + e.message); }
 }
 
@@ -3599,8 +3735,8 @@ function normalizeQuestionObj(q, sec) {
   const normalized = { id: 0, sec: sec || q.sec || 'عام', q: qText, opts, ans, exp: q.explanation || q.exp || '' };
   const _p = parseFloat(q.pts ?? q.points ?? q.mark ?? q.marks ?? q.degree);
   if (_p > 0) normalized.pts = _p;
-  const passage = buildPassageText(q);
-  if (passage) { normalized.passage = passage; normalized.type = 'passage'; }
+  const P = lsImportPassage(q, normalized.sec);
+  if (P) { normalized.passage = P.passage; normalized.type = 'passage'; if (P.pk) normalized.pk = P.pk; if (P.pmeta) normalized.pmeta = P.pmeta; }
   return normalized;
 }
 
@@ -4266,6 +4402,8 @@ function startEditQuestion(index) {
   toggleQuestionTypeFields();
   document.getElementById('qbSection').value = (q.sec && q.sec !== 'عام') ? q.sec : '';
   document.getElementById('qbPassage').value = q.passage || '';
+  document.getElementById('qbPassageKind').value = q.pk || '';
+  document.getElementById('qbPassageMeta').value = q.pmeta || '';
   document.getElementById('qbQuestion').value = q.q;
   if (isEssay) {
     document.getElementById('qbMaxGrade').value = q.maxGrade || 5;
@@ -4293,6 +4431,8 @@ function cancelEditQuestion() {
   toggleQuestionTypeFields();
   document.getElementById('qbSection').value = '';
   document.getElementById('qbPassage').value = '';
+  document.getElementById('qbPassageKind').value = '';
+  document.getElementById('qbPassageMeta').value = '';
   document.getElementById('qbQuestion').value = '';
   [0,1,2,3].forEach(i => document.getElementById('qbOpt'+i).value = '');
   document.getElementById('qbExp').value = '';
@@ -4323,6 +4463,8 @@ async function addQuestionToEditor() {
       q, type: 'essay', maxGrade
     };
     if (passage) newQ.passage = passage;
+    if (passage && document.getElementById('qbPassageKind').value) newQ.pk = document.getElementById('qbPassageKind').value;
+    if (passage && document.getElementById('qbPassageMeta').value.trim()) newQ.pmeta = document.getElementById('qbPassageMeta').value.trim();
     if (isEditing && editingExamQuestions[editingQuestionIndex].modelAnswer) newQ.modelAnswer = editingExamQuestions[editingQuestionIndex].modelAnswer;
   } else {
     const opts = [0,1,2,3].map(i => document.getElementById('qbOpt'+i).value.trim());
@@ -4337,6 +4479,8 @@ async function addQuestionToEditor() {
       pts: (parseFloat(document.getElementById('qbPoints').value) > 0 ? parseFloat(document.getElementById('qbPoints').value) : 1)
     };
     if (passage) { newQ.passage = passage; newQ.type = 'passage'; }
+    if (passage && document.getElementById('qbPassageKind').value) newQ.pk = document.getElementById('qbPassageKind').value;
+    if (passage && document.getElementById('qbPassageMeta').value.trim()) newQ.pmeta = document.getElementById('qbPassageMeta').value.trim();
   }
 
   const previousState = [...editingExamQuestions];
@@ -5334,8 +5478,11 @@ function renderQuestion(idx) {
     secEl.style.display = 'none';
   }
   currentSectionColor = sec ? sec.color : '#0f1f3d';
+  secEl.style.display = 'none';
+  lsSectionBanner(q);
+  const _cq = document.getElementById('currentQ'); if (_cq) { _cq.textContent = idx + 1; document.getElementById('totalQ').textContent = TOTAL_QUESTIONS; }
 
-  document.getElementById('qHeaderNum').textContent = 'سؤال ' + (idx + 1) + ' من ' + TOTAL_QUESTIONS + (questions.some(x => qPts(x) !== 1) ? ' · 🎯 ' + qPts(q) + ' درجة' : '');
+  document.getElementById('qHeaderNum').textContent = 'السؤال ' + (idx + 1) + ' من ' + TOTAL_QUESTIONS + (questions.some(x => qPts(x) !== 1) ? ' · 🎯 ' + qPts(q) + ' درجة' : '');
   const flagBtn = document.getElementById('qFlagBtn');
   const isFlaggedNow = flaggedQuestions.has(q.id);
   flagBtn.classList.toggle('flagged', isFlaggedNow);
@@ -5345,10 +5492,10 @@ function renderQuestion(idx) {
 
   // Passage (only show on first question of passage group)
   if (q.passage) {
-    html += lsPassageBox(q.passage);
+    html += lsPassageBox(q);
   } else if (q.passageRef) {
     const parent = questions.find(p => p.type === 'passage' && p.sec === q.sec && p.passage);
-    if (parent) html += `<div class="reading-passage" style="opacity:.7;font-size:.82rem">${formatPassageText(parent.passage)}</div>`;
+    if (parent) html += '<div style="opacity:.75">' + lsPassageHtml(parent, parent.sec) + '</div>';
   }
 
   // Poetry
@@ -5394,7 +5541,7 @@ function renderQuestion(idx) {
     perm.forEach((origIdx, displayPos) => {
       const opt = q.opts[origIdx];
       const sel = currentAnswers[q.id] === origIdx ? ' selected' : '';
-      const ltrStyle = sel ? '' : `style="background:${currentSectionColor}22;color:${currentSectionColor}"`;
+      const ltrStyle = '';
       html += `<label class="optlabel${sel}" onclick="selectAnswer(${q.id}, ${origIdx}, this)">
         <input type="radio" name="q${q.id}" ${sel ? 'checked' : ''}>
         <span class="optltr" ${ltrStyle}>${letters[displayPos]}</span>
@@ -5681,32 +5828,12 @@ async function finishExamCore() {
 
   // Show results
   showResults(score, pct, timeTaken, sectionScores, null, hasEssay);
-  renderEssayResultBox(resultPayload);
+  window.__essayAns = resultPayload.essayAnswers || {};
 }
 
 // ============================================================
 // RESULTS SCREEN
 // ============================================================
-function renderEssayResultBox(resultData) {
-  const box = document.getElementById('essayResultBox');
-  if (!box) return;
-  const essayAnswers = resultData.essayAnswers;
-  if (!essayAnswers || !Object.keys(essayAnswers).length) { box.style.display = 'none'; return; }
-
-  box.style.display = 'block';
-  box.innerHTML = `<div style="font-weight:800;font-size:.82rem;color:var(--navy);margin-bottom:8px">📝 الأسئلة المقالية</div>` +
-    Object.values(essayAnswers).map(ea => {
-      const graded = ea.score !== null && ea.score !== undefined;
-      return `<div class="exammgmt-card" style="margin-bottom:8px">
-        <div style="font-size:.78rem;font-weight:700;margin-bottom:6px">${formatInlineText(ea.q || '')}</div>
-        ${ea.imageUrl ? `<img src="${safeUrl(ea.imageUrl)}" style="max-width:120px;border-radius:8px;border:1px solid var(--bdr);display:block;margin-bottom:6px;cursor:pointer" onclick="window.open('${safeUrl(ea.imageUrl)}','_blank')">` : '<div style="font-size:.72rem;color:var(--red)">⚠️ مفيش صورة مرفوعة</div>'}
-        ${graded
-          ? `<span class="badge done">✅ الدرجة: ${ea.score}/${ea.maxGrade}</span>${ea.note ? `<div style="font-size:.72rem;color:var(--muted);margin-top:5px">💬 ${ea.note}</div>` : ''}`
-          : `<span class="badge pending">⏳ بانتظار تصحيح الأستاذ</span>`}
-      </div>`;
-    }).join('');
-}
-
 function showResults(score, pct, timeTaken, sectionScores, teacherNote, pendingGrading) {
   showScreen('resultsScreen');
   document.getElementById('qdetailContent').innerHTML = '';
@@ -5783,8 +5910,18 @@ function toggleQuestionDetails() {
 function buildQuestionDetails() {
   const letters = ['أ','ب','ج','د'];
   let html = '';
-  questions.forEach(q => {
-    if (q.type === 'essay') return; // shown separately in the essay results box, not here
+  questions.forEach((q, qi) => {
+    if (q.type === 'essay') {
+      const E = lsEssayInfo(q); if (!E) return;
+      if (window.__qdFilter && ((q.sec || 'عام') !== window.__qdFilter.id || E.full)) return;
+      const cls = !E.graded ? 'skipped' : (E.full ? 'correct' : 'wrong');
+      html += `<div class="qdetail-item ${cls}">
+        <div class="qdetail-item-top"><span>س${qi + 1}. ${formatInlineText(q.q)}</span><span>${E.graded ? (E.full ? '✅ الدرجة كاملة' : '✏️ ' + E.ea.score + '/' + E.mx) : '⏳ بانتظار التصحيح'}</span></div>
+        <div class="qdetail-item-ans">إجابتك (مقالي): ${lsEssayImg(E.ea.imageUrl, 'aessay-img')}${E.graded ? '<br>درجتك: ' + E.ea.score + ' من ' + E.mx + ' درجة' : ''}</div>
+        ${E.ea.note ? `<div class="qdetail-item-exp">💬 ${escHtml(E.ea.note)}</div>` : ''}
+      </div>`;
+      return;
+    }
     if (window.__qdFilter && ((q.sec || 'عام') !== window.__qdFilter.id || currentAnswers[q.id] === q.ans)) return;
     const given = currentAnswers[q.id];
     const isCorrect = given === q.ans;
@@ -5794,7 +5931,7 @@ function buildQuestionDetails() {
     const qp = qPts(q), earned = isCorrect ? qp : 0;
     const ptsTag = questions.some(x => qPts(x) !== 1) ? ` <span class="qd-pts ${isCorrect ? 'full' : 'zero'}">${earned}/${qp} درجة</span>` : '';
     html += `<div class="qdetail-item ${cls}">
-      <div class="qdetail-item-top"><span>س${q.id}. ${formatInlineText(q.q)}</span><span>${status}${ptsTag}</span></div>
+      <div class="qdetail-item-top"><span>س${qi + 1}. ${formatInlineText(q.q)}</span><span>${status}${ptsTag}</span></div>
       <div class="qdetail-item-ans">إجابتك: ${givenTxt}${!isCorrect ? '<br>الصحيح: ' + letters[q.ans] + '. ' + q.opts[q.ans] : ''}</div>
       ${q.exp ? `<div class="qdetail-item-exp">💡 ${formatInlineText(q.exp)}</div>` : ''}
     </div>`;
@@ -5922,15 +6059,32 @@ function filterAnswers(type, btn) {
 function renderAnswers(filter) {
   const letters = ['أ','ب','ج','د'];
   let html = '';
-  questions.forEach(q => {
-    if (q.type === 'essay') return; // essay questions have no MCQ-style correct answer to review here — shown on the results screen instead
+  questions.forEach((q, qi) => {
+    if (q.type === 'essay') {
+      const E = lsEssayInfo(q); if (!E) return;
+      if (filter === 'correct' && !E.full) return;
+      if (filter === 'wrong' && (!E.graded || E.full)) return;
+      html += `<div class="aitem" data-correct="${E.full}">
+        <div class="aheader">
+          <span class="aqnum">س ${qi + 1} — ${examSections.find(s=>s.id===q.sec)?.name||''} (مقالي)</span>
+          <span class="averd ${E.full?'c':'w'}">${E.graded ? (E.full ? '✅ الدرجة كاملة' : '✏️ ' + E.ea.score + '/' + E.mx) : '⏳ بانتظار التصحيح'}</span>
+        </div>
+        <div class="abody">
+          <p class="aqtxt">${formatInlineText(q.q)}</p>
+          <div class="agiven"><div class="albl">إجابتك:</div>${lsEssayImg(E.ea.imageUrl, 'aessay-img')}</div>
+          ${E.graded ? `<div class="aessay-score"><div class="albl">درجتك في هذا السؤال:</div>${E.ea.score} من ${E.mx} درجة</div>` : ''}
+          ${E.ea.note ? `<div class="aexp">💬 ملاحظة الأستاذ: ${escHtml(E.ea.note)}</div>` : ''}
+        </div>
+      </div>`;
+      return;
+    }
     const given = currentAnswers[q.id];
     const correct = given === q.ans;
     if (filter === 'correct' && !correct) return;
     if (filter === 'wrong' && (given === undefined || correct)) return;
     html += `<div class="aitem" data-correct="${correct}">
       <div class="aheader">
-        <span class="aqnum">س ${q.id} — ${examSections.find(s=>s.id===q.sec)?.name||''}</span>
+        <span class="aqnum">س ${qi + 1} — ${examSections.find(s=>s.id===q.sec)?.name||''}</span>
         <span class="averd ${correct?'c':'w'}">${correct?'✅ صحيح':'❌ خطأ'}</span>
       </div>
       <div class="abody">
@@ -5941,9 +6095,6 @@ function renderAnswers(filter) {
       </div>
     </div>`;
   });
-  if (!html && questions.some(q => q.type === 'essay') && filter === 'all') {
-    html = '<div style="text-align:center;padding:24px;color:#667">مفيش أسئلة اختيارية في الامتحان ده — الأسئلة المقالية شايفها في شاشة النتيجة</div>';
-  }
   document.getElementById('answersContent').innerHTML = html || '<div style="text-align:center;padding:24px;color:#667">لا توجد أسئلة في هذا الفلتر</div>';
 }
 
