@@ -573,6 +573,71 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .qd-pts.full{background:#e8f7ef;border-color:#a7e3c2;color:#1a7a4a}.qd-pts.zero{background:#f4f4f4;border-color:#ddd;color:#777}
 .mdl{margin:0 0 8px;background:#fff8e1;border:1px solid #f0d78c;border-radius:10px;padding:6px 10px;font-size:.72rem;line-height:1.8}
 .mdl summary{cursor:pointer;font-weight:800;color:#7a5a00}.mdl div{margin-top:6px;white-space:pre-line}
+
+/* ===== ESSAY GRADING: one card per student ===== */
+.eg-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.eg-tools .eg-search{grid-column:1/-1}
+.eg-summary{font-size:.72rem;font-weight:700;color:var(--muted);margin:0 2px 10px;min-height:1.2em;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.eg-link{border:0;background:transparent;color:var(--navy);font:800 .72rem 'Cairo',sans-serif;cursor:pointer;text-decoration:underline}
+.eg-card{display:block;background:#fff;border:1px solid var(--bdr);border-inline-start:4px solid var(--gold);border-radius:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(15,31,61,.06);scroll-margin-top:112px}
+.eg-card[hidden]{display:none}
+.eg-card.is-ready{border-inline-start-color:var(--green)}
+.eg-card[open]{border-color:var(--gold);box-shadow:0 10px 28px rgba(15,31,61,.16)}
+.eg-sum{list-style:none;display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;border-radius:13px;-webkit-tap-highlight-color:transparent}
+.eg-sum::-webkit-details-marker{display:none}
+.eg-card[open]>.eg-sum{position:sticky;top:108px;z-index:5;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:12px 12px 0 0}
+.eg-av{flex:0 0 auto;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:var(--gold2);border:2px solid var(--gold);font-weight:900;font-size:1rem}
+.eg-card[open]>.eg-sum .eg-av{background:rgba(255,255,255,.1)}
+.eg-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.eg-name{font-size:.88rem;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eg-meta{font-size:.66rem;opacity:.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eg-side{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.eg-prog{background:#fff6dc;border:1px solid #e8c96a;color:#8a6410;border-radius:999px;padding:1px 10px;font-size:.72rem;font-weight:800}
+.eg-card.is-ready .eg-prog{background:var(--greenl);border-color:#a7e3c2;color:var(--green)}
+.eg-dirty{font-size:.62rem;font-weight:800;color:#ea580c}
+.eg-dirty[hidden]{display:none}
+.eg-card[open]>.eg-sum .eg-dirty{color:#fdba74}
+.eg-chev{font-size:1.2rem;line-height:1;opacity:.55;transition:transform .2s}
+.eg-card[open]>.eg-sum .eg-chev{transform:rotate(-90deg)}
+.eg-body{padding:12px;display:flex;flex-direction:column;gap:12px}
+.eg-q{border:1px solid var(--bdr);border-radius:12px;padding:10px;background:var(--cream)}
+.eg-q.is-graded{border-color:#a7e3c2;background:#f4fbf7}
+.eg-qhead{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.eg-qn{flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:.72rem;font-weight:800}
+.eg-qtext{flex:1;min-width:0;font-size:.76rem;font-weight:700;line-height:1.8}
+.eg-qmax{flex:0 0 auto;background:#fff6dc;border:1px solid #e8c96a;color:#8a6410;border-radius:999px;padding:1px 9px;font-size:.66rem;font-weight:800;white-space:nowrap}
+.eg-ans{margin:0 0 10px}
+.eg-img{display:block;width:100%;max-height:300px;object-fit:contain;background:#fff;border:1px solid var(--bdr);border-radius:10px;cursor:zoom-in}
+.eg-imghint{font-size:.62rem;color:var(--muted);text-align:center;margin-top:3px}
+.eg-noimg{font-size:.74rem;font-weight:700;color:var(--red);background:var(--redl);border-radius:10px;padding:8px 10px}
+.eg-grade{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.eg-scorebox{display:flex;align-items:center;gap:6px;flex:1 1 150px}
+.eg-score-in{max-width:92px;text-align:center;font-weight:900;font-size:1rem}
+.eg-score-in.is-over{border-color:var(--red);background:var(--redl)}
+.eg-of{font-size:.72rem;color:var(--muted);white-space:nowrap}
+.eg-quick{display:flex;gap:6px}
+.eg-qb{min-width:44px;padding:8px 10px;border:1.5px solid var(--bdr);background:#fff;border-radius:10px;font:800 .78rem 'Cairo',sans-serif;color:var(--navy);cursor:pointer}
+.eg-qb.full{border-color:#a7e3c2;background:var(--greenl);color:var(--green)}
+.eg-row2{display:flex;gap:6px}
+.eg-row2 .tinput{flex:1;min-width:0}
+.eg-del{padding:8px 12px}
+.eg-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between;border-top:1px dashed var(--bdr);padding-top:12px}
+.eg-total{font-size:.8rem;font-weight:800;color:var(--navy)}
+.eg-foot-btns{display:flex;gap:8px;flex-wrap:wrap}
+.lk-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid #fecaca;background:#fef2f2;border-radius:12px;margin-top:8px}
+.lk-who{display:flex;flex-direction:column;gap:2px;min-width:0}
+.lk-who b{font-size:.85rem}
+.lk-who span{font-size:.68rem;color:var(--muted)}
+.eg-modes{display:flex;gap:6px;grid-column:1/-1}
+.eg-mode{flex:1;padding:9px 10px;border:1.5px solid var(--bdr);background:#fff;border-radius:10px;font:800 .78rem 'Cairo',sans-serif;color:var(--navy);cursor:pointer}
+.eg-mode.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.eg-qcard>.eg-sum{cursor:default}
+.eg-savebar{position:sticky;bottom:12px;text-align:center;margin-top:6px;z-index:6}
+.eg-lb{position:fixed;inset:0;z-index:100000;background:rgba(6,15,32,.92);display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.eg-lb img{max-width:96vw;max-height:84vh;object-fit:contain;border-radius:8px;transition:transform .2s}
+.eg-lb-btn{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);border:0;border-radius:999px;background:var(--gold);color:var(--navy);font:800 .85rem 'Cairo',sans-serif;padding:10px 20px;cursor:pointer}
+.eg-lb-btn.close{bottom:auto;top:16px;left:16px;transform:none;background:rgba(255,255,255,.16);color:#fff;padding:8px 14px}
+.eg-toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:99999;background:var(--navy);color:#fff;border-radius:14px;padding:11px 18px;font:700 .82rem 'Cairo',sans-serif;box-shadow:0 10px 30px rgba(15,31,61,.35);max-width:92vw;text-align:center}
 .nav-next-flag{width:100%;margin-top:8px;padding:9px;border-radius:10px;border:1.5px solid #ea580c;background:#fff7ed;color:#9a3412;font:800 .78rem 'Cairo',sans-serif;cursor:pointer}
 .flag-warn{background:#fff7ed;border:1px solid #fdba74;border-radius:12px;padding:8px 10px;margin:8px 0;font-size:.78rem;color:#9a3412;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:right}
 .flag-warn button{border:0;border-radius:999px;background:#ea580c;color:#fff;font:800 .72rem 'Cairo',sans-serif;padding:6px 12px;cursor:pointer;white-space:nowrap}
@@ -669,6 +734,39 @@ mark.poe-hl{background:linear-gradient(120deg,#fef9c3,#fde68a);color:#78350f;bor
 .compare-text{font-family:'Amiri',serif;font-size:calc(.95rem*var(--fs,1));line-height:2.1;color:#3d2800;text-align:justify}
 .sec-badge{display:inline-block}#examScreen .qheader-sec{display:none!important}
 .qhead-stack{display:flex;align-items:center;gap:8px}
+
+/* ===== BRANCH COLOURS FOR PASSAGE BOXES ===== */
+.br-nahw.reading-passage,.br-nahw.poetry-box,.br-nahw.compare-box{background:#fff8e1;border-color:#f59e0b;border-right-color:#d97706;border-top-color:#d97706}
+.br-balagha.reading-passage,.br-balagha.poetry-box,.br-balagha.compare-box,.br-balagha.sentence-box{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#8b5cf6;border-right-color:#6d28d9;border-top-color:#6d28d9}
+.br-texts.reading-passage,.br-texts.compare-box,.br-texts.sentence-box{background:#fffdf0;border-color:#fde68a;border-right-color:#d4a017}
+.br-adab.reading-passage,.br-adab.poetry-box,.br-adab.compare-box,.br-adab.sentence-box{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#86efac;border-right-color:#059669;border-top-color:#059669}
+.br-nahw.sentence-box{background:#fff8e1;border-color:#f59e0b}
+
+/* ===== EXAM SCREEN v55: fixed bottom bar, map as an overlay, clearer question ===== */
+#examScreen{padding-bottom:104px}
+.nav-dropdown{padding:0;background:transparent}
+.nav-toggle,.nav-prog-mini{display:none!important}
+.nav-panel{position:fixed;left:10px;right:10px;top:66px;max-height:calc(100vh - 160px);overflow-y:auto;z-index:400;margin:0}
+.nav-panel-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--cream2);font-weight:800;color:var(--navy);font-size:.85rem;position:sticky;top:0;z-index:2}
+.nav-panel .nav-legend{position:sticky;bottom:0;background:#fff;border-top:1px solid #eadfc4;z-index:2;padding-bottom:14px}
+.nav-close{border:0;background:#fff;border-radius:50%;width:30px;height:30px;font-size:.9rem;cursor:pointer;color:var(--navy)}
+#navBackdrop{display:none;position:fixed;inset:0;background:rgba(15,31,61,.5);z-index:299}
+.topbar{z-index:300}
+#navBackdrop.open{display:block}
+.exam-nav-fixed{position:fixed;left:0;right:0;bottom:0;z-index:250;margin:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,253,248,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 -6px 20px rgba(15,31,61,.14);border-top:1px solid #eadfc4;align-items:stretch}
+.exam-nav-fixed .btnav{padding:11px 8px}
+.nav-mid{flex:0 0 auto;min-width:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid var(--bdr);background:#fff;border-radius:12px;font:800 .82rem 'Cairo',sans-serif;color:var(--navy);padding:3px 10px;line-height:1.3;cursor:pointer}
+.nav-mid small{font-size:.58rem;font-weight:600;color:var(--muted)}
+.wm-tag{position:absolute;top:-13px;left:10px;font-size:.52rem;color:#6b7280;opacity:.55;pointer-events:none;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exam-watermark{opacity:.025}
+.exam-watermark span{font-size:.55rem;padding:30px 38px}
+#examScreen .qtxt{font-size:calc(1.1rem*var(--fs,1));font-weight:900;line-height:1.95;color:var(--navy);background:linear-gradient(270deg,rgba(201,168,76,.15),rgba(201,168,76,0));border-right:5px solid var(--gold);border-radius:0 12px 12px 0;padding:11px 14px;margin:16px 0 14px}
+#examScreen .opttxt{font-size:calc(.92rem*var(--fs,1))}
+.optlabel.selected{border-color:#1a7a4a;background:#f0fdf4;box-shadow:0 0 0 3px rgba(26,122,74,.13)}
+.optlabel.selected .optltr{background:#1a7a4a;color:#fff}
+.optlabel.selected::after{content:'✓';margin-inline-start:auto;color:#1a7a4a;font-weight:900;font-size:1.15rem}
+.rp-box.hidden>*:not(.rp-toggle){display:none}
+@media(max-width:520px){.poetry-bayt.stack{grid-template-columns:1fr;padding:2px 0}.poetry-bayt.stack .bdiv-v{display:none}.poetry-bayt.stack .shatr-r,.poetry-bayt.stack .shatr-l{padding:0;line-height:1.9}}
 </style>
 <script>
 window.onbeforeunload=function(e){const s=document.getElementById('examScreen');if(s&&s.classList.contains('active')){e.preventDefault();e.returnValue='ستفقد تقدمك!';return'ستفقد تقدمك!';}};
@@ -798,6 +896,164 @@ function parseFullExam(text){
   out.warnings=warnings;
   return out;
 }
+/* ===== INLINE-ANSWER EXAM IMPORT (answer written right under each question) ===== */
+function parseInlineAnswerExam(text){
+  const warnings=[],out=[];
+  const sd=x=>String(x).replace(/[\u064B-\u0652\u0670\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي');
+  const raw=normalizeImportedText(text).split('\n').map(l=>l.replace(/\*\*|__/g,'').replace(/^[#>\s]+/,'').trim());
+  const div=/^[-—–_=*]{3,}$/,qRe=/^([\d٠-٩]+)\s*[.)\-–]\s*(.+)$/;
+  const secRe=/^(اولا|ثانيا|ثالثا|رابعا|خامسا|سادسا|سابعا|ثامنا|تاسعا|عاشرا)\s*[:：\-–—]\s*\S/;
+  const instrRe=/^[اأإ]قر[اأ][،,]?\s*ثم\s*[اأإ]جب[ي]?\s*(?:عما\s*ي[اأ]تي|عن\s*ال[اأ]سئلة)?\s*[:：]?\s*/;
+  const ansRe=/^(?:نموذج\s*ال[اإ]جابة|ال[اإ]جابة(?:\s*الصحيحة)?(?:\s*النموذجية)?|الجواب)\s*[:：]\s*(.*)$/;
+  const reasonRe=/^(السبب|التفسير|الشرح|التعليل)\s*([\(（][^)）]*[\)）])?\s*[:：]\s*(.*)$/;
+  const ptsLineRe=/^(?:درجة السؤال|الدرجة|الدرجات)\s*[:：]\s*([\d٠-٩]+(?:[.,٫][\d٠-٩]+)?)/;
+  const MARK=/^\s*(?:(اختيار\s*من\s*متعدد|اختياري|اختيار|مقالي|مقالى|مقال))?\s*[-–—،,:]?\s*(?:(?:الدرجة\s*[:：]?\s*)?(?:(نصف\s*درجة)|(درجة\s*واحدة|درجه\s*واحده)|(درجتان|درجتين)|([\d٠-٩]+(?:[.,٫][\d٠-٩]+)?)\s*(?:درجات|درجة|درجه)))?\s*$/;
+  const LIDX=c=>({'أ':0,'إ':0,'ا':0,'a':0,'ب':1,'b':1,'ج':2,'c':2,'د':3,'d':3})[String(c).toLowerCase()];
+  const SEP=/\.{3,}|…/g;
+  let sec='عام',passLines=[],passage='',cur=null,lastNum=0,passOn=false,id=0;
+
+  // "(مقالي - درجة واحدة)" / "(اختيار من متعدد - 2 درجة)" anywhere inside the question text
+  function takeMarker(t){
+    let type=null,pts=0;
+    t=t.replace(/[\(（\[]([^()（）\[\]]{2,60})[\)）\]]/g,(m,inner)=>{
+      const k=inner.match(MARK);
+      if(!k||(!k[1]&&!k[2]&&!k[3]&&!k[4]&&!k[5]))return m;
+      if(k[1]&&!type)type=/مقال/.test(k[1])?'essay':'mcq';
+      if(!pts)pts=k[2]?0.5:k[3]?1:k[4]?2:(k[5]?(parseFloat(lsDigits(k[5]))||0):0);
+      return ' ';
+    });
+    return {text:t.replace(/\s{2,}/g,' ').trim(),type,pts};
+  }
+  // options "(أ) ... (ب) ..." on one line, or "أ) ..." one per line; returns null when the line has none
+  function readOpts(line,have){
+    const re=/(?:^|\s)(?:[\(\[]\s*([أإابجدabcdABCD])\s*[\)\]]|([أإابجدabcdABCD])\s*(?:[)]|[.\-–](?=\s)))\s*/g;
+    const seq=[];let m,k=have;
+    while((m=re.exec(line))){
+      const wrapped=m[1]!==undefined,at=m.index;
+      if(!wrapped&&at>0)continue;
+      if(LIDX(m[1]||m[2])===k){seq.push({s:at,e:re.lastIndex});k++}
+    }
+    if(!seq.length||(seq[0].s>0&&seq.length<2&&!have))return null;
+    const tidy=t=>t.trim().replace(/([^.])\.\s*$/,'$1').trim();
+    return {before:line.slice(0,seq[0].s).trim(),opts:seq.map((x,i)=>tidy(line.slice(x.e,i+1<seq.length?seq[i+1].s:line.length)))};
+  }
+  // a verse and the question glued on one line: put the question on its own line
+  function breakVerse(t){
+    let last=null,m;SEP.lastIndex=0;
+    while((m=SEP.exec(t)))last=m;
+    if(!last||t.indexOf('؟')<0)return t;
+    const pos=last.index+last[0].length,tail=t.slice(pos),w=tail.match(/\s(أي|أيّ|بم|ماذا|لماذا|كيف|هل)\s/);
+    if(!w||tail.indexOf('؟',w.index)<0)return t;
+    return t.slice(0,pos)+tail.slice(0,w.index)+'\n'+tail.slice(w.index+1);
+  }
+  // two verses glued on one line ("a ... b c ... d"): split them using the rhyme letter
+  function splitMerged(line){
+    const parts=line.split(/\s*(?:\.{3,}|…)\s*/);
+    if(parts.length!==3)return null;
+    const rh=sd(parts[0].trim()).slice(-1),w=parts[1].trim().split(/\s+/);
+    let cut=-1,best=1e9;
+    for(let i=1;i<=w.length-3;i++)if(sd(w[i]).slice(-1)===rh&&Math.abs(i-(w.length-1)/2)<best){best=Math.abs(i-(w.length-1)/2);cut=i}
+    if(cut<0)return null;
+    return [parts[0].trim()+' ... '+w.slice(0,cut+1).join(' '),w.slice(cut+1).join(' ')+' ... '+parts[2].trim()];
+  }
+  function buildPassage(lines){
+    const res=[];
+    lines.forEach(l=>{
+      const n=(l.match(SEP)||[]).length;
+      if(n>=2){
+        const sp=splitMerged(l);
+        if(sp){res.push(...sp);warnings.push('بيتين كانوا لازقين في سطر واحد ("'+l.slice(0,22)+'…") فصلتهم بالقافية — راجعهم');return}
+        warnings.push('في النص بيتين لازقين في سطر واحد ("'+l.slice(0,22)+'…") — حط كل بيت في سطر لوحده');
+      }
+      res.push(l);
+    });
+    return res.join('\n').replace(/^[«"]\s*/,'').replace(/\s*[»"]\.?$/,'').trim();
+  }
+  function fin(){
+    if(!cur)return;const c=cur;cur=null;
+    const q=breakVerse(c.q.trim());
+    let o;
+    if(c.type!=='essay'&&c.opts.length>=2){
+      let idx=c.letter!=null?LIDX(c.letter):undefined;
+      if(idx==null&&c.ansText){const t=sd(c.ansText);const j=c.opts.findIndex(x=>sd(x)===t||t.indexOf(sd(x))===0);if(j>-1)idx=j}
+      if(idx==null||idx>=c.opts.length){warnings.push('سؤال '+c.num+': مفيش له إجابة صحيحة واضحة (اكتب "الإجابة: (أ)" مثلًا)، فاتخطّى');return}
+      o={id:++id,sec:c.sec,q,opts:c.opts,ans:idx,exp:c.exp.join(' ').trim()};
+      if(c.pts>0)o.pts=c.pts;
+      if(c.passage){o.passage=c.passage;o.type='passage'}
+    }else{
+      if(c.type==='mcq')warnings.push('سؤال '+c.num+': مكتوب اختيار من متعدد بس معرفتش اختياراته، فاستوردته مقالي');
+      const model=[c.ans.join('\n').trim(),c.exp.length?(c.expLabel||'السبب')+': '+c.exp.join('\n').trim():''].filter(Boolean).join('\n');
+      o={id:++id,sec:c.sec,q,type:'essay'};
+      if(c.pts>0){o.maxGrade=c.pts;o.pts=c.pts}
+      if(c.passage)o.passage=c.passage;
+      if(model)o.modelAnswer=model;else warnings.push('سؤال '+c.num+' (مقالي): مفيش له نموذج إجابة');
+    }
+    out.push(o);
+  }
+
+  for(let line of raw){
+    if(!line||div.test(line))continue;
+    line=line.replace(/^[*•\-]\s+(?=\S)/,'');
+    if(secRe.test(sd(line))){
+      fin();passLines=[];passage='';passOn=true;lastNum=0;
+      sec=line.replace(/^[^:：\-–—]*[:：\-–—]\s*/,'').replace(/\s*[\(（][^)）]*درج[^)）]*[\)）]\s*$/,'').trim()||sec;
+      continue;
+    }
+    const im=line.match(instrRe);
+    if(im){fin();passLines=[];passage='';passOn=true;const rest=line.slice(im[0].length).trim();if(rest)passLines.push(rest);continue}
+    const qm=line.match(qRe);
+    if(qm){
+      const n=+lsDigits(qm[1]);
+      if(!cur||!cur.sawAns||n===lastNum+1||lastNum===0){
+        fin();
+        if(passLines.length){passage=buildPassage(passLines);passLines=[]}
+        const mk=takeMarker(qm[2]);
+        cur={num:n,q:mk.text,type:mk.type,pts:mk.pts,opts:[],ans:[],exp:[],phase:'q',sawAns:false,letter:null,ansText:'',expLabel:'',sec,passage};
+        lastNum=n;
+        const ro=readOpts(cur.q,0);
+        if(ro){cur.q=ro.before;cur.opts=ro.opts}
+        continue;
+      }
+    }
+    if(!cur){if(passOn)passLines.push(line);continue}
+    let m;
+    if((m=line.match(ansRe))){
+      cur.sawAns=true;cur.phase='ans';
+      const rest=m[1].trim();
+      if(cur.type!=='essay'&&cur.opts.length>=2){
+        const lm=rest.match(/^[\(\[]?\s*([أإابجدabcdABCD])\s*(?:[\)\]\.]|$)\s*(.*)$/);
+        if(lm){cur.letter=lm[1];cur.ansText=lm[2].trim()}else cur.ansText=rest;
+      }else if(rest)cur.ans.push(rest);
+      continue;
+    }
+    if(cur.sawAns&&(m=line.match(reasonRe))){
+      cur.phase='exp';
+      cur.expLabel=/معايير/.test(m[2]||'')?'معايير التصحيح':'السبب';
+      if(m[3].trim())cur.exp.push(m[3].trim());
+      continue;
+    }
+    if((m=line.match(ptsLineRe))){cur.pts=parseFloat(lsDigits(m[1]))||0;continue}
+    if(cur.phase==='q'){
+      const mk=takeMarker(line);
+      if(!cur.type&&mk.type)cur.type=mk.type;
+      if(!cur.pts&&mk.pts)cur.pts=mk.pts;
+      const rest=mk.text;
+      if(!rest)continue;
+      const ro=readOpts(rest,cur.opts.length);
+      if(ro){
+        if(ro.before){if(cur.opts.length)cur.opts[cur.opts.length-1]+=' '+ro.before;else cur.q+='\n'+ro.before}
+        cur.opts.push(...ro.opts);
+      }else if(cur.opts.length)cur.opts[cur.opts.length-1]+=' '+rest;
+      else cur.q+='\n'+rest;
+      continue;
+    }
+    if(cur.phase==='exp'||(cur.opts.length>=2&&cur.type!=='essay'))cur.exp.push(line);
+    else cur.ans.push(line);
+  }
+  fin();
+  out.warnings=warnings;
+  return out;
+}
 /* ===== CERTIFICATE ===== */
 function lsSectionCards(sectionScores){
   const rows=[];
@@ -810,7 +1066,7 @@ function lsSectionCards(sectionScores){
     else{c='#7f1d1d';bg='#fef2f2';bd='#b91c1c';msg='يحتاج لمراجعة هذا القسم جيداً. 📚'}
     const bad=questions.filter(q=>q.type!=='essay'&&(q.sec||'عام')===sec.id&&currentAnswers[q.id]!==q.ans).length;
     const btn=bad?'<button type="button" class="sec-review-btn" style="color:'+c+'" onclick="reviewSectionErrors('+idx+')">🔍 راجع أخطاءك ('+bad+')</button>':'';
-    return '<div class="sec-card" style="background:'+bg+';border-color:'+bd+'"><div class="sec-card-head"><span class="sec-card-name" style="color:'+c+'">'+sec.icon+' '+escHtml(sec.name)+'</span><span class="sec-card-score" style="color:'+c+'">'+ss.correct+'/'+ss.total+' ('+sp+'%)</span></div><p class="sec-card-msg">'+msg+'</p>'+btn+'</div>';
+    return '<div class="sec-card" style="background:'+bg+';border-color:'+bd+'"><div class="sec-card-head"><span class="sec-card-name" style="color:'+c+'">'+escHtml(sec.name)+'</span><span class="sec-card-score" style="color:'+c+'">'+ss.correct+'/'+ss.total+' ('+sp+'%)</span></div><p class="sec-card-msg">'+msg+'</p>'+btn+'</div>';
   }).join('');
 }
 function reviewSectionErrors(idx){
@@ -934,12 +1190,15 @@ function lsPKey(p){let h=0;const t=String(p);for(let k=0;k<t.length;k++)h=(h*31+
 window.__rpHidden=window.__rpHidden||{};
 /* ===== TYPED PASSAGES (look and structure of the reference exam file) ===== */
 const LS_SEP=/\*\*\*|\t| {3,}|\.{3,}|…/;
+function lsLongShatr(p){return p.some(x=>x.replace(/[\u064B-\u0652\u0670]/g,'').length>16)}
+function lsIsPoetic(l){if(l.indexOf('***')>-1)return true;if(l.length>130)return false;const m=l.split(LS_SEP).filter(Boolean);return m.length===2&&m[0].trim().length>=5&&m[1].trim().length>=5}
 function lsAutoKind(raw,isBal){
   if(raw.indexOf('﴿')>-1)return 'quran';
-  const lines=raw.split('\n').map(x=>x.trim()).filter(Boolean);
-  const poetic=lines.filter(l=>{if(l.indexOf('***')>-1)return true;if(l.length>130)return false;const m=l.split(LS_SEP).filter(Boolean);return m.length===2&&m[0].trim().length>=5&&m[1].trim().length>=5}).length;
-  if(poetic&&poetic>=Math.ceil(lines.length/2))return 'poetry';
-  if(lines.length>=2)return 'reading';
+  let lines=raw.split('\n').map(x=>x.trim()).filter(Boolean);
+  while(lines.length>1&&/[:：]$/.test(lines[0])&&!lsIsPoetic(lines[0]))lines.shift();
+  const poetic=lines.filter(lsIsPoetic).length;
+  if(poetic&&poetic===lines.length)return 'poetry';
+  if(lines.length>=2||poetic)return 'reading';
   return raw.length<=160?(isBal?'balagha':'sentence'):'prose';
 }
 function lsPoetryHtml(raw,meta){
@@ -950,11 +1209,37 @@ function lsPoetryHtml(raw,meta){
   h+='<div class="poetry-box">';
   lines.forEach((v,i)=>{
     const parts=(v.indexOf('***')>-1?v.split('***'):v.split(LS_SEP)).map(x=>x.trim()).filter(Boolean);
-    if(parts.length===2)h+='<div class="poetry-bayt"><span class="shatr-r">'+parts[0]+'</span><span class="bdiv-v"></span><span class="shatr-l">'+parts[1]+'</span></div>';
+    if(parts.length===2)h+='<div class="poetry-bayt'+(lsLongShatr(parts)?' stack':'')+'"><span class="shatr-r">'+parts[0]+'</span><span class="bdiv-v"></span><span class="shatr-l">'+parts[1]+'</span></div>';
     else h+='<span class="pverse-single">'+v.replace(/\*\*\*/g,' ')+'</span>';
     if(i<lines.length-1)h+='<hr class="bayt-sep">';
   });
   return h+'</div>';
+}
+function lsBranch(name){
+  const n=String(name||'');
+  if(/بلاغ/.test(n))return 'balagha';
+  if(/نحو|صرف|إعراب|اعراب/.test(n))return 'nahw';
+  if(/نصوص|شعر/.test(n))return 'texts';
+  if(/أدب|ادب|تاريخ/.test(n))return 'adab';
+  if(/قراءة|قراءه|فهم|استيعاب/.test(n))return 'reading';
+  return '';
+}
+function lsAddBranch(html,br){return br?html.replace(/class="(reading-passage|poetry-box|sentence-box|balagha-box|compare-box)(?=[" ])/g,'class="$1 br-'+br+'"'):html}
+function lsSplitExample(q){
+  // grammar / rhetoric questions that open with the quoted example sentence get it pulled out into its own coloured box
+  if(q.passage)return null;
+  const br=lsBranch(q.sec);if(br!=='nahw'&&br!=='balagha')return null;
+  const t=String(q.q||'').trim();
+  const m=t.match(/^((?:[«“"][^»”"]{2,}[»”"][\s\-–—،,]*){1,3})([\s\S]+)$/);
+  if(!m)return null;
+  const parts=[...m[1].matchAll(/[«“"]([^»”"]{2,})[»”"]/g)].map(x=>x[1].trim().replace(/[.،؛]+$/,''));
+  const rest=m[2].replace(/^[\s.،:؛\-–—]+/,'').trim();
+  if(!parts.length||rest.length<4)return null;
+  return {sentence:parts.join(' — '),rest};
+}
+function lsExampleBox(sentence,q){
+  const br=lsBranch(q.sec);
+  return lsAddBranch('<div class="'+(br==='balagha'?'balagha-box':'sentence-box')+'">'+sentence+'</div>',br);
 }
 function lsPassageKind(q,secName){
   const raw=String(q.passage||'').replace(/<br\s*\/?>/gi,'\n').trim();
@@ -963,7 +1248,11 @@ function lsPassageKind(q,secName){
 function lsPassageHtml(q,secName){
   const raw=String(q.passage||'').replace(/<br\s*\/?>/gi,'\n').trim();
   if(!raw)return '';
-  const pk=lsPassageKind(q,secName),meta=q.pmeta||'';
+  let pk=lsPassageKind(q,secName);const meta=q.pmeta||'',br=lsBranch(secName||q.sec);
+  if(pk==='poetry'&&br==='balagha')pk='verse';
+  return lsAddBranch(lsPassageBody(q,raw,pk,meta),br);
+}
+function lsPassageBody(q,raw,pk,meta){
   const paras=t=>t.split(/\n+/).map(x=>x.trim()).filter(Boolean);
   if(pk==='quran'){
     const txt=raw.replace(/[﴿﴾]/g,'').replace(/\n+/g,' ').trim();
@@ -975,12 +1264,15 @@ function lsPassageHtml(q,secName){
   if(pk==='balagha')return '<div class="balagha-box">'+raw.replace(/\n/g,'<br>')+'</div>';
   if(pk==='compare')return '<div class="compare-box"><span class="compare-label">📖 '+(meta||'نص للمقارنة')+'</span><p class="compare-text">'+raw.replace(/\n/g,'<br>')+'</p></div>';
   if(pk==='prose')return '<div class="reading-passage"><span class="plabel">📜 النص:</span><div class="para-wrap">'+raw.replace(/\n/g,'<br>')+'</div></div>';
-  return '<div class="reading-passage"><span class="plabel">📄 النص:</span>'+paras(raw).map(p=>'<div class="para-wrap">'+p+'</div>').join('')+'</div>';
+  return '<div class="reading-passage"><span class="plabel">📄 النص:</span>'+paras(raw).map(p=>{
+    if(lsIsPoetic(p)){const parts=(p.indexOf('***')>-1?p.split('***'):p.split(LS_SEP)).map(x=>x.trim()).filter(Boolean);if(parts.length===2)return '<div class="poetry-bayt'+(lsLongShatr(parts)?' stack':'')+'"><span class="shatr-r">'+parts[0]+'</span><span class="bdiv-v"></span><span class="shatr-l">'+parts[1]+'</span></div>'}
+    return '<div class="para-wrap">'+p+'</div>';
+  }).join('')+'</div>';
 }
 function lsPassageBox(q){
   const pk=lsPassageKind(q,q.sec);
   const html=lsPassageHtml(q,q.sec);
-  if(!(pk==='reading'||pk==='prose'||pk==='compare'))return html;
+  if(!(pk==='reading'||pk==='prose'||pk==='compare'||pk==='poetry'||pk==='verse'||pk==='quran'))return html;
   const key=lsPKey(q.passage),hid=!!window.__rpHidden[key];
   return '<div class="rp-box'+(hid?' hidden':'')+'" data-k="'+key+'"><button type="button" class="rp-toggle" onclick="lsTogglePassage(this)">'+(hid?'📖 إظهار النص':'📖 إخفاء النص')+'</button>'+html+'</div>';
 }
@@ -1183,7 +1475,7 @@ async function studentLogin(){
       const tp=examSettings.teacherPassword||TEACHER_PASSWORD;
       if(raw!==tp){lsFail('❌ كلمة السر غير صحيحة');return}
       lsTeacherMode(false);
-      await loadDashboardStats();showScreen('teacherDashboard');switchTeacherTab('students');attachTeacherResultNotifications();return;
+      await loadDashboardStats();showScreen('teacherDashboard');switchTeacherTab('students');attachTeacherResultNotifications();attachLocksListener();return;
     }
     const code=lsClean(raw),bad='❌ الكود غير صحيح — تواصل مع الأستاذ رؤوف';
     if(code.length<3||/[\/.]/.test(code)){lsFail(bad);return}
@@ -1299,7 +1591,7 @@ async function studentLogin(){
 
     <!-- nav tabs -->
     <div class="teacher-nav">
-      <button class="tnav-btn active" onclick="switchTeacherTab('students')">👥 الطلاب</button>
+      <button class="tnav-btn active" onclick="switchTeacherTab('students')">👥 الطلاب<span class="tnav-badge" id="lockBadge" style="display:none"></span></button>
       <button class="tnav-btn" onclick="switchTeacherTab('exams')">📝 الامتحانات</button>
       <button class="tnav-btn" onclick="switchTeacherTab('lessons')">📚 الدروس</button>
       <button class="tnav-btn" onclick="switchTeacherTab('results')">📊 النتائج</button>
@@ -1310,6 +1602,10 @@ async function studentLogin(){
 
     <!-- STUDENTS TAB -->
     <div id="tpane-students" class="tpane active">
+      <div class="panel" id="lockedPanel" style="display:none">
+        <div class="section-hdr"><span>🔒 طلاب مقفول عليهم دلوقتي</span></div>
+        <div id="lockedList"></div>
+      </div>
       <div class="panel">
         <div class="section-hdr">
           <span>قائمة الطلاب</span>
@@ -1399,7 +1695,7 @@ async function studentLogin(){
 الإجابة الصحيحة: ب) ...
 السبب: ..."></textarea>
               <button class="tbtn navy full" style="margin-top:8px" onclick="parsePlainTextExamUI()">🔍 اقرأ الأسئلة دي</button>
-              <p style="font-size:.66rem;color:var(--muted);margin-top:6px;line-height:1.6">اكتب أو الصق الأسئلة بنفس الشكل: رقم ونص السؤال، الاختيارات بحرف، سطر "الإجابة الصحيحة"، وسطر "السبب" اختياري. أو الصق الامتحان كامل وتحته سطر "نموذج الإجابة" (فيه إجابة كل سؤال برقمه، والمقالي بنموذج إجابته ودرجته بين [ ]).</p>
+              <p style="font-size:.66rem;color:var(--muted);margin-top:6px;line-height:1.6">الصق الأسئلة بأي شكل من دول: (1) رقم السؤال واختياراته (كل اختيار في سطر، أو كلها في سطر واحد بالشكل (أ) ... (ب) ...) وتحتها "الإجابة: (أ)" و"السبب" اختياري. (2) المقالي بيتعرف عليه من علامة (مقالي - درجة واحدة) وتحته "الإجابة:" هي نموذج الإجابة. (3) أو الصق الامتحان كامل وتحته سطر "نموذج الإجابة" فيه إجابة كل سؤال برقمه (والمقالي بنموذج إجابته ودرجته بين [ ]). الدرجة بتتقرأ من علامة زي (اختيار من متعدد - درجتان) أو (3 درجات).</p>
               <div id="newExamPlainTextStatus" style="display:none;font-size:.72rem;font-weight:700;margin-top:6px"></div>
             </div>
             <div style="background:var(--cream2);border-radius:12px;padding:12px;border:1px dashed var(--gold)">
@@ -1641,6 +1937,13 @@ async function studentLogin(){
           <option value="pending">⏳ لسه محتاجة تصحيح</option>
           <option value="graded">✅ اتصححت بالفعل</option>
         </select>
+        <div class="eg-tools">
+          <div class="eg-modes"><button type="button" id="egModeS" class="eg-mode on" onclick="egSetMode('student')">👤 بالطالب</button><button type="button" id="egModeQ" class="eg-mode" onclick="egSetMode('question')">❓ بالسؤال</button></div>
+          <input id="egSearch" type="search" class="tinput eg-search" placeholder="🔍 ابحث باسم الطالب أو كوده" oninput="egApplyFilters()">
+          <select id="egExamFilter" class="tselect" onchange="egOnFilterChange()" style="grid-column:1/-1"><option value="">📚 كل الامتحانات</option></select>
+          <select id="egQSel" class="tselect" onchange="egRender(true)" style="grid-column:1/-1" hidden></select>
+        </div>
+        <div class="eg-summary"><span id="egSummary"></span><button type="button" class="eg-link" onclick="egCollapseAll()">طي الكل</button></div>
         <div id="essayGradingList">
           <div class="empty-state"><span class="eicon">✍️</span>جاري التحميل...</div>
         </div>
@@ -1818,7 +2121,7 @@ async function studentLogin(){
           <div>
             <label class="flabel" style="font-size:.72rem;margin-bottom:4px">🔓 كود فتح القفل (Admin)</label>
             <div style="display:flex;gap:8px">
-              <input type="text" id="unlockCodeInput" class="tinput" placeholder="31020" style="flex:1;letter-spacing:3px;font-weight:900">
+              <input type="text" id="unlockCodeInput" class="tinput" placeholder="اكتب كود جديد" style="flex:1;letter-spacing:3px;font-weight:900">
               <button class="tbtn navy" onclick="updateUnlockCode()">حفظ</button>
             </div>
           </div>
@@ -1858,17 +2161,19 @@ async function studentLogin(){
 <!-- ===== EXAM SCREEN ===== -->
 <div id="examScreen" class="screen" style="flex-direction:column;">
   <div id="examWatermark" class="exam-watermark"></div>
+  <div id="navBackdrop" onclick="toggleNavPanel()"></div>
   <div class="topbar">
     <div class="topbar-main"><span class="exam-ttl">امتحان اللغة العربية — الثاني الثانوي</span><span class="qcounter">السؤال <span id="currentQ">1</span>/<span id="totalQ">60</span></span><div id="timerDisplay" class="timer-pill"><span>⏱</span><span id="timerText">150:00</span></div></div>
     <div class="prog-track"><div id="progressBar" class="prog-fill" style="width:2%"></div></div>
     <span class="prog-pct-text" id="progPctText" style="display:none">0%</span>
     <div class="nav-dropdown">
       <button class="nav-toggle" id="navToggleBtn" onclick="toggleNavPanel()">
-        <div class="nav-summary-txt"><span>📋 خريطة الأسئلة</span><span id="navSummaryText" style="font-weight:400;opacity:.75;font-size:.7rem">0/60 مجاب</span></div>
+        <div class="nav-summary-txt"><span>📋 خريطة الأسئلة</span></div>
         <span class="nav-arr">▼</span>
       </button>
       <div class="nav-prog-mini"><div class="nav-prog-fill" id="navProgFill" style="width:0%"></div></div>
       <div class="nav-panel" id="navPanel">
+        <div class="nav-panel-head"><span>📋 خريطة الأسئلة <small id="navSummaryText" style="font-weight:600;opacity:.7;font-size:.72rem">0/60 مجاب</small></span><button type="button" class="nav-close" onclick="toggleNavPanel()">✕</button></div>
         <div id="questionNavigator"></div>
         <button type="button" class="nav-next-flag" id="navNextFlag" onclick="goNextFlagged()" style="display:none">🚩 روح للسؤال المعلّم التالي (<span id="navFlagCount">0</span>)</button>
         <div class="nav-legend">
@@ -1892,8 +2197,10 @@ async function studentLogin(){
     </div>
     <div class="qbody" id="questionContent"></div>
   </div>
-  <div class="exam-nav">
+  <div class="exam-nav exam-nav-fixed">
+    <span class="wm-tag" id="wmTag"></span>
     <button id="prevBtn" class="btnav btn-prev" onclick="previousQuestion()" disabled>→ السابق</button>
+    <button type="button" class="nav-mid" id="navMidBtn" onclick="toggleNavPanel()"><span>🗺 <b id="navMidTxt">0/60</b></span><small>مجاب · الخريطة</small></button>
     <button id="nextBtn" class="btnav btn-next" onclick="nextQuestion()">التالي ←</button>
   </div>
 </div>
@@ -2036,9 +2343,9 @@ async function studentLogin(){
 <!-- ===== MODALS ===== -->
 <div id="waRegModal" class="modal"><div class="mbox"><div class="micon">📱</div><p class="mtitle">إرسال التقرير على واتساب</p><p class="mmsg" style="color:var(--red);font-weight:700;margin-bottom:6px">أنت لم تسجل رقم واتساب!</p><p class="mmsg" style="margin-bottom:14px">سجّل رقمك دلوقتي وهنبعتلك التقرير كامل على واتساب.</p><input type="tel" id="waRegInput" class="minput" placeholder="01XXXXXXXXX" style="direction:ltr;letter-spacing:1px"><div class="mbtns"><button class="mbtnm gray" onclick="closeModal('waRegModal')">مش محتاج</button><button class="mbtnm green" onclick="saveWaAndSend()">سجّل وابعت 📤</button></div></div></div>
 <div id="waConfirmModal" class="modal"><div class="mbox"><div class="micon">✅</div><p class="mtitle">إرسال التقرير</p><p class="mmsg">هنبعت تقريرك على الرقم:<br><strong style="font-size:1rem;color:var(--navy);direction:ltr;display:block;margin-top:4px" id="waConfirmNum"></strong></p><div class="mbtns"><button class="mbtnm gray" onclick="closeModal('waConfirmModal')">لا شكراً</button><button class="mbtnm green" onclick="confirmSendWa()">إرسال ✔</button></div></div></div>
-<div id="exitWarningModal" class="modal"><div class="mbox"><div class="micon">⚠️</div><p class="mtitle" style="color:var(--red);">تحذير!</p><p class="mmsg">إذا خرجت الآن <strong>ستفقد جميع إجاباتك</strong>!</p><div class="mbtns"><button class="mbtnm green" onclick="closeModal('exitWarningModal')">أكمل الامتحان</button><button class="mbtnm red" onclick="forceExit()">خروج</button></div></div></div>
+<div id="exitWarningModal" class="modal"><div class="mbox"><div class="micon">⚠️</div><p class="mtitle" style="color:var(--red);">تحذير!</p><p class="mmsg">إذا خرجت الآن <strong>هيتقفل الامتحان</strong> وهتحتاج كود من الأستاذ رؤوف عشان تكمّله. إجاباتك محفوظة.</p><div class="mbtns"><button class="mbtnm green" onclick="closeModal('exitWarningModal')">أكمل الامتحان</button><button class="mbtnm red" onclick="forceExit()">خروج</button></div></div></div>
 <div id="finalWarningModal" class="modal"><div class="mbox"><div class="micon">🚨</div><p class="mtitle">تأكيد إنهاء الامتحان</p><p class="mmsg">هذا الإجراء لا يمكن التراجع عنه!</p><div class="sgrid"><span class="slbl">الأسئلة المجابة:</span><span class="sval" id="summaryAnswered">0</span><span class="slbl">غير المجابة:</span><span class="sval" style="color:var(--red)" id="summaryUnanswered">0</span><span class="slbl">الوقت المستغرق:</span><span class="sval" id="summaryTimeUsed">0</span><span class="slbl">الوقت المتبقي:</span><span class="sval" style="color:var(--green)" id="summaryTimeLeft">0</span></div><div class="mbtns"><button class="mbtnm gray" onclick="closeModal('finalWarningModal')">العودة</button><button class="mbtnm red" onclick="proceedToFinish()">أنهِ الامتحان</button></div></div></div>
-<div id="lockScreen" class="modal"><div class="mbox"><div class="micon">🔒</div><p class="mtitle" style="color:var(--red)">تم قفل الامتحان!</p><p class="mmsg">لقد خرجت من الامتحان.<br>اطلب من الأستاذ رؤوف كود إلغاء القفل.</p><input type="password" id="adminCodeInput" class="minput" placeholder="أدخل كود إلغاء القفل"><div class="mbtns"><button class="mbtnm green" onclick="unlockExam()">فتح القفل 🔓</button></div></div></div>
+<div id="lockScreen" class="modal"><div class="mbox"><div class="micon">🔒</div><p class="mtitle" style="color:var(--red)">تم قفل الامتحان!</p><p class="mmsg">لقد خرجت من الامتحان.<br>اطلب من الأستاذ رؤوف كود إلغاء القفل، أو استنى لحد ما يفتحه لك من عنده.</p><input type="password" id="adminCodeInput" class="minput" placeholder="أدخل كود إلغاء القفل"><div class="mbtns"><button class="mbtnm green" onclick="unlockExam()">فتح القفل 🔓</button></div></div></div>
 <div id="confirmDeleteModal" class="modal"><div class="mbox"><div class="micon">🗑️</div><p class="mtitle" style="color:var(--red)">تأكيد الحذف</p><p class="mmsg">هل أنت متأكد من حذف هذا الطالب نهائياً؟<br><strong id="deleteConfirmName" style="color:var(--navy)"></strong></p><div class="mbtns"><button class="mbtnm gray" onclick="closeModal('confirmDeleteModal')">إلغاء</button><button class="mbtnm red" onclick="confirmDeleteStudent()">حذف نهائياً 🗑️</button></div></div></div>
 <div id="studentReportModal" class="modal"><div class="mbox" style="max-width:480px;max-height:82vh;overflow-y:auto;text-align:right">
   <div class="micon" style="text-align:center">📊</div>
@@ -2131,7 +2438,9 @@ let RESULT_TS = 0;
 let examStartTime = null;
 let lockCount = 0;
 let examLocked = false;
-let examSettings = { unlockCode: "31020" };
+let examActive = false; // true ONLY while the student is actually sitting an exam
+let lockAtMs = 0, lockDocTouched = false, lockUnsub = null; // when the student got locked / shared lock document
+let examSettings = {};
 let allStudentsCache = [];
 let allResultsCache = [];
 let pendingDeleteCode = null;
@@ -2157,11 +2466,11 @@ let sessionUnsub = null;
 let importedExamQuestions = null; // questions parsed from an uploaded exam file, staged before exam creation
 
 const SECTION_PALETTE = [
-  { color:'#1a3260', border:'#c9a84c', bg:'#fffbeb', icon:'📖' },
-  { color:'#065f46', border:'#6ee7b7', bg:'#f0fdf4', icon:'📜' },
-  { color:'#7c3aed', border:'#c4b5fd', bg:'#f5f3ff', icon:'🏛️' },
-  { color:'#92400e', border:'#fcd34d', bg:'#fffbeb', icon:'⚖️' },
-  { color:'#1e3a5f', border:'#93c5fd', bg:'#eff6ff', icon:'✏️' }
+  { color:'#1a3260', border:'#c9a84c', bg:'#fffbeb', icon:'' },
+  { color:'#065f46', border:'#6ee7b7', bg:'#f0fdf4', icon:'' },
+  { color:'#7c3aed', border:'#c4b5fd', bg:'#f5f3ff', icon:'' },
+  { color:'#92400e', border:'#fcd34d', bg:'#fffbeb', icon:'' },
+  { color:'#1e3a5f', border:'#93c5fd', bg:'#eff6ff', icon:'' }
 ];
 
 // ============================================================
@@ -2267,8 +2576,10 @@ function renderPreviewQuestion() {
   const sec = previewSections.find(s => s.id === q.sec);
   let html = '';
   if (q.passage) html += lsPassageHtml(q, q.sec);
-  html += `<div style="font-size:.68rem;font-weight:800;color:${sec ? sec.color : 'var(--navy)'};margin-bottom:6px">${sec ? sec.icon + ' ' + sec.name : ''} — سؤال ${previewIndex + 1} من ${previewQuestions.length}</div>`;
-  html += `<div style="font-weight:800;font-size:.9rem;margin-bottom:10px;line-height:1.7">${formatInlineText(q.q)}</div>`;
+  html += `<div style="font-size:.68rem;font-weight:800;color:${sec ? sec.color : 'var(--navy)'};margin-bottom:6px">${sec ? sec.name : ''} — سؤال ${previewIndex + 1} من ${previewQuestions.length}</div>`;
+  const _ex = lsSplitExample(q);
+  if (_ex) html += lsExampleBox(_ex.sentence, q);
+  html += `<div style="font-weight:800;font-size:.9rem;margin-bottom:10px;line-height:1.7">${formatInlineText(_ex ? _ex.rest : q.q)}</div>`;
   html += `<div style="display:flex;flex-direction:column;gap:8px">`;
   (q.opts || []).forEach((opt, i) => {
     html += `<div style="display:flex;align-items:center;gap:8px;background:var(--cream2);border-radius:10px;padding:10px 12px;font-size:.8rem">
@@ -2295,6 +2606,7 @@ function previewPrevQuestion() {
 // SCREEN MANAGER
 // ============================================================
 function showScreen(id) {
+  if (id !== 'examScreen' && typeof endExamSession === 'function') endExamSession();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
@@ -2759,6 +3071,7 @@ function studentLogout() {
 // ============================================================
 function teacherLogout() {
   detachTeacherResultNotifications();
+  detachLocksListener();
   showScreen('platformScreen');
   document.getElementById('studentCode').value = '';
 }
@@ -3039,49 +3352,405 @@ async function bulkDeleteResults() {
 // ============================================================
 // ESSAY GRADING
 // ============================================================
-async function loadEssayGrading() {
+let egBulk = false;
+
+function egNorm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[\u064B-\u0652\u0640]/g, '')
+    .replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه');
+}
+
+function egTs(r) {
+  const t = r.submittedAt;
+  return t && t.toMillis ? t.toMillis() : (typeof t === 'number' ? t : 0);
+}
+
+function egFmtDate(r) {
+  const ms = egTs(r);
+  return ms ? new Date(ms).toLocaleString('ar-EG', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '';
+}
+
+function egHasScore(ea) { return ea && ea.score !== null && ea.score !== undefined; }
+
+function egQuestionHtml(rid, qId, ea, n) {
+  const mx = Number(ea.maxGrade) || 5;
+  const half = Math.round(mx / 2 * 100) / 100;
+  const sid = escHtml(rid) + '_' + escHtml(qId);
+  const img = safeUrl(ea.imageUrl);
+  const graded = egHasScore(ea);
+  return `<section class="eg-q${graded ? ' is-graded' : ''}">
+    <div class="eg-qhead">
+      <span class="eg-qn">${n}</span>
+      <div class="eg-qtext">${formatInlineText(ea.q || '')}</div>
+      <span class="eg-qmax">${mx} درجة</span>
+    </div>
+    ${ea.model ? '<details class="mdl"><summary>📌 نموذج الإجابة</summary><div>' + formatInlineText(ea.model) + '</div></details>' : ''}
+    <div class="eg-ans">${img
+      ? `<img class="eg-img" src="${img}" alt="إجابة الطالب" loading="lazy" onclick="egZoom(this.src)"><div class="eg-imghint">اضغط على الصورة لتكبيرها وتدويرها</div>`
+      : '<div class="eg-noimg">⚠️ الطالب ماصورش إجابة</div>'}</div>
+    <div class="eg-grade">
+      <div class="eg-scorebox">
+        <input type="number" inputmode="decimal" step="any" class="tinput eg-score-in" id="essayScore_${sid}" data-q="${escHtml(qId)}" data-max="${mx}" min="0" max="${mx}" placeholder="الدرجة" value="${graded ? ea.score : ''}" oninput="egOnScore(this)" onkeydown="egKey(event,this)">
+        <span class="eg-of">من ${mx}</span>
+      </div>
+      <div class="eg-quick">
+        <button type="button" class="eg-qb" onclick="egSet(this,0)">0</button>
+        <button type="button" class="eg-qb" onclick="egSet(this,${half})">${half}</button>
+        <button type="button" class="eg-qb full" onclick="egSet(this,${mx})">${mx} ✓</button>
+      </div>
+    </div>
+    <div class="eg-row2">
+      <input type="text" class="tinput" id="essayNote_${sid}" placeholder="ملاحظة للطالب (اختياري)" value="${escHtml(ea.note || '')}" oninput="egTouch(this)">
+      <button type="button" class="tbtn red eg-del" title="حذف الإجابة دي" onclick="deleteEssayAnswer('${escHtml(rid)}','${escHtml(qId)}')">🗑️</button>
+    </div>
+  </section>`;
+}
+
+function egCardHtml(r) {
+  const entries = Object.entries(r.essayAnswers);
+  const name = r.studentName || r.studentCode || 'طالب';
+  const exam = r.examTitle || 'امتحان';
+  const rid = escHtml(r.id);
+  const doneN = entries.filter(([, ea]) => egHasScore(ea)).length;
+  const maxTotal = entries.reduce((s, [, ea]) => s + (Number(ea.maxGrade) || 5), 0);
+  const date = egFmtDate(r);
+  const initial = Array.from(String(name).trim())[0] || '؟';
+  return `<details class="eg-card${doneN === entries.length ? ' is-ready' : ''}" id="egCard_${rid}" data-rid="${rid}" data-exam="${escHtml(exam)}" data-search="${escHtml(egNorm(name + ' ' + (r.studentCode || '')))}" ontoggle="egOnToggle(this)">
+    <summary class="eg-sum">
+      <span class="eg-av">${escHtml(initial)}</span>
+      <span class="eg-who">
+        <b class="eg-name">${escHtml(name)}</b>
+        <span class="eg-meta">📝 ${escHtml(exam)}${r.grade ? ' · 📚 ' + escHtml(r.grade) : ''}${date ? ' · 🕒 ' + date : ''}</span>
+      </span>
+      <span class="eg-side">
+        <span class="eg-prog">${doneN}/${entries.length}</span>
+        <span class="eg-dirty" hidden>● غير محفوظ</span>
+      </span>
+      <span class="eg-chev" aria-hidden="true">‹</span>
+    </summary>
+    <div class="eg-body">
+      ${entries.map(([qId, ea], i) => egQuestionHtml(r.id, qId, ea, i + 1)).join('')}
+      <div class="eg-foot">
+        <div class="eg-total">المجموع المقالي: <b class="eg-sumval">0</b> من ${maxTotal}</div>
+        <div class="eg-foot-btns">
+          <button type="button" class="tbtn navy" onclick="egNext(this)">⏭ التالي</button>
+          <button type="button" class="tbtn gold" onclick="saveEssayGrades('${rid}')">💾 حفظ الدرجات</button>
+        </div>
+      </div>
+    </div>
+  </details>`;
+}
+
+function egFillExamFilter(results) {
+  const sel = document.getElementById('egExamFilter');
+  if (!sel) return;
+  const prev = sel.value;
+  const titles = Array.from(new Set(results.map(r => r.examTitle || 'امتحان')));
+  sel.innerHTML = '<option value="">📚 كل الامتحانات</option>' +
+    titles.map(t => `<option value="${escHtml(t)}">${escHtml(t)}</option>`).join('');
+  sel.value = titles.includes(prev) ? prev : '';
+}
+
+function egApplyFilters() {
+  const q = egNorm((document.getElementById('egSearch') || {}).value || '').trim();
+  const ex = (document.getElementById('egExamFilter') || {}).value || '';
+  document.querySelectorAll('#essayGradingList .eg-card').forEach(card => {
+    const ok = (!q || card.dataset.search.includes(q)) && (!ex || card.dataset.exam === ex);
+    card.hidden = !ok;
+    if (!ok) card.open = false;
+  });
+  egUpdateSummary();
+}
+
+function egUpdateSummary() {
+  const el = document.getElementById('egSummary');
+  if (!el) return;
+  const cards = Array.from(document.querySelectorAll('#essayGradingList .eg-card'));
+  if (!cards.length) { el.textContent = ''; return; }
+  const vis = cards.filter(c => !c.hidden);
+  const left = vis.reduce((n, c) => n + c.querySelectorAll('.eg-q:not(.is-graded)').length, 0);
+  el.textContent = '👥 ' + vis.length + (vis.length !== cards.length ? ' من ' + cards.length : '') +
+    ' طالب · ⏳ ' + left + ' سؤال من غير درجة';
+}
+
+function egRefresh(card) {
+  if (!card) return;
+  const qs = card.querySelectorAll('.eg-q');
+  let done = 0, sum = 0, dirty = false;
+  qs.forEach(q => {
+    const inp = q.querySelector('.eg-score-in');
+    const note = q.querySelector('input[type="text"]');
+    const mx = Number(inp.dataset.max) || 0;
+    const v = parseFloat(inp.value);
+    const graded = !isNaN(v);
+    q.classList.toggle('is-graded', graded);
+    if (graded) { done++; sum += Math.max(0, Math.min(mx, v)); }
+    if (inp.value !== inp.defaultValue || (note && note.value !== note.defaultValue)) dirty = true;
+  });
+  card.classList.toggle('is-ready', done === qs.length);
+  card.querySelector('.eg-prog').textContent = done + '/' + qs.length;
+  card.querySelector('.eg-dirty').hidden = !dirty;
+  card.querySelector('.eg-sumval').textContent = Math.round(sum * 100) / 100;
+  egSaveDraft(card);
+  egUpdateSummary();
+}
+
+function egDraftKey(card) { return 'egDraft_' + card.dataset.rid; }
+
+function egSaveDraft(card) {
+  let d = {};
+  try { d = JSON.parse(localStorage.getItem(egDraftKey(card)) || 'null') || {}; } catch (e) {}
+  card.querySelectorAll('.eg-q').forEach(q => {
+    const s = q.querySelector('.eg-score-in'), n = q.querySelector('input[type="text"]');
+    if (s.value !== s.defaultValue || n.value !== n.defaultValue) d[s.dataset.q] = { s: s.value, n: n.value };
+    else delete d[s.dataset.q];
+  });
+  try {
+    if (Object.keys(d).length) localStorage.setItem(egDraftKey(card), JSON.stringify(d));
+    else localStorage.removeItem(egDraftKey(card));
+  } catch (e) {}
+}
+
+function egRestoreDraft(card) {
+  let d = null, any = false;
+  try { d = JSON.parse(localStorage.getItem(egDraftKey(card)) || 'null'); } catch (e) {}
+  if (!d) return false;
+  card.querySelectorAll('.eg-q').forEach(q => {
+    const s = q.querySelector('.eg-score-in'), n = q.querySelector('input[type="text"]'), x = d[s.dataset.q];
+    if (x) { s.value = x.s; n.value = x.n; any = true; }
+  });
+  return any;
+}
+
+function egOnScore(inp) {
+  const mx = Number(inp.dataset.max) || 0;
+  const v = parseFloat(inp.value);
+  inp.classList.toggle('is-over', !isNaN(v) && (v > mx || v < 0));
+  egTouch(inp);
+}
+
+function egSet(btn, val) {
+  const inp = btn.closest('.eg-q').querySelector('.eg-score-in');
+  inp.value = val;
+  egOnScore(inp);
+}
+
+function egKey(e, inp) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const card = inp.closest('.eg-card');
+  const all = Array.from(card.querySelectorAll('.eg-score-in'));
+  const nxt = all[all.indexOf(inp) + 1];
+  if (nxt) {
+    nxt.focus();
+    if (nxt.select) nxt.select();
+    nxt.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  } else {
+    inp.blur();
+    let n = card.classList.contains('eg-qcard') ? card.nextElementSibling : null;
+    while (n && (n.hidden || !n.classList.contains('eg-qcard'))) n = n.nextElementSibling;
+    const ni = n && n.querySelector('.eg-score-in');
+    if (ni) { ni.focus(); if (ni.select) ni.select(); ni.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+    else { const save = card.querySelector('.eg-foot .tbtn.gold'); if (save) save.focus(); }
+  }
+}
+
+// Accordion: opening a student closes the previous one, so there is never a wall of text
+function egOnToggle(card) {
+  if (!card.open) return;
+  if (card.dataset.noscroll) { delete card.dataset.noscroll; return; }
+  if (!egBulk) {
+    document.querySelectorAll('#essayGradingList .eg-card[open]').forEach(c => { if (c !== card) c.open = false; });
+  }
+  card.scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+
+function egCollapseAll() {
+  egBulk = true;
+  document.querySelectorAll('#essayGradingList .eg-card[open]').forEach(c => { c.open = false; });
+  setTimeout(() => { egBulk = false; }, 100);
+}
+
+function egNext(btn) {
+  let n = btn.closest('.eg-card').nextElementSibling;
+  while (n && n.hidden) n = n.nextElementSibling;
+  if (n) n.open = true;
+  else egToast('خلصت كل الطلاب في القائمة دي 👏');
+}
+
+function egZoom(src) {
+  if (!src) return;
+  const old = document.getElementById('egLightbox');
+  if (old) old.remove();
+  const box = document.createElement('div');
+  box.id = 'egLightbox';
+  box.className = 'eg-lb';
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = '';
+  let deg = 0;
+  const rot = document.createElement('button');
+  rot.type = 'button';
+  rot.className = 'eg-lb-btn';
+  rot.textContent = '↻ تدوير';
+  rot.onclick = ev => { ev.stopPropagation(); deg = (deg + 90) % 360; img.style.transform = 'rotate(' + deg + 'deg)'; };
+  const cls = document.createElement('button');
+  cls.type = 'button';
+  cls.className = 'eg-lb-btn close';
+  cls.textContent = '✕';
+  box.onclick = () => box.remove();
+  box.append(img, rot, cls);
+  document.body.appendChild(box);
+}
+
+function egToast(msg) {
+  document.querySelectorAll('.eg-toast').forEach(e => e.remove());
+  const el = document.createElement('div');
+  el.className = 'eg-toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2800);
+}
+
+let egMode = 'student';
+let egResults = [];
+
+function egPlain(s) { return String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(); }
+
+function egTouch(el) {
+  const c = el.closest('.eg-card');
+  if (c) egRefresh(c);
+}
+
+function egClearDraft(rid, qIds) {
+  try {
+    const k = 'egDraft_' + rid;
+    const d = JSON.parse(localStorage.getItem(k) || 'null');
+    if (!d) return;
+    qIds.forEach(q => { delete d[q]; });
+    if (Object.keys(d).length) localStorage.setItem(k, JSON.stringify(d)); else localStorage.removeItem(k);
+  } catch (e) {}
+}
+
+function egQCardHtml(r, qId, n) {
+  const ea = r.essayAnswers[qId];
+  const rid = escHtml(r.id);
+  const name = r.studentName || r.studentCode || 'طالب';
+  const exam = r.examTitle || 'امتحان';
+  const date = egFmtDate(r);
+  const mx = Number(ea.maxGrade) || 5;
+  const initial = Array.from(String(name).trim())[0] || '؟';
+  return `<div class="eg-card eg-qcard${egHasScore(ea) ? ' is-ready' : ''}" id="egCard_${rid}" data-rid="${rid}" data-exam="${escHtml(exam)}" data-search="${escHtml(egNorm(name + ' ' + (r.studentCode || '')))}">
+    <div class="eg-sum">
+      <span class="eg-av">${escHtml(initial)}</span>
+      <span class="eg-who"><b class="eg-name">${escHtml(name)}</b><span class="eg-meta">${date ? '🕒 ' + date : ''}${r.grade ? ' · 📚 ' + escHtml(r.grade) : ''}</span></span>
+      <span class="eg-side"><span class="eg-prog">0/1</span><span class="eg-dirty" hidden>● غير محفوظ</span></span>
+    </div>
+    <div class="eg-body">
+      ${egQuestionHtml(r.id, qId, ea, n)}
+      <div class="eg-foot">
+        <div class="eg-total">درجة السؤال: <b class="eg-sumval">0</b> من ${mx}</div>
+        <button type="button" class="tbtn gold" onclick="saveEssayGrades('${rid}')">💾 حفظ</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function egSetMode(m) {
+  egMode = m;
+  document.getElementById('egModeS').classList.toggle('on', m === 'student');
+  document.getElementById('egModeQ').classList.toggle('on', m === 'question');
+  document.getElementById('egQSel').hidden = m !== 'question';
+  const ex = document.getElementById('egExamFilter');
+  if (m === 'question' && !ex.value && ex.options.length > 1) ex.value = ex.options[1].value;
+  egRender(true);
+}
+
+function egOnFilterChange() {
+  if (egMode === 'question') egRender(true); else egApplyFilters();
+}
+
+async function egSaveAll() {
+  const cards = Array.from(document.querySelectorAll('#essayGradingList .eg-qcard')).filter(c => !c.querySelector('.eg-dirty').hidden);
+  if (!cards.length) { egToast('مفيش تعديلات محتاجة حفظ'); return; }
+  let n = 0;
+  for (const c of cards) { if (await saveEssayGrades(c.dataset.rid, true)) n++; }
+  egToast('✅ اتحفظت درجات ' + n + ' طالب');
+  loadEssayGrading(true);
+}
+
+function egRenderByStudent(listEl, silent) {
+  listEl.innerHTML = egResults.map(egCardHtml).join('');
+  let restored = 0;
+  listEl.querySelectorAll('.eg-card').forEach(c => { if (egRestoreDraft(c)) restored++; });
+  listEl.querySelectorAll('.eg-card').forEach(c => egRefresh(c));
+  if (restored) egToast('↩️ رجّعت درجات لسه ماتحفظتش (' + restored + ' طالب) — راجعها واضغط حفظ');
+  egApplyFilters();
+  // Open the first visible student so grading can start immediately
+  const first = listEl.querySelector('.eg-card:not([hidden])');
+  if (first) {
+    if (!silent) first.dataset.noscroll = '1';
+    first.open = true;
+  }
+}
+
+function egRenderByQuestion(listEl) {
+  const ex = document.getElementById('egExamFilter').value;
+  const sel = document.getElementById('egQSel');
+  if (!ex) {
+    sel.innerHTML = '';
+    listEl.innerHTML = '<div class="empty-state"><span class="eicon">📚</span>اختار الامتحان الأول من القايمة عشان تصحح سؤال سؤال</div>';
+    egUpdateSummary();
+    return;
+  }
+  const rs = egResults.filter(r => (r.examTitle || 'امتحان') === ex);
+  const texts = new Map();
+  rs.forEach(r => Object.entries(r.essayAnswers).forEach(([qId, ea]) => { if (!texts.has(qId)) texts.set(qId, ea.q || ''); }));
+  const ids = Array.from(texts.keys()).sort((a, b) => (parseFloat(a) || 0) - (parseFloat(b) || 0) || String(a).localeCompare(String(b)));
+  const prev = sel.value;
+  sel.innerHTML = ids.map((id, i) => `<option value="${escHtml(id)}">سؤال ${i + 1}: ${escHtml(egPlain(texts.get(id)).slice(0, 40))}</option>`).join('');
+  sel.value = ids.includes(prev) ? prev : (ids[0] || '');
+  const qId = sel.value;
+  const num = ids.indexOf(qId) + 1;
+  listEl.innerHTML = rs.filter(r => r.essayAnswers[qId]).map(r => egQCardHtml(r, qId, num)).join('') +
+    '<div class="eg-savebar"><button type="button" class="tbtn gold" onclick="egSaveAll()">💾 حفظ كل اللي اتغيّر</button></div>';
+  listEl.querySelectorAll('.eg-card').forEach(c => egRestoreDraft(c));
+  listEl.querySelectorAll('.eg-card').forEach(c => egRefresh(c));
+  egApplyFilters();
+}
+
+function egRender(silent) {
+  const listEl = document.getElementById('essayGradingList');
+  if (!egResults.length) {
+    const pending = document.getElementById('essayGradingFilter').value === 'pending';
+    listEl.innerHTML = `<div class="empty-state"><span class="eicon">✍️</span>${pending ? 'مفيش إجابات مقالية محتاجة تصحيح دلوقتي' : 'لسه معملتش تصحيح لأي سؤال مقالي'}</div>`;
+    egUpdateSummary();
+    return;
+  }
+  if (egMode === 'question') egRenderByQuestion(listEl); else egRenderByStudent(listEl, silent);
+}
+
+async function loadEssayGrading(silent) {
   const listEl = document.getElementById('essayGradingList');
   const filter = document.getElementById('essayGradingFilter').value;
-  listEl.innerHTML = '<div class="empty-state"><span class="eicon">⏳</span>جاري التحميل...</div>';
+  if (silent !== true) listEl.innerHTML = '<div class="empty-state"><span class="eicon">⏳</span>جاري التحميل...</div>';
   try {
     const snap = await db.collection('results').where('needsGrading', '==', filter === 'pending').get();
     let results = snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .filter(r => r.essayAnswers && Object.keys(r.essayAnswers).length > 0);
 
     if (filter === 'graded') {
-      results = results.filter(r => Object.values(r.essayAnswers).some(ea => ea.score !== null && ea.score !== undefined));
+      results = results.filter(r => Object.values(r.essayAnswers).some(ea => egHasScore(ea)));
     }
     if (filter === 'pending') lsEssayBadge(results.length);
 
-    if (!results.length) {
-      listEl.innerHTML = `<div class="empty-state"><span class="eicon">✍️</span>${filter === 'pending' ? 'مفيش إجابات مقالية محتاجة تصحيح دلوقتي' : 'لسه معملتش تصحيح لأي سؤال مقالي'}</div>`;
-      return;
-    }
-
-    listEl.innerHTML = results.map(r => {
-      const essayEntries = Object.entries(r.essayAnswers);
-      return `<div class="exammgmt-card" style="margin-bottom:12px">
-        <div style="font-weight:800;font-size:.85rem;margin-bottom:4px">${escHtml(r.studentName || r.studentCode)}</div>
-        <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">📝 ${escHtml(r.examTitle || '')} · 📚 ${escHtml(r.grade || '')}</div>
-        ${essayEntries.map(([qId, ea]) => `
-          <div style="background:var(--cream);border-radius:10px;padding:10px;margin-bottom:8px">
-            <div style="font-size:.75rem;font-weight:700;margin-bottom:6px">${formatInlineText(ea.q || '')}</div>
-            ${ea.model ? '<details class="mdl"><summary>📌 نموذج الإجابة</summary><div>' + formatInlineText(ea.model) + '</div></details>' : ''}
-            ${ea.imageUrl
-              ? `<img src="${safeUrl(ea.imageUrl)}" style="max-width:100%;max-height:320px;border-radius:8px;border:1px solid var(--bdr);display:block;margin-bottom:8px;cursor:pointer" onclick="window.open('${safeUrl(ea.imageUrl)}','_blank')">`
-              : '<div style="font-size:.72rem;color:var(--red);margin-bottom:8px">⚠️ الطالب ماصورش إجابة</div>'}
-            <div style="display:flex;gap:8px;align-items:center">
-              <input type="number" class="tinput" id="essayScore_${r.id}_${qId}" placeholder="0-${ea.maxGrade}" min="0" max="${ea.maxGrade}" value="${ea.score ?? ''}" style="flex:1">
-              <span style="font-size:.72rem;color:var(--muted);white-space:nowrap">من ${ea.maxGrade}</span>
-            </div>
-            <input type="text" class="tinput" id="essayNote_${r.id}_${qId}" placeholder="ملاحظة (اختياري)" value="${ea.note || ''}" style="margin-top:6px">
-            <button class="tbtn red" style="font-size:.65rem;padding:6px 10px;margin-top:6px" onclick="deleteEssayAnswer('${r.id}','${qId}')">🗑️ حذف الإجابة دي</button>
-          </div>`).join('')}
-        <button class="tbtn gold full" onclick="saveEssayGrades('${r.id}')">💾 حفظ الدرجات</button>
-      </div>`;
-    }).join('');
+    // Grading queue is first-come-first-served; the reviewed list shows the newest first
+    results.sort((a, b) => filter === 'pending' ? egTs(a) - egTs(b) : egTs(b) - egTs(a));
+    egResults = results;
+    egFillExamFilter(results);
+    egRender(silent === true);
   } catch(e) {
-    listEl.innerHTML = '<div class="empty-state"><span class="eicon">❌</span>خطأ: ' + e.message + '</div>';
+    listEl.innerHTML = '<div class="empty-state"><span class="eicon">❌</span>خطأ: ' + escHtml(e.message) + '</div>';
   }
 }
 
@@ -3112,24 +3781,32 @@ async function deleteEssayAnswer(resultId, qId) {
       totalQuestions: combinedTotal,
       percentage: combinedPct
     });
-    loadEssayGrading();
+    egClearDraft(resultId, [qId]);
+    loadEssayGrading(true);
   } catch(e) { alert('❌ خطأ: ' + e.message); }
 }
 
-async function saveEssayGrades(resultId) {
+async function saveEssayGrades(resultId, quiet) {
   try {
     const resDoc = await db.collection('results').doc(resultId).get();
-    if (!resDoc.exists) { alert('❌ النتيجة دي مش موجودة'); return; }
+    if (!resDoc.exists) { alert('❌ النتيجة دي مش موجودة'); return false; }
     const r = resDoc.data();
     const essayAnswers = JSON.parse(JSON.stringify(r.essayAnswers || {}));
     let allGraded = true;
     let essaySum = 0;
 
+    const shown = [];
     Object.keys(essayAnswers).forEach(qId => {
       const scoreInput = document.getElementById('essayScore_' + resultId + '_' + qId);
       const noteInput = document.getElementById('essayNote_' + resultId + '_' + qId);
       const maxGrade = essayAnswers[qId].maxGrade || 5;
-      let score = scoreInput ? parseFloat(scoreInput.value) : NaN;
+      if (!scoreInput) { // this question is not on screen (question-by-question mode): keep what is stored
+        const old = essayAnswers[qId].score;
+        if (old !== null && old !== undefined) essaySum += old; else allGraded = false;
+        return;
+      }
+      shown.push(qId);
+      let score = parseFloat(scoreInput.value);
       if (!isNaN(score)) {
         score = Math.max(0, Math.min(maxGrade, score));
         essayAnswers[qId].score = score;
@@ -3157,11 +3834,15 @@ async function saveEssayGrades(resultId) {
       percentage: combinedPct
     });
 
-    alert(allGraded
-      ? '✅ اتحفظت الدرجات، وكل الأسئلة المقالية بقت مصححة — الدرجة النهائية دلوقتي ' + combinedScore + '/' + combinedTotal
-      : '✅ اتحفظت الدرجات المدخلة (لسه فيه سؤال محتاج درجة، فالدرجة النهائية لسه مؤقتة)');
-    loadEssayGrading();
-  } catch(e) { alert('❌ خطأ: ' + e.message); }
+    egClearDraft(resultId, shown);
+    if (!quiet) {
+      egToast(allGraded
+        ? '✅ اتحفظت — الدرجة النهائية ' + combinedScore + '/' + combinedTotal
+        : '✅ اتحفظت الدرجات المدخلة (لسه فيه سؤال من غير درجة)');
+      loadEssayGrading(true);
+    }
+    return true;
+  } catch(e) { alert('❌ خطأ: ' + e.message); return false; }
 }
 
 // ============================================================
@@ -3936,18 +4617,26 @@ function parsePlainTextExamUI() {
   if (!text.trim()) { statusEl.textContent = '⚠️ الصق الأسئلة الأول'; statusEl.style.color = '#b91c1c'; statusEl.style.display = 'block'; return; }
   try {
     const full = parseFullExam(text);
-    const qs = (full && full.length) ? full : parsePlainTextExam(text);
+    let qs, how = '', found = 0, whyNot = [];
+    if (full && full.length) { qs = full; how = 'key'; }
+    else {
+      const inl = parseInlineAnswerExam(text);
+      const leg = parsePlainTextExam(text);
+      found = leg.qStartCount || 0;
+      whyNot = inl.warnings || [];
+      const mc = a => a.filter(q => q.type !== 'essay').length;
+      if (inl.length && (inl.length > leg.length || (inl.length === leg.length && mc(inl) >= mc(leg)))) { qs = inl; how = 'inline'; } else qs = leg;
+    }
     if (!qs.length) {
-      const found = qs.qStartCount || 0;
       const msg = found > 0
-        ? `لقيت ${found} سؤال يبدأ برقم، بس معرفتش أكمّل حتى واحد منهم — تأكد إن تحت كل سؤال 4 اختيارات بحرف (أ ب ج د) وسطر "الإجابة الصحيحة: <حرف>) ..."`
+        ? `لقيت ${found} سؤال يبدأ برقم، بس معرفتش أكمّل حتى واحد منهم — تأكد إن تحت كل سؤال اختياراته (أ ب ج د) وسطر "الإجابة: (أ)"، والمقالي تحته "الإجابة:" بنموذج الإجابة` + (whyNot.length ? '\n' + whyNot.join('\n') : '')
         : 'معرفتش ألاقي أي سؤال بيبدأ برقم زي "1. ..." — تأكد إن كل سؤال يبدأ برقم وقفلة';
       throw new Error(msg);
     }
     importedExamQuestions = qs;
     const nEssay = qs.filter(q => q.type === 'essay').length;
     statusEl.style.whiteSpace = 'pre-line';
-    statusEl.textContent = '✅ اتلقيت ' + qs.length + ' سؤال' + (nEssay ? ' (' + (qs.length - nEssay) + ' اختياري + ' + nEssay + ' مقالي)' : '') + ' من النص' + ((full && full.length) ? ' — مع نموذج الإجابة' : '') + ((full && full.length && full.warnings.length) ? '\n⚠️ ' + full.warnings.join('\n⚠️ ') : '');
+    statusEl.textContent = '✅ اتلقيت ' + qs.length + ' سؤال' + (nEssay ? ' (' + (qs.length - nEssay) + ' اختياري + ' + nEssay + ' مقالي)' : '') + ' من النص' + (how === 'key' ? ' — مع نموذج الإجابة' : how === 'inline' ? ' — بالإجابات اللي تحت كل سؤال' : '') + ((qs.warnings && qs.warnings.length) ? '\n⚠️ ' + qs.warnings.join('\n⚠️ ') : '');
     statusEl.style.color = '#059669';
     statusEl.style.display = 'block';
     document.getElementById('newExamFile').value = '';
@@ -4721,7 +5410,8 @@ async function loadSettings() {
     const snap = await db.collection('settings').doc('exam').get();
     if (snap.exists) {
       const d = snap.data();
-      document.getElementById('unlockCodeInput').value = d.unlockCode || '31020';
+      document.getElementById('unlockCodeInput').value = d.unlockCode || '';
+      if (!d.unlockCode || d.unlockCode === '31020') showSettingsMsg('⚠️ ' + (d.unlockCode ? 'كود الفتح الحالي هو الكود القديم المعروف' : 'مفيش كود فتح متضبط') + ' — اكتب كود جديد واضغط حفظ');
       document.getElementById('cloudinaryCloudNameInput').value = d.cloudinaryCloudName || CLOUDINARY_CLOUD_NAME_DEFAULT;
       document.getElementById('cloudinaryPresetInput').value = d.cloudinaryUploadPreset || CLOUDINARY_PRESET_DEFAULT;
       examSettings = d;
@@ -4831,6 +5521,8 @@ async function saveWhatsappGroupLinks() {
 async function updateUnlockCode() {
   const code = document.getElementById('unlockCodeInput').value.trim();
   if (!code) { alert('أدخل الكود'); return; }
+  if (code === '31020') { alert('⚠️ ده الكود القديم المعروف — اختار كود جديد'); return; }
+  if (code.length < 4) { alert('⚠️ الكود قصير، اختار 4 حروف أو أرقام على الأقل'); return; }
   try {
     await db.collection('settings').doc('exam').set({ ...examSettings, unlockCode: code }, { merge: true });
     examSettings.unlockCode = code;
@@ -4927,12 +5619,25 @@ function exportCSV() {
 // ============================================================
 // MODAL HELPERS
 // ============================================================
-function showModal(id) { document.getElementById(id).classList.add('active'); }
+function showModal(id) {
+  if (id === 'lockScreen' && !examActive) return; // never lock outside an active exam
+  document.getElementById(id).classList.add('active');
+}
 function closeModal(id) {
   document.getElementById(id).classList.remove('active');
   if (id === 'studentReportModal') detachAttendanceListener();
 }
-function forceExit() { closeModal('exitWarningModal'); backToMainMenu(); }
+function forceExit() {
+  closeModal('exitWarningModal');
+  if (examActive) { // leaving mid-exam locks it: answers stay saved, but coming back needs the teacher's unlock
+    if (!examLocked) lockAtMs = Date.now();
+    examLocked = true;
+    lockCount = Math.max(lockCount, 1);
+    saveExamProgress();
+    publishLock();
+  }
+  backToMainMenu();
+}
 
 // ============================================================
 // BACK TO MAIN MENU
@@ -4952,11 +5657,11 @@ function backToMainMenu() {
 // EXAM DATA — 60 QUESTIONS
 // ============================================================
 const LEGACY_SAMPLE_SECTIONS = [
-  { id:'reading', name:'القراءة والفهم', color:'#1a3260', border:'#c9a84c', bg:'#fffbeb', icon:'📖', from:1, to:15 },
-  { id:'texts',   name:'النصوص الأدبية', color:'#065f46', border:'#6ee7b7', bg:'#f0fdf4', icon:'📜', from:16, to:30 },
-  { id:'history', name:'تاريخ الأدب',    color:'#7c3aed', border:'#c4b5fd', bg:'#f5f3ff', icon:'🏛️', from:31, to:40 },
-  { id:'balagha', name:'البلاغة',        color:'#92400e', border:'#fcd34d', bg:'#fffbeb', icon:'⚖️', from:41, to:50 },
-  { id:'nahw',    name:'النحو والصرف',   color:'#1e3a5f', border:'#93c5fd', bg:'#eff6ff', icon:'✏️', from:51, to:60 }
+  { id:'reading', name:'القراءة والفهم', color:'#1a3260', border:'#c9a84c', bg:'#fffbeb', icon:'', from:1, to:15 },
+  { id:'texts',   name:'النصوص الأدبية', color:'#065f46', border:'#6ee7b7', bg:'#f0fdf4', icon:'', from:16, to:30 },
+  { id:'history', name:'تاريخ الأدب',    color:'#7c3aed', border:'#c4b5fd', bg:'#f5f3ff', icon:'', from:31, to:40 },
+  { id:'balagha', name:'البلاغة',        color:'#92400e', border:'#fcd34d', bg:'#fffbeb', icon:'', from:41, to:50 },
+  { id:'nahw',    name:'النحو والصرف',   color:'#1e3a5f', border:'#93c5fd', bg:'#eff6ff', icon:'', from:51, to:60 }
 ];
 
 const LEGACY_SAMPLE_QUESTIONS = [
@@ -5261,6 +5966,7 @@ async function importLegacySampleExam() {
 // ============================================================
 async function startExam(examId, examData) {
   finishInFlight = false;
+  disarmExamLock(); // clean slate: no leftover lock modal / code / listener from a previous exam
   currentExamId = examId;
   currentExamTitle = examData.title || 'امتحان اللغة العربية';
   const rawQuestions = examData.questions || [];
@@ -5275,6 +5981,7 @@ async function startExam(examId, examData) {
   examStartTime = Date.now();
   lockCount = 0;
   examLocked = false;
+  lockAtMs = 0;
 
   document.querySelectorAll('.exam-ttl').forEach(el => el.textContent = currentExamTitle);
   document.querySelectorAll('.cert-subtitle').forEach(el => el.textContent = currentExamTitle);
@@ -5299,6 +6006,7 @@ async function startExam(examId, examData) {
       currentQuestion = s.currentQuestion || 0;
       lockCount = s.lockCount || 0;
       restoredLock = !!s.examLocked;
+      lockAtMs = s.lockedAtMs || 0;
       flaggedQuestions = new Set(s.flagged || []);
     } catch(e) {}
   }
@@ -5324,9 +6032,20 @@ async function startExam(examId, examData) {
   updateProgressBar();
   updateNavPanel();
 
+  let openedByTeacher = false;
+  if (restoredLock) { // a teacher unlock that happened after the lock (e.g. while the student was out) is honoured
+    try {
+      const ls = await lockDocRef().get();
+      if (ls.exists && teacherUnlockedSince(ls.data())) { restoredLock = false; openedByTeacher = true; }
+    } catch (e) {}
+  }
   if (restoredLock) {
     examLocked = true;
     showModal('lockScreen');
+    publishLock();
+  } else if (openedByTeacher) {
+    lockAtMs = 0;
+    saveExamProgress();
   }
 }
 
@@ -5449,11 +6168,11 @@ function autoFinish() {
 // SAVE PROGRESS
 // ============================================================
 function saveExamProgress() {
-  if (!currentStudent || !currentExamId) return;
+  if (!examActive || !currentStudent || !currentExamId) return; // after submit/exit: never resurrect the saved progress
   try {
     localStorage.setItem('eduStreamExam_' + currentExamId + '_' + currentStudent.code, JSON.stringify({
       answers: currentAnswers, timeLeft, currentQuestion,
-      lockCount, examLocked,
+      lockCount, examLocked, lockedAtMs: examLocked ? lockAtMs : 0,
       flagged: Array.from(flaggedQuestions),
       savedAt: Date.now()
     }));
@@ -5471,7 +6190,7 @@ function renderQuestion(idx) {
   const sec = examSections.find(s => s.id === q.sec);
   const secEl = document.getElementById('qHeaderSec');
   if (sec) {
-    secEl.textContent = sec.icon + ' ' + sec.name;
+    secEl.textContent = sec.name;
     secEl.style.display = 'inline-block';
     secEl.style.background = sec.color;
   } else {
@@ -5479,6 +6198,7 @@ function renderQuestion(idx) {
   }
   currentSectionColor = sec ? sec.color : '#0f1f3d';
   secEl.style.display = 'none';
+  { const _wt = document.getElementById('wmTag'); if (_wt && currentStudent) _wt.textContent = (currentStudent.name || '') + ' — ' + (currentStudent.code || ''); }
   lsSectionBanner(q);
   const _cq = document.getElementById('currentQ'); if (_cq) { _cq.textContent = idx + 1; document.getElementById('totalQ').textContent = TOTAL_QUESTIONS; }
 
@@ -5520,7 +6240,9 @@ function renderQuestion(idx) {
   }
 
   // Question text
-  html += `<p class="qtxt">${formatInlineText(q.q)}</p>`;
+  const _ex = lsSplitExample(q);
+  if (_ex) html += lsExampleBox(_ex.sentence, q);
+  html += `<p class="qtxt">${formatInlineText(_ex ? _ex.rest : q.q)}</p>`;
 
   if (q.type === 'essay') {
     const given = currentAnswers[q.id];
@@ -5640,6 +6362,7 @@ function navigateTo(idx) {
   // Close nav panel
   document.getElementById('navPanel').classList.remove('open');
   document.getElementById('navToggleBtn').classList.remove('open');
+  document.getElementById('navBackdrop').classList.remove('open');
   window.scrollTo(0,0);
 }
 
@@ -5665,6 +6388,7 @@ function updateProgressBar() {
   document.getElementById('progressBar').style.width = pct + '%';
   const pctText = document.getElementById('progPctText');
   if (pctText) pctText.textContent = Math.round(answered / TOTAL_QUESTIONS * 100) + '%';
+  { const _nm = document.getElementById('navMidTxt'); if (_nm) _nm.textContent = answered + '/' + TOTAL_QUESTIONS; }
   document.getElementById('navSummaryText').textContent = answered + '/' + TOTAL_QUESTIONS + ' مجاب' + (flaggedQuestions.size ? ' · 🚩 ' + flaggedQuestions.size : '');
   const fill = document.getElementById('navProgFill');
   if (fill) fill.style.width = pct + '%';
@@ -5678,6 +6402,7 @@ function toggleNavPanel() {
   const btn = document.getElementById('navToggleBtn');
   panel.classList.toggle('open');
   btn.classList.toggle('open');
+  document.getElementById('navBackdrop').classList.toggle('open', panel.classList.contains('open'));
   if (panel.classList.contains('open')) updateNavPanel();
 }
 
@@ -5689,7 +6414,7 @@ function updateNavPanel() {
     const answered = secQs.filter(q => currentAnswers[q.id] !== undefined).length;
     html += `<div class="nav-sec-group">
       <div class="nav-sec-hdr">
-        <span class="nav-sec-title">${sec.icon} ${sec.name}</span>
+        <span class="nav-sec-title">${sec.name}</span>
         <span class="nav-sec-meta"><span class="ans-c">${answered}</span>/${secQs.length}</span>
       </div>
       <div class="nav-qs-grid">`;
@@ -5734,12 +6459,20 @@ let finishInFlight = false;
 async function finishExam() {
   if (finishInFlight) return;
   finishInFlight = true;
-  try { await finishExamCore(); } catch (e) { finishInFlight = false; throw e; }
+  try { await finishExamCore(); }
+  catch (e) {
+    finishInFlight = false;
+    const s = document.getElementById('examScreen');
+    if (s && s.classList.contains('active')) armExamLock(); // submission failed: the student is still inside the exam
+    throw e;
+  }
 }
 
 async function finishExamCore() {
-  stopTimer();
-  detachExtraTimeListener();
+  const hadLockDoc = lockDocTouched;
+  endExamSession();     // timer + extra-time listener + lock detection: all off before anything async happens
+  clearStoredLock();    // a stored "locked" flag can never survive a submission
+  if (hadLockDoc) releaseLock(); // the teacher's "locked students" list clears itself
   exitExamFullscreen();
   const timeTaken = TOTAL_TIME - timeLeft;
 
@@ -5943,12 +6676,141 @@ function buildQuestionDetails() {
 // ============================================================
 // LOCK DETECTION
 // ============================================================
-function setupLockDetection() {
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-}
+function setupLockDetection() { armExamLock(); } // kept for compatibility with startExam
 
 let essayCaptureInProgress = false;
 let essayCaptureTimeoutId = null;
+
+// Lock detection exists only while an exam is being sat: armed by startExam, disarmed by anything that ends it.
+function armExamLock() {
+  document.removeEventListener('visibilitychange', handleVisibilityChange); // idempotent: never more than one listener
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  examActive = true;
+}
+
+function disarmExamLock() {
+  examActive = false;
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  examLocked = false;
+  lockCount = 0;
+  essayCaptureInProgress = false;
+  lockAtMs = 0;
+  lockDocTouched = false;
+  if (lockUnsub) { lockUnsub(); lockUnsub = null; }
+  if (essayCaptureTimeoutId) { clearTimeout(essayCaptureTimeoutId); essayCaptureTimeoutId = null; }
+  const m = document.getElementById('lockScreen');
+  if (m) m.classList.remove('active');
+  const inp = document.getElementById('adminCodeInput');
+  if (inp) inp.value = '';
+}
+
+// Everything that belongs to a running exam, switched off in one place
+function endExamSession() {
+  stopTimer();
+  detachExtraTimeListener();
+  disarmExamLock();
+}
+
+// Drop the "locked" flag from the saved progress (used on submission only; leaving mid-exam must stay locked)
+function clearStoredLock() {
+  if (!currentStudent || !currentExamId) return;
+  const k = 'eduStreamExam_' + currentExamId + '_' + currentStudent.code;
+  try {
+    const raw = localStorage.getItem(k);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    s.examLocked = false;
+    s.lockCount = 0;
+    localStorage.setItem(k, JSON.stringify(s));
+  } catch (e) {}
+}
+
+// ---- Locks shared with the teacher: examLocks/{examId_studentCode} ----
+function lockDocRef() {
+  return (currentStudent && currentExamId) ? db.collection('examLocks').doc(currentExamId + '_' + currentStudent.code) : null;
+}
+
+// True when the teacher opened this lock after the student got locked
+function teacherUnlockedSince(data) {
+  return !!(data && data.locked === false && data.unlockedAt && data.unlockedAt.toMillis &&
+    data.unlockedAt.toMillis() > lockAtMs - 300000);
+}
+
+function publishLock() {
+  const ref = lockDocRef();
+  if (!ref) return;
+  lockDocTouched = true;
+  ref.set({
+    locked: true, examId: currentExamId, examTitle: currentExamTitle || '',
+    studentCode: currentStudent.code, studentName: currentStudent.name || '', grade: currentStudent.grade || '',
+    lockCount, lockedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(() => {});
+  if (lockUnsub) { lockUnsub(); lockUnsub = null; }
+  try {
+    lockUnsub = ref.onSnapshot(snap => {
+      if (examActive && examLocked && snap.exists && !snap.metadata.hasPendingWrites && teacherUnlockedSince(snap.data())) applyUnlock(false);
+    }, () => {});
+  } catch (e) {}
+}
+
+function releaseLock() {
+  const ref = lockDocRef();
+  if (ref) ref.set({ locked: false, unlockedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }).catch(() => {});
+}
+
+function applyUnlock(releaseDoc) {
+  lockCount = 0;
+  examLocked = false;
+  lockAtMs = 0;
+  if (lockUnsub) { lockUnsub(); lockUnsub = null; }
+  saveExamProgress();
+  closeModal('lockScreen');
+  const inp = document.getElementById('adminCodeInput');
+  if (inp) inp.value = '';
+  if (releaseDoc) releaseLock();
+}
+
+// ---- Teacher side: students locked right now ----
+let locksUnsub = null;
+let locksSeen = null;
+
+function lockMs(r) { return r.lockedAt && r.lockedAt.toMillis ? r.lockedAt.toMillis() : 0; }
+
+function renderLockedStudents(rows) {
+  const b = document.getElementById('lockBadge');
+  if (b) { b.textContent = rows.length > 99 ? '99+' : rows.length; b.style.display = rows.length ? '' : 'none'; }
+  const panel = document.getElementById('lockedPanel'), list = document.getElementById('lockedList');
+  if (!panel || !list) return;
+  panel.style.display = rows.length ? '' : 'none';
+  list.innerHTML = rows.map(r => {
+    const ms = lockMs(r);
+    const when = ms ? new Date(ms).toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' }) : '';
+    return `<div class="lk-row"><div class="lk-who"><b>${escHtml(r.studentName || r.studentCode || 'طالب')}</b><span>📝 ${escHtml(r.examTitle || 'امتحان')}${when ? ' · 🕒 ' + when : ''}</span></div><button type="button" class="tbtn gold" onclick="teacherUnlock('${escHtml(r.id)}')">🔓 فتح</button></div>`;
+  }).join('');
+}
+
+function attachLocksListener() {
+  detachLocksListener();
+  locksSeen = null;
+  locksUnsub = db.collection('examLocks').where('locked', '==', true).onSnapshot(snap => {
+    const rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => lockMs(b) - lockMs(a));
+    renderLockedStudents(rows);
+    if (locksSeen) rows.filter(r => !locksSeen.has(r.id)).forEach(r =>
+      showTimeAlert('🔒 ' + (r.studentName || 'طالب') + ' اتقفل عليه "' + (r.examTitle || 'امتحان') + '" — افتحه من تاب الطلاب', 'warning'));
+    locksSeen = new Set(rows.map(r => r.id));
+  }, () => {});
+}
+
+function detachLocksListener() {
+  if (locksUnsub) { locksUnsub(); locksUnsub = null; }
+  locksSeen = null;
+}
+
+async function teacherUnlock(id) {
+  try {
+    await db.collection('examLocks').doc(id).update({ locked: false, unlockedAt: firebase.firestore.FieldValue.serverTimestamp() });
+  } catch (e) { alert('❌ تعذّر فتح الامتحان: ' + e.message); }
+}
 
 function openEssayCamera() {
   essayCaptureInProgress = true;
@@ -5958,15 +6820,16 @@ function openEssayCamera() {
 }
 
 function handleVisibilityChange() {
-  if (document.hidden) {
-    if (essayCaptureInProgress) return; // student is taking a photo for an essay answer — not a real exit
-    lockCount++;
-    if (lockCount >= 1) {
-      examLocked = true;
-      showModal('lockScreen');
-    }
-    saveExamProgress();
-  }
+  if (!document.hidden) return;
+  const examScr = document.getElementById('examScreen');
+  if (!examActive || !examScr || !examScr.classList.contains('active')) return; // exam already submitted / left: never lock
+  if (essayCaptureInProgress) return; // student is taking a photo for an essay answer — not a real exit
+  lockCount++;
+  if (!examLocked) lockAtMs = Date.now();
+  examLocked = true;
+  showModal('lockScreen');
+  saveExamProgress();
+  publishLock();
 }
 
 // Safety net: whenever the exam tab regains focus, the camera trip (if any) is over
@@ -5977,27 +6840,15 @@ window.addEventListener('focus', () => {
 
 async function unlockExam() {
   const code = document.getElementById('adminCodeInput').value.trim();
-  // Load unlock code from Firestore
+  if (!code) { alert('اكتب الكود الأول'); return; }
   try {
     const snap = await db.collection('settings').doc('exam').get();
-    const unlockCode = snap.exists ? (snap.data().unlockCode || '31020') : '31020';
-    if (code === unlockCode) {
-      lockCount = 0;
-      examLocked = false;
-      saveExamProgress();
-      closeModal('lockScreen');
-      document.getElementById('adminCodeInput').value = '';
-    } else {
-      alert('❌ الكود غير صحيح');
-    }
-  } catch(e) {
-    if (code === '31020') {
-      lockCount = 0; examLocked = false;
-      saveExamProgress();
-      closeModal('lockScreen');
-    } else {
-      alert('❌ الكود غير صحيح');
-    }
+    const unlockCode = snap.exists ? String(snap.data().unlockCode || '').trim() : '';
+    if (!unlockCode) { alert('❌ لسه مفيش كود فتح متضبط. كلّم الأستاذ رؤوف يفتحلك الامتحان من عنده.'); return; }
+    if (code === unlockCode) applyUnlock(true);
+    else alert('❌ الكود غير صحيح');
+  } catch (e) {
+    alert('❌ تعذّر التحقق من الكود. تأكد من الإنترنت وجرّب تاني.');
   }
 }
 
@@ -6140,7 +6991,7 @@ window.addEventListener('load', async () => {
     const snap = await db.collection('settings').doc('exam').get();
     if (!snap.exists) {
       await db.collection('settings').doc('exam').set({
-        unlockCode: '31020', teacherPassword: TEACHER_PASSWORD
+        teacherPassword: TEACHER_PASSWORD
       });
       examSettings.teacherPassword = TEACHER_PASSWORD;
     } else {
