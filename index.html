@@ -4451,7 +4451,9 @@ async function studentLogin(){
         </div>
       </div>
       <div class="panel" id="aiChatPanel" style="display:none">
-        <div class="section-hdr"><span>✨ المساعد الذكي</span><span style="display:flex;gap:6px"><button class="tbtn ai-mini" type="button" onclick="edAiClear()">محادثة جديدة</button><button class="tbtn ai-mini" type="button" onclick="edAiSignOut()">خروج المساعد</button></span></div>
+        <div class="section-hdr"><span>✨ المساعد الذكي</span><span style="display:flex;gap:6px"><button id="aiNewChatBtn" class="tbtn ai-mini" type="button" onclick="edAiClear()">محادثة جديدة</button><button class="tbtn ai-mini" type="button" onclick="edAiSignOut()">خروج المساعد</button></span></div>
+        <div class="ai-tabs"><button id="aiTabChat" class="on" type="button" onclick="edAiView('chat')">💬 محادثة</button><button id="aiTabExam" type="button" onclick="edAiView('exam')">📝 إنشاء امتحان</button></div>
+        <div id="aiChatView">
         <div id="aiMsgs" class="ai-msgs" aria-live="polite"></div>
         <div id="aiErr" class="auth-error"></div>
         <div class="ai-chips">
@@ -4464,6 +4466,32 @@ async function studentLogin(){
           <button id="aiSendBtn" class="tbtn gold" type="button" onclick="edAiSend()">إرسال</button>
         </div>
         <p class="ai-note" style="margin:8px 0 0">المساعد ممكن يُخطئ، راجع المعلومات قبل ما تستخدمها. نص المحادثة بيتبعت لخدمة Google Gemini، فما تكتبش فيها بيانات طلاب.</p>
+        </div>
+        <div id="aiExamView" style="display:none">
+          <p class="ai-note">اكتب بيانات الامتحان وولّد الأسئلة، راجعها وعدّلها، وبعد الاعتماد بتتنقل لشاشة «إنشاء الامتحان». <b>مفيش حاجة بتتحفظ</b> قبل ما تضغط «إنشاء الامتحان» هناك.</p>
+          <div class="ai-form">
+            <label>الصف<select id="exGrade" class="tselect"><option value="أول ثانوي">الأول الثانوي</option><option value="تاني ثانوي">الثاني الثانوي</option><option value="تالت ثانوي" selected>الثالث الثانوي</option></select></label>
+            <label>المادة<select id="exSubject" class="tselect"><option>نحو</option><option>صرف</option><option>بلاغة</option><option>أدب</option><option>نصوص</option><option>قراءة</option><option>إملاء</option><option>تعبير</option></select></label>
+            <label class="full">الدرس أو الموضوع<input id="exTopic" class="tinput" type="text" maxlength="200" placeholder="مثال: المصادر"></label>
+            <label>عدد الأسئلة<input id="exCount" class="tinput" type="number" min="1" max="40" value="10" inputmode="numeric"></label>
+            <label>الصعوبة<select id="exDiff" class="tselect"><option>متدرج</option><option>سهل</option><option>متوسط</option><option>صعب</option></select></label>
+            <label class="full">ملاحظات للمساعد (اختياري)<textarea id="exNotes" class="tinput" rows="2" maxlength="500" placeholder="مثال: ركّز على المصدر الميمي ومستوى الثانوية العامة"></textarea></label>
+            <label>زمن الامتحان (دقيقة)<input id="exMinutes" class="tinput" type="number" min="1" value="60" inputmode="numeric"></label>
+            <label>الدرجة الكلية (اختياري)<input id="exTotal" class="tinput" type="number" min="1" step="0.5" placeholder="مثلاً 30" inputmode="decimal"></label>
+            <label class="full">عنوان الامتحان (اختياري)<input id="exTitle" class="tinput" type="text" maxlength="120" placeholder="يتكتب تلقائيًا لو فاضي"></label>
+          </div>
+          <div class="ai-row"><button id="exGenBtn" class="tbtn gold" type="button" onclick="edExGenerate()">ولّد الأسئلة</button><button id="exStopBtn" class="tbtn ai-mini" type="button" style="display:none" onclick="edExStop()">إيقاف</button></div>
+          <div id="exStatus" class="ai-note" aria-live="polite"></div>
+          <div id="exErr" class="auth-error"></div>
+          <div id="exList"></div>
+          <div id="exActions" class="ai-row" style="display:none">
+            <button class="tbtn ai-mini" type="button" onclick="edExAddManual()">+ سؤال يدوي</button>
+            <button id="exReviewBtn" class="tbtn ai-mini" type="button" onclick="edExReview()">فحص الأسئلة</button>
+            <button class="tbtn ai-mini" type="button" onclick="edExClear()">مسح الكل</button>
+          </div>
+          <div id="exSummary" class="ai-note"></div>
+          <button id="exApproveBtn" class="tbtn navy full" type="button" style="display:none" onclick="edExApprove()">اعتماد ونقل لشاشة إنشاء الامتحان</button>
+        </div>
       </div>
     </div>
 
@@ -9755,6 +9783,33 @@ function exitStudentPreview(){
 .ai-input .tbtn{padding:12px 18px}
 .ai-input .tbtn[disabled]{opacity:.55;cursor:not-allowed}
 @media (prefers-reduced-motion:reduce){.ai-dots i{animation:none;opacity:.6}}
+.ai-tabs{display:flex;gap:6px;margin-bottom:12px}
+.ai-tabs button{flex:1;border:1px solid var(--bdr);background:var(--white);color:var(--navy);border-radius:10px;font:700 .78rem 'Cairo',sans-serif;padding:9px 6px;cursor:pointer}
+.ai-tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ai-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.ai-form label{display:block;font-size:.7rem;font-weight:700;color:var(--muted)}
+.ai-form label.full{grid-column:1/-1}
+.ai-form .tinput,.ai-form .tselect{width:100%;margin-top:4px}
+.ai-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.ex-card{border:1px solid var(--bdr);background:var(--white);border-radius:14px;padding:12px;margin:10px 0}
+.ex-card.bad{border-color:#d97706;background:#fffaf0}
+.ex-card.busy{opacity:.55;pointer-events:none}
+.ex-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;font-size:.78rem}
+.ex-chip{background:var(--cream2);border-radius:999px;padding:2px 9px;font-size:.64rem;font-weight:700;color:var(--navy)}
+.ex-q{font-size:.86rem;line-height:1.95;font-weight:700;color:var(--text);margin-bottom:6px}
+.ex-opts{list-style:none;margin:0 0 6px;padding:0}
+.ex-opts li{padding:6px 10px;border:1px solid var(--bdr);border-radius:9px;margin-bottom:5px;font-size:.8rem;line-height:1.8}
+.ex-opts li.ok{background:#e8f6ee;border-color:#059669;font-weight:700}
+.ex-exp{font-size:.74rem;color:var(--muted);line-height:1.8;margin-bottom:6px}
+.ex-issue{font-size:.72rem;line-height:1.8;margin:3px 0;padding:5px 8px;border-radius:8px}
+.ex-issue.high{background:#fde8e8;color:#991b1b}
+.ex-issue.medium{background:#fff3d6;color:#92400e}
+.ex-issue.low{background:#eef2ff;color:#3730a3}
+.ex-optrow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ex-optrow input[type=radio]{width:20px;height:20px;flex:none}
+.ex-optrow .tinput{flex:1}
+.ex-edit textarea,.ex-edit .tinput{width:100%}
+@media (max-width:360px){.ai-form{grid-template-columns:1fr}}
 </style>
 <script>
 /* ===== Edu Stream AI - teacher assistant (talks only to the Cloudflare Worker; no API key in this file) ===== */
@@ -9801,6 +9856,7 @@ function edAiRefreshPanels() {
   a.style.display = signed ? 'none' : '';
   c.style.display = signed ? '' : 'none';
   edAiRender();
+  if (window.edExRender) edExRender();
 }
 
 function edAiOnOpen() { edAiRefreshPanels(); }
@@ -9824,6 +9880,7 @@ async function edAiSignIn() {
 
 function edAiSignOut(silent) {
   edAi.msgs = []; edAi.err = null; edAi.busy = false;
+  if (window.edExReset) edExReset();
   try { firebase.auth().signOut(); } catch (e) {}
   const p = edAiEl('aiPass'); if (p) p.value = '';
   if (!silent) edAiRefreshPanels(); else edAiRender();
@@ -9912,6 +9969,279 @@ async function edAiSend(retry) {
     clearTimeout(timer); edAi.busy = false; edAiRender();
   }
 }
+
+/* ===== AI exam builder: generate -> preview / edit -> approve into the existing "create exam" form =====
+   Nothing is saved to Firestore from here. "Approve" only fills the platform's own import slot
+   (importedExamQuestions) and form; the existing "إنشاء الامتحان" button does the real save,
+   including the separate protected answer key. */
+const EX_DRAFT_KEY = 'edAiExamDraft';
+const EX_FIELDS = ['exGrade', 'exSubject', 'exTopic', 'exCount', 'exDiff', 'exNotes', 'exMinutes', 'exTotal', 'exTitle'];
+const edEx = { qs: [], busy: false, stop: false, reviewed: false, seq: 0, summary: '', notes: [] };
+
+function edExEl(id) { return document.getElementById(id); }
+function edExNewId() { edEx.seq += 1; return 'q' + edEx.seq; }
+function edExClean(t, max) { return String(t == null ? '' : t).replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, max || 700); }
+function edExNorm(s) { return String(s).replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[^\u0621-\u064A\u0660-\u0669\u06F0-\u06F9a-zA-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim(); }
+/* options are compared WITH vowel marks (الطالبُ / الطالبَ are different options) */
+function edExExact(s) { return String(s).replace(/\u0640/g, '').replace(/\s+/g, ' ').trim(); }
+function edExQ(u) { return edEx.qs.find(function (q) { return q.u === u; }); }
+function edExStatus(t) { const el = edExEl('exStatus'); if (el) el.textContent = t || ''; }
+
+function edExForm() {
+  return {
+    grade: edExEl('exGrade').value, subject: edExEl('exSubject').value,
+    topic: edExClean(edExEl('exTopic').value, 200), difficulty: edExEl('exDiff').value,
+    notes: edExClean(edExEl('exNotes').value, 500),
+    count: Math.max(1, Math.min(40, parseInt(edExEl('exCount').value, 10) || 10)),
+    minutes: Math.max(1, parseInt(edExEl('exMinutes').value, 10) || 60),
+    total: parseFloat(edExEl('exTotal').value) || 0,
+    title: edExClean(edExEl('exTitle').value, 120)
+  };
+}
+
+/* ---- draft kept on this device so a reload does not lose 30 questions ---- */
+function edExSave() {
+  try {
+    const form = {}; EX_FIELDS.forEach(function (id) { const el = edExEl(id); if (el) form[id] = el.value; });
+    localStorage.setItem(EX_DRAFT_KEY, JSON.stringify({
+      v: 1, form: form, seq: edEx.seq, reviewed: edEx.reviewed,
+      qs: edEx.qs.filter(function (q) { return !q.editing || q.q; }).map(function (q) { return { u: q.u, q: q.q, opts: q.opts, ans: q.ans, exp: q.exp, diff: q.diff, issues: q.issues || [] }; })
+    }));
+  } catch (e) {}
+}
+function edExRestore() {
+  if (edEx.qs.length) return;
+  try {
+    const d = JSON.parse(localStorage.getItem(EX_DRAFT_KEY) || 'null');
+    if (!d || d.v !== 1 || !Array.isArray(d.qs)) return;
+    EX_FIELDS.forEach(function (id) { const el = edExEl(id); if (el && d.form && d.form[id] != null) el.value = d.form[id]; });
+    d.qs.forEach(function (x) {
+      if (!x || typeof x.q !== 'string' || !Array.isArray(x.opts) || x.opts.length !== 4) return;
+      const ans = parseInt(x.ans, 10); if (!(ans >= 0 && ans < 4)) return;
+      edEx.qs.push({ u: edExNewId(), q: edExClean(x.q, 700), opts: x.opts.map(function (o) { return edExClean(o, 240); }), ans: ans, exp: edExClean(x.exp, 600), diff: edExClean(x.diff, 10), issues: Array.isArray(x.issues) ? x.issues.slice(0, 5).map(function (i) { return { severity: edExClean(i.severity, 8), type: edExClean(i.type, 20), note: edExClean(i.note, 300) }; }) : [] });
+    });
+    edEx.reviewed = !!d.reviewed;
+    if (edEx.qs.length) edExStatus('رجّعت المسودة المحفوظة على جهازك (' + edEx.qs.length + ' سؤال).');
+    edExRender();
+  } catch (e) {}
+}
+function edExReset() {
+  edEx.qs = []; edEx.busy = false; edEx.stop = false; edEx.reviewed = false; edEx.summary = ''; edEx.notes = [];
+  try { localStorage.removeItem(EX_DRAFT_KEY); } catch (e) {}
+  edExStatus(''); edAiShow('exErr', ''); edAiView('chat'); edExRender();
+}
+
+/* ---- rendering (every piece of model text goes through edAiEsc) ---- */
+function edExCardHtml(q, i) {
+  const L = ['أ', 'ب', 'ج', 'د'], sev = { high: '🔴', medium: '🟠', low: '🔵' };
+  const issues = (q.issues || []).map(function (x) { return '<div class="ex-issue ' + edAiEsc(x.severity) + '">' + (sev[x.severity] || '') + ' ' + edAiEsc(x.note) + '</div>'; }).join('');
+  return '<div class="ex-card' + (q.issues && q.issues.length ? ' bad' : '') + (q.busy ? ' busy' : '') + '" id="exc_' + q.u + '">' +
+    '<div class="ex-head"><b>سؤال ' + (i + 1) + '</b>' + (q.diff ? '<span class="ex-chip">' + edAiEsc(q.diff) + '</span>' : '') + (q.busy ? '<span class="ex-chip">جاري…</span>' : '') + '</div>' +
+    '<div class="ex-q">' + edAiEsc(q.q) + '</div>' +
+    '<ul class="ex-opts">' + q.opts.map(function (o, k) { return '<li class="' + (k === q.ans ? 'ok' : '') + '">' + L[k] + ') ' + edAiEsc(o) + (k === q.ans ? ' ✓' : '') + '</li>'; }).join('') + '</ul>' +
+    (q.exp ? '<div class="ex-exp">💡 ' + edAiEsc(q.exp) + '</div>' : '') + issues +
+    '<div class="ai-act"><button type="button" onclick="edExEdit(\'' + q.u + '\')">تعديل</button><button type="button" onclick="edExDelete(\'' + q.u + '\')">حذف</button><button type="button" onclick="edExAlt(\'' + q.u + '\',\'replace\')">سؤال بديل</button><button type="button" onclick="edExAlt(\'' + q.u + '\',\'rephrase\')">تحسين الصياغة</button></div></div>';
+}
+function edExEditHtml(q, i) {
+  const L = ['أ', 'ب', 'ج', 'د'];
+  return '<div class="ex-card ex-edit" id="exc_' + q.u + '"><div class="ex-head"><b>' + (q.manual && !q.q ? 'سؤال جديد' : 'تعديل سؤال ' + (i + 1)) + '</b></div>' +
+    '<textarea id="exq_' + q.u + '" class="tinput" rows="3" maxlength="700" placeholder="نص السؤال">' + edAiEsc(q.q) + '</textarea>' +
+    '<p class="ai-note" style="margin:8px 0 4px">الاختيارات (علّم الإجابة الصحيحة)</p>' +
+    q.opts.map(function (o, k) { return '<div class="ex-optrow"><input type="radio" name="exa_' + q.u + '" value="' + k + '"' + (k === q.ans ? ' checked' : '') + ' aria-label="الإجابة الصحيحة ' + L[k] + '"><input id="exo_' + q.u + '_' + k + '" class="tinput" type="text" maxlength="240" value="' + edAiEsc(o) + '" placeholder="الاختيار ' + L[k] + '"></div>'; }).join('') +
+    '<textarea id="exe_' + q.u + '" class="tinput" rows="2" maxlength="600" placeholder="تفسير الإجابة (اختياري)">' + edAiEsc(q.exp || '') + '</textarea>' +
+    '<div class="ai-act"><button type="button" onclick="edExSaveEdit(\'' + q.u + '\')">حفظ</button><button type="button" onclick="edExCancelEdit(\'' + q.u + '\')">إلغاء</button></div></div>';
+}
+function edExRender() {
+  const list = edExEl('exList'); if (!list) return;
+  list.innerHTML = edEx.qs.map(function (q, i) { return q.editing ? edExEditHtml(q, i) : edExCardHtml(q, i); }).join('');
+  const has = edEx.qs.length > 0;
+  edExEl('exActions').style.display = has ? '' : 'none';
+  const ap = edExEl('exApproveBtn'); ap.style.display = has ? '' : 'none'; ap.textContent = 'اعتماد ' + edEx.qs.length + ' سؤال ونقلهم لشاشة إنشاء الامتحان'; ap.disabled = edEx.busy;
+  edExEl('exGenBtn').disabled = edEx.busy; edExEl('exReviewBtn').disabled = edEx.busy;
+  edExEl('exStopBtn').style.display = edEx.busy ? '' : 'none';
+  edExEl('exSummary').textContent = [edEx.summary].concat(edEx.notes).filter(Boolean).join(' • ');
+}
+
+/* ---- one authenticated call to the Worker ---- */
+async function edAiPost(path, body, timeoutMs) {
+  const u = firebase.auth().currentUser;
+  if (!u) throw { local: 'انتهت جلسة المساعد. سجّل الدخول من جديد.', relogin: true };
+  const ctl = new AbortController(); const timer = setTimeout(function () { ctl.abort(); }, timeoutMs || 75000);
+  try {
+    const token = await u.getIdToken();
+    const r = await fetch(EDU_AI_ENDPOINT + path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(body), signal: ctl.signal });
+    let d = null; try { d = await r.json(); } catch (e) {}
+    if (!r.ok || !d || !d.ok) {
+      const msg = (d && d.message) || 'حصلت مشكلة. جرّب مرة أخرى.';
+      if (r.status === 401) throw { local: msg, relogin: true };
+      if (r.status === 403) throw { local: msg + ' (المعرّف: ' + u.uid + ')', relogin: true };
+      throw { local: msg };
+    }
+    return d;
+  } catch (e) {
+    if (e && e.local) throw e;
+    if (e && e.name === 'AbortError') throw { local: 'الرد اتأخّر. جرّب مرة أخرى.' };
+    throw { local: 'تعذّر الاتصال بالخادم. تأكد من الإنترنت وجرّب تاني.' };
+  } finally { clearTimeout(timer); }
+}
+function edExErr(e) {
+  edAiShow('exErr', (e && e.local) || 'حصلت مشكلة. جرّب مرة أخرى.');
+  if (e && e.relogin) { try { firebase.auth().signOut(); } catch (x) {} edAiRefreshPanels(); edAiShow('aiAuthMsg', e.local); }
+}
+
+/* ---- generation (batches of 10, each batch told what to avoid) ---- */
+async function edExGenerate() {
+  if (edEx.busy) return;
+  edAiShow('exErr', '');
+  if (edEx.qs.some(function (q) { return q.editing; })) { edAiShow('exErr', 'خلّص تعديل السؤال المفتوح الأول (حفظ أو إلغاء).'); return; }
+  const f = edExForm();
+  if (!f.topic) { edAiShow('exErr', 'اكتب الدرس أو الموضوع الأول.'); edExEl('exTopic').focus(); return; }
+  if (edEx.qs.length + f.count > 40) f.count = 40 - edEx.qs.length;
+  if (f.count <= 0) { edAiShow('exErr', 'الحد الأقصى 40 سؤال في الامتحان الواحد. احذف أسئلة أو ابدأ امتحان جديد.'); return; }
+  edEx.busy = true; edEx.stop = false; edEx.notes = []; edExRender();
+  let remaining = f.count, added = 0, zeros = 0, guard = Math.ceil(f.count / 10) + 2;
+  try {
+    while (remaining > 0 && guard-- > 0 && !edEx.stop) {
+      edExStatus('جاري توليد الأسئلة… (' + added + ' من ' + f.count + ')');
+      const d = await edAiPost('/ai/teacher/exam', { mode: 'generate', grade: f.grade, subject: f.subject, topic: f.topic, count: Math.min(10, remaining), difficulty: f.difficulty, notes: f.notes, avoid: edEx.qs.map(function (q) { return q.q.slice(0, 160); }).slice(-40) }, 75000);
+      let n = 0;
+      (d.questions || []).forEach(function (x) {
+        if (remaining <= 0) return;
+        if (edEx.qs.some(function (q) { return edExNorm(q.q) === edExNorm(x.q); })) return;
+        edEx.qs.push({ u: edExNewId(), q: x.q, opts: x.opts, ans: x.ans, exp: x.exp || '', diff: x.diff || '', issues: [] });
+        n++; remaining--; added++;
+      });
+      (d.warnings || []).forEach(function (w) { if (edEx.notes.length < 6) edEx.notes.push(w); });
+      zeros = n ? 0 : zeros + 1;
+      if (n) { edEx.reviewed = false; edEx.summary = ''; }
+      edExRender(); edExSave();
+      if (zeros >= 2) break;
+    }
+  } catch (e) { edExErr(e); }
+  finally {
+    edEx.busy = false;
+    edExStatus(added ? 'تم توليد ' + added + ' سؤال' + (added < f.count ? ' من ' + f.count : '') + '. راجعهم قبل الاعتماد.' : '');
+    edExRender(); edExSave();
+  }
+}
+function edExStop() { edEx.stop = true; edExStatus('هيتوقف بعد الدفعة الحالية…'); }
+
+/* ---- per-question actions ---- */
+function edExEdit(u) { const q = edExQ(u); if (!q || edEx.busy) return; q.editing = true; edExRender(); }
+function edExCancelEdit(u) {
+  const q = edExQ(u); if (!q) return;
+  if (q.manual && !q.q) edEx.qs = edEx.qs.filter(function (x) { return x.u !== u; }); else q.editing = false;
+  edAiShow('exErr', ''); edExRender(); edExSave();
+}
+function edExSaveEdit(u) {
+  const q = edExQ(u); if (!q) return;
+  const text = edExClean(edExEl('exq_' + u).value, 700);
+  const opts = [0, 1, 2, 3].map(function (k) { return edExClean(edExEl('exo_' + u + '_' + k).value, 240); });
+  const sel = document.querySelector('input[name="exa_' + u + '"]:checked');
+  const err = (!text || text.length < 6) ? 'نص السؤال ناقص.' : opts.some(function (o) { return !o; }) ? 'كمّل الاختيارات الأربعة.' : new Set(opts.map(edExExact)).size !== 4 ? 'فيه اختيارات مكررة.' : !sel ? 'علّم الإجابة الصحيحة.' : '';
+  if (err) { edAiShow('exErr', err); return; }
+  edAiShow('exErr', '');
+  q.q = text; q.opts = opts; q.ans = parseInt(sel.value, 10); q.exp = edExClean(edExEl('exe_' + u).value, 600);
+  q.editing = false; q.manual = false; q.issues = []; edEx.reviewed = false; edEx.summary = '';
+  edExRender(); edExSave();
+}
+function edExDelete(u) {
+  if (edEx.busy) return;
+  if (!confirm('تحذف السؤال ده؟')) return;
+  edEx.qs = edEx.qs.filter(function (q) { return q.u !== u; }); edEx.reviewed = false; edEx.summary = '';
+  edExRender(); edExSave();
+}
+function edExAddManual() {
+  if (edEx.busy) return;
+  if (edEx.qs.length >= 40) { edAiShow('exErr', 'الحد الأقصى 40 سؤال في الامتحان الواحد.'); return; }
+  const q = { u: edExNewId(), q: '', opts: ['', '', '', ''], ans: 0, exp: '', diff: '', issues: [], editing: true, manual: true };
+  edEx.qs.push(q); edExRender();
+  const el = edExEl('exc_' + q.u); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' });
+}
+async function edExAlt(u, mode) {
+  const q = edExQ(u); if (!q || edEx.busy || q.busy) return;
+  const f = edExForm();
+  if (!f.topic) { edAiShow('exErr', 'اكتب الدرس أو الموضوع الأول.'); return; }
+  q.busy = true; edAiShow('exErr', ''); edExRender();
+  try {
+    const avoid = edEx.qs.filter(function (x) { return x.u !== u && x.q; }).map(function (x) { return x.q.slice(0, 160); });
+    if (mode === 'replace') avoid.push(q.q.slice(0, 160));   // a replacement must differ from the old question; a rephrase must not
+    const d = await edAiPost('/ai/teacher/exam', { mode: mode, grade: f.grade, subject: f.subject, topic: f.topic, difficulty: f.difficulty === 'متدرج' ? (q.diff || 'متدرج') : f.difficulty, notes: f.notes, target: { q: q.q, opts: q.opts, ans: q.ans, exp: q.exp }, avoid: avoid.slice(-40) }, 75000);
+    const n = d.questions && d.questions[0];
+    if (!n) throw { local: 'ما رجعش سؤال صالح. جرّب مرة أخرى.' };
+    q.q = n.q; q.opts = n.opts; q.ans = n.ans; q.exp = n.exp || ''; q.diff = n.diff || q.diff; q.issues = []; edEx.reviewed = false; edEx.summary = '';
+  } catch (e) { edExErr(e); }
+  finally { q.busy = false; edExRender(); edExSave(); }
+}
+
+/* ---- blind-solve check ---- */
+async function edExReview() {
+  if (edEx.busy || !edEx.qs.length) return;
+  edAiShow('exErr', '');
+  if (edEx.qs.some(function (q) { return q.editing; })) { edAiShow('exErr', 'خلّص تعديل السؤال المفتوح الأول (حفظ أو إلغاء).'); return; }
+  const f = edExForm();
+  edEx.busy = true; edExStatus('جاري فحص الأسئلة…'); edExRender();
+  try {
+    const d = await edAiPost('/ai/teacher/review', { grade: f.grade, subject: f.subject, topic: f.topic, questions: edEx.qs.map(function (q) { return { q: q.q, opts: q.opts, ans: q.ans, exp: q.exp }; }) }, 75000);
+    edEx.qs.forEach(function (q) { q.issues = []; });
+    (d.issues || []).forEach(function (x) { const q = edEx.qs[x.n - 1]; if (q) q.issues.push({ severity: x.severity, type: x.type, note: x.note }); });
+    edEx.reviewed = true;
+    const c = function (t) { return (d.issues || []).filter(function (x) { return x.type === t; }).length; };
+    const parts = [];
+    if (c('answer_mismatch')) parts.push(c('answer_mismatch') + ' تعارض في الإجابة');
+    if (c('ambiguous')) parts.push(c('ambiguous') + ' غموض محتمل');
+    if (c('language')) parts.push(c('language') + ' ملاحظة لغوية');
+    edEx.summary = (parts.length ? 'نتيجة الفحص: ' + parts.join('، ') + '.' : 'الفحص ما لقاش مشاكل واضحة.') +
+      (d.missing && d.missing.length ? ' ما اتفحصش: سؤال ' + d.missing.join('، ') + '.' : '') +
+      ' (فحص آلي أولي بنفس نموذج التوليد، مش بديل لمراجعتك.)';
+  } catch (e) { edExErr(e); }
+  finally { edEx.busy = false; edExStatus(''); edExRender(); edExSave(); }
+}
+
+function edExClear() {
+  if (edEx.busy) return;
+  if (edEx.qs.length && !confirm('تمسح كل الأسئلة؟')) return;
+  edEx.qs = []; edEx.reviewed = false; edEx.summary = ''; edEx.notes = [];
+  try { localStorage.removeItem(EX_DRAFT_KEY); } catch (e) {}
+  edExStatus(''); edAiShow('exErr', ''); edExRender();
+}
+
+/* ---- approve: hand the questions to the platform's own create-exam form ---- */
+function edExApprove() {
+  if (edEx.busy || !edEx.qs.length) return;
+  edAiShow('exErr', '');
+  if (edEx.qs.some(function (q) { return q.editing; })) { edAiShow('exErr', 'خلّص تعديل السؤال المفتوح الأول (حفظ أو إلغاء).'); return; }
+  const bad = edEx.qs.findIndex(function (q) { return !q.q || q.opts.some(function (o) { return !o; }) || new Set(q.opts.map(edExExact)).size !== 4 || !(q.ans >= 0 && q.ans < 4); });
+  if (bad >= 0) { edAiShow('exErr', 'السؤال ' + (bad + 1) + ' ناقص أو فيه اختيارات مكررة. عدّله الأول.'); return; }
+  const high = edEx.qs.filter(function (q) { return (q.issues || []).some(function (x) { return x.severity === 'high'; }); }).length;
+  let msg = 'هتنقل ' + edEx.qs.length + ' سؤال لشاشة إنشاء الامتحان. مفيش حاجة بتتحفظ لحد ما تضغط «إنشاء الامتحان» هناك.';
+  if (high) msg += '\n⚠️ فيه ' + high + ' سؤال فيهم تعارض في الإجابة لسه ما اتحلّش.';
+  else if (!edEx.reviewed) msg += '\nلسه ما عملتش «فحص الأسئلة».';
+  if (!confirm(msg + '\nتكمل؟')) return;
+  const f = edExForm(), sec = f.topic.slice(0, 40) || 'عام';
+  importedExamQuestions = edEx.qs.map(function (q, i) { return { id: i + 1, sec: sec, q: edExClean(q.q, 700), opts: q.opts.map(function (o) { return edExClean(o, 240); }), ans: q.ans, exp: edExClean(q.exp, 600) }; });
+  const set = function (id, v) { const el = document.getElementById(id); if (el) el.value = v; };
+  set('newExamTitle', f.title || (f.subject + ' - ' + f.topic)); set('newExamGrade', f.grade); set('newExamDuration', f.minutes); set('newExamTotalPts', f.total || '');
+  try { set('newExamFile', ''); } catch (e) {}
+  const pt = document.getElementById('newExamPlainText'); if (pt) pt.value = '';
+  const pts = document.getElementById('newExamPlainTextStatus'); if (pts) pts.style.display = 'none';
+  const fs = document.getElementById('newExamFileStatus');
+  if (fs) { fs.textContent = '✅ جاهز: ' + importedExamQuestions.length + ' سؤال من المساعد الذكي. راجع الإعدادات واضغط «إنشاء الامتحان».'; fs.style.color = '#059669'; fs.style.display = 'block'; }
+  switchTeacherTab('exams');
+  setTimeout(function () { const t = document.getElementById('newExamTitle'); if (t && t.scrollIntoView) t.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
+}
+
+function edAiView(v) {
+  const exam = v === 'exam';
+  edExEl('aiChatView').style.display = exam ? 'none' : '';
+  edExEl('aiExamView').style.display = exam ? '' : 'none';
+  edExEl('aiTabChat').classList.toggle('on', !exam); edExEl('aiTabExam').classList.toggle('on', exam);
+  const nb = edExEl('aiNewChatBtn'); if (nb) nb.style.display = exam ? 'none' : '';
+  if (exam) edExRestore();
+}
+document.addEventListener('DOMContentLoaded', function () {
+  const v = edExEl('aiExamView'); if (v) v.addEventListener('change', function () { edExSave(); });
+});
 
 document.addEventListener('DOMContentLoaded', function () {
   const t = edAiEl('aiInput');
