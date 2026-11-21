@@ -3206,6 +3206,10 @@ function edMsgHtml(m){m=String(m==null?'':m).replace(/^\s+/,'');var c=m?String.f
           <input id="studentCode" class="ls-code" type="text" placeholder="أدخل الكود الخاص بك" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
           <button class="ls-paste" id="lsPaste" type="button">لصق</button>
         </div>
+        <div class="ls-field" id="lsPassField" style="display:none">
+          <button class="ls-ico" id="lsPassEye" type="button" aria-label="إظهار أو إخفاء كلمة السر">👁️</button>
+          <input id="teacherPass" class="ls-code" type="password" placeholder="كلمة السر" maxlength="64" autocomplete="current-password" spellcheck="false">
+        </div>
         <button class="ls-go" id="loginBtn" type="button" onclick="studentLogin()"><span class="ls-spin"></span><span id="loginBtnText">دخول المنصة</span><span class="ls-arr"><svg class=ic aria-hidden=true><use href=#i-arrow-left></use></svg></span></button>
         <div class="ls-opts">
           <label id="lsRemWrap"><input type="checkbox" id="rememberMe"> تذكر الكود على هذا الجهاز</label>
@@ -4045,7 +4049,7 @@ function lsErr(msg,quiet){const e=$ls('authError');e.innerHTML=edMsgHtml(msg);e.
 function lsBusySet(on,txt){lsBusy=on;const b=$ls('loginBtn');b.disabled=on||lsLockLeft()>0;b.classList.toggle('busy',on);$ls('loginBtnText').textContent=txt||'دخول المنصة'}
 function lsTick(){clearInterval(lsTimer);const t=()=>{const s=lsLockLeft();if(s>0){lsErr('⏳ محاولات غلط كتير — جرّب بعد '+s+' ثانية',true);$ls('loginBtn').disabled=true}else{clearInterval(lsTimer);$ls('authError').classList.remove('show');$ls('loginBtn').disabled=lsBusy}};t();lsTimer=setInterval(t,1000)}
 function lsFail(msg){lsErr(msg);if(++lsFails>=5){lsFails=0;lsSet(LS_LOCK,String(Date.now()+30000));lsTick()}}
-function lsTeacherMode(on){lsTeacher=on;const el=$ls('studentCode');$ls('lsCard').classList.toggle('ls-t',on);el.type=on?'password':'text';el.placeholder=on?'كلمة سر المدرس':'أدخل الكود الخاص بك';$ls('lsLbl').textContent=on?'🔐 دخول المدرس':'كودك الشخصي';el.value='';$ls('lsRemWrap').style.display=on?'none':'';$ls('lsPaste').style.display=on||!(navigator.clipboard&&navigator.clipboard.readText)?'none':''}
+function lsTeacherMode(on){lsTeacher=on;const el=$ls('studentCode'),pf=$ls('lsPassField'),p=$ls('teacherPass');$ls('lsCard').classList.toggle('ls-t',on);el.type=on?'email':'text';el.placeholder=on?'بريدك الإلكتروني':'أدخل الكود الخاص بك';el.maxLength=on?64:20;el.setAttribute('autocomplete',on?'username':'off');el.setAttribute('autocapitalize',on?'none':'characters');$ls('lsLbl').textContent=on?'🔐 دخول المدرس':'كودك الشخصي';el.value='';if(pf)pf.style.display=on?'':'none';if(p)p.value='';$ls('lsRemWrap').style.display=on?'none':'';$ls('lsPaste').style.display=on||!(navigator.clipboard&&navigator.clipboard.readText)?'none':''}
 
 async function studentLogin(){
   if(lsBusy)return;
@@ -4056,8 +4060,14 @@ async function studentLogin(){
   lsBusySet(true,'جاري التحقق...');
   try{
     if(lsTeacher){
-      const tp=examSettings.teacherPassword||TEACHER_PASSWORD;
-      if(raw!==tp){lsFail('❌ كلمة السر غير صحيحة');return}
+      const passEl=$ls('teacherPass'),pass=passEl?passEl.value:'';
+      if(!pass){lsErr('⚠️ من فضلك أدخل كلمة السر');return}
+      try{
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+        await firebase.auth().signInWithEmailAndPassword(raw,pass);
+      }catch(e){lsFail(typeof edAiAuthMsg==='function'?edAiAuthMsg(e):'❌ بيانات الدخول غير صحيحة');return}
+      if(passEl)passEl.value='';
+      lsFails=0;
       lsTeacherMode(false);
       await loadDashboardStats();showScreen('teacherDashboard');switchTeacherTab('home');attachTeacherResultNotifications();attachLocksListener();return;
     }
@@ -4082,7 +4092,9 @@ async function studentLogin(){
   document.querySelectorAll('[data-wa]').forEach(a=>a.href='https://wa.me/201012032976?text='+encodeURIComponent(a.dataset.wa));
   el.addEventListener('input',()=>{if(!lsTeacher){const v=lsClean(el.value);if(v!==el.value)el.value=v}});
   el.addEventListener('keydown',e=>{if(e.key==='Enter')studentLogin()});
-  $ls('lsEye').onclick=()=>{el.type=el.type==='password'?'text':'password'};
+  $ls('lsEye').onclick=()=>{const t=lsTeacher?$ls('teacherPass'):el;if(t)t.type=t.type==='password'?'text':'password'};
+  const tpEl=$ls('teacherPass');
+  if(tpEl){tpEl.addEventListener('keydown',e=>{if(e.key==='Enter')studentLogin()});$ls('lsPassEye').onclick=()=>{tpEl.type=tpEl.type==='password'?'text':'password'}}
   $ls('lsPaste').onclick=async()=>{try{const t=await navigator.clipboard.readText();el.value=lsTeacher?t.trim():lsClean(t);el.focus()}catch(e){lsErr('تعذّر اللصق — اضغط مطولًا في الخانة والصق يدويًا')}};
   if(!(navigator.clipboard&&navigator.clipboard.readText))$ls('lsPaste').style.display='none';
   // hidden teacher entry: long-press the top logo
@@ -4742,11 +4754,7 @@ async function studentLogin(){
         <div class="add-student-form">
           <div>
             <label class="flabel" style="font-size:.72rem;margin-bottom:4px">كلمة مرور المعلم</label>
-            <div style="display:flex;gap:8px">
-              <input type="text" id="teacherPasswordInput" class="tinput" placeholder="كلمة المرور الجديدة" style="flex:1">
-              <button class="tbtn navy" onclick="updateTeacherPassword()">حفظ</button>
-            </div>
-            <p style="font-size:.66rem;color:var(--muted);margin-top:4px">هتستخدمها بدل الحالية من أول مرة تحفظها.</p>
+            <p style="font-size:.72rem;color:var(--muted);line-height:1.8">دخول المدرس بقى بالبريد الإلكتروني وكلمة السر عن طريق Firebase Authentication، ومبقاش فيه كلمة سر محفوظة جوه كود المنصة. تقدر تغيّر كلمة السر من لوحة تحكم Firebase: Authentication ← Users.</p>
           </div>
           <div>
             <label class="flabel" style="font-size:.72rem;margin-bottom:4px">كود فتح القفل (قديم — مبقاش بيظهر للطلاب)</label>
@@ -5013,7 +5021,6 @@ const db = firebase.firestore();
 // ============================================================
 // CONSTANTS
 // ============================================================
-const TEACHER_PASSWORD = "31020954roz";
 const CLOUDINARY_CLOUD_NAME_DEFAULT = "jw1ezejb";
 const CLOUDINARY_PRESET_DEFAULT = "edustream_essays";
 const GRADES_LIST = ["أول ثانوي","تاني ثانوي","تالت ثانوي"];
@@ -8081,6 +8088,10 @@ async function loadSettings() {
     const snap = await db.collection('settings').doc('exam').get();
     if (snap.exists) {
       const d = snap.data();
+      if (d.teacherPassword !== undefined) {
+        delete d.teacherPassword;
+        db.collection('settings').doc('exam').update({ teacherPassword: firebase.firestore.FieldValue.delete() }).catch(() => {});
+      }
       document.getElementById('unlockCodeInput').value = d.unlockCode || '';
       document.getElementById('strictReentryToggle').checked = d.strictReentry === true;
       document.getElementById('cloudinaryCloudNameInput').value = d.cloudinaryCloudName || CLOUDINARY_CLOUD_NAME_DEFAULT;
@@ -8198,19 +8209,6 @@ async function updateUnlockCode() {
     await db.collection('settings').doc('exam').set({ ...examSettings, unlockCode: code }, { merge: true });
     examSettings.unlockCode = code;
     showSettingsMsg('✅ تم تحديث كود فتح القفل');
-  } catch(e) { alert('❌ خطأ: ' + e.message); }
-}
-
-async function updateTeacherPassword() {
-  const pass = document.getElementById('teacherPasswordInput').value.trim();
-  if (!pass) { alert('أدخل كلمة المرور الجديدة'); return; }
-  if (pass.length < 4) { alert('⚠️ كلمة المرور قصيرة أوي، اختار حاجة أطول شوية عشان أمانك'); return; }
-  if (!confirm('هيتم تغيير كلمة مرور المعلم للقيمة الجديدة. متأكد؟')) return;
-  try {
-    await db.collection('settings').doc('exam').set({ ...examSettings, teacherPassword: pass }, { merge: true });
-    examSettings.teacherPassword = pass;
-    document.getElementById('teacherPasswordInput').value = '';
-    showSettingsMsg('✅ اتغيّرت كلمة مرور المعلم — استخدمها من المرة الجاية');
   } catch(e) { alert('❌ خطأ: ' + e.message); }
 }
 
@@ -9674,14 +9672,8 @@ window.addEventListener('load', async () => {
   // Load exam settings from Firestore
   try {
     const snap = await db.collection('settings').doc('exam').get();
-    if (!snap.exists) {
-      await db.collection('settings').doc('exam').set({
-        teacherPassword: TEACHER_PASSWORD
-      });
-      examSettings.teacherPassword = TEACHER_PASSWORD;
-    } else {
-      examSettings = snap.data();
-    }
+    if (snap.exists) examSettings = snap.data();
+    delete examSettings.teacherPassword;
   } catch(e) {}
 });
 </script>
