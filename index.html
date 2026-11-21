@@ -4249,7 +4249,7 @@ async function studentLogin(){
 
     <!-- EXAMS MANAGEMENT TAB -->
     <div id="tpane-exams" class="tpane">
-      <div class="tseg"><button type="button" data-t="exams" onclick="switchTeacherTab('exams')">الامتحانات</button><button type="button" data-t="essayGrading" onclick="switchTeacherTab('essayGrading')">التصحيح المقالي<span class="tnav-badge js-essay-badge" style="display:none"></span></button></div>
+      <div class="tseg"><button type="button" data-t="exams" onclick="switchTeacherTab('exams')">الامتحانات</button><button type="button" data-t="essayGrading" onclick="switchTeacherTab('essayGrading')">التصحيح المقالي<span class="tnav-badge js-essay-badge" style="display:none"></span></button><button type="button" data-t="bank" onclick="switchTeacherTab('bank')">بنك الأسئلة</button></div>
 
       <!-- LIST VIEW -->
       <div id="examsListView">
@@ -4449,6 +4449,111 @@ async function studentLogin(){
       </div>
     </div>
 
+    <!-- QUESTION BANK TAB -->
+    <div id="tpane-bank" class="tpane">
+      <div class="tseg"><button type="button" data-t="exams" onclick="switchTeacherTab('exams')">الامتحانات</button><button type="button" data-t="essayGrading" onclick="switchTeacherTab('essayGrading')">التصحيح المقالي<span class="tnav-badge js-essay-badge" style="display:none"></span></button><button type="button" data-t="bank" onclick="switchTeacherTab('bank')">بنك الأسئلة</button></div>
+      <div class="panel">
+        <div class="section-hdr" id="bankFormTitle">إضافة سؤال للبنك</div>
+        <p style="font-size:.7rem;color:var(--muted);margin:-4px 0 10px;line-height:1.7">السؤال بيتسجل في البنك مرة واحدة، وبعدين تضيفه لأي امتحان بضغطة من غير ما تكتبه تاني.</p>
+        <div id="bankFormMsg" class="auth-error" style="display:none"></div>
+        <div class="add-student-form">
+          <div>
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">نوع السؤال</label>
+            <div style="display:flex;gap:8px">
+              <label class="qtype-radio"><input type="radio" name="bkType" value="mcq" checked onchange="bankToggleTypeFields()"> اختيار من متعدد</label>
+              <label class="qtype-radio"><input type="radio" name="bkType" value="essay" onchange="bankToggleTypeFields()"> مقالي (تصوير إجابة)</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الصف الدراسي</label>
+              <select id="bkGrade" class="tselect">
+                <option value="أول ثانوي">الصف الأول الثانوي</option>
+                <option value="تاني ثانوي" selected>الصف الثاني الثانوي</option>
+                <option value="تالت ثانوي">الصف الثالث الثانوي</option>
+              </select>
+            </div>
+            <div>
+              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">القسم / الموضوع</label>
+              <input type="text" id="bkSection" class="tinput" placeholder="مثال: نحو، بلاغة، قراءة...">
+            </div>
+          </div>
+          <div>
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">نص قرائي مرفق (اختياري)</label>
+            <textarea id="bkPassage" class="tinput" rows="3" placeholder="لو السؤال مبني على نص، الصقه هنا. للشعر: كل بيت في سطر وبين الشطرين ***"></textarea>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:1">
+              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">نوع النص المرفق</label>
+              <select id="bkPassageKind" class="tinput"><option value="">تلقائي</option><option value="reading">نص قرائي (فقرات)</option><option value="prose">نص نثري واحد</option><option value="poetry">شعر</option><option value="quran">آية قرآنية</option><option value="sentence">جملة / مثال</option><option value="compare">نص للمقارنة</option></select>
+            </div>
+            <div style="flex:1">
+              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الشاعر / السورة والآية / العنوان</label>
+              <input type="text" id="bkPassageMeta" class="tinput" placeholder="اختياري">
+            </div>
+          </div>
+          <div>
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">نص السؤال</label>
+            <textarea id="bkQuestion" class="tinput" rows="2" placeholder="اكتب نص السؤال هنا"></textarea>
+          </div>
+          <div id="bkMcqFields">
+            <div>
+              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الاختيارات — حدّد الإجابة الصحيحة بالدائرة</label>
+              <div class="qbf-opt-row"><input type="radio" name="bkCorrect" value="0" checked><input type="text" id="bkOpt0" class="tinput" placeholder="الاختيار الأول"></div>
+              <div class="qbf-opt-row"><input type="radio" name="bkCorrect" value="1"><input type="text" id="bkOpt1" class="tinput" placeholder="الاختيار الثاني"></div>
+              <div class="qbf-opt-row"><input type="radio" name="bkCorrect" value="2"><input type="text" id="bkOpt2" class="tinput" placeholder="الاختيار الثالث"></div>
+              <div class="qbf-opt-row"><input type="radio" name="bkCorrect" value="3"><input type="text" id="bkOpt3" class="tinput" placeholder="الاختيار الرابع"></div>
+            </div>
+            <div>
+              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">توضيح الإجابة (اختياري)</label>
+              <input type="text" id="bkExp" class="tinput" placeholder="يظهر للطالب بعد الامتحان">
+            </div>
+          </div>
+          <div id="bkPtsMcqWrap">
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الدرجة الكاملة للسؤال ده</label>
+            <input type="number" id="bkPoints" class="tinput" min="0.5" step="0.5" value="1">
+          </div>
+          <div id="bkEssayFields" style="display:none">
+            <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الدرجة الكاملة للسؤال ده</label>
+            <input type="number" id="bkMaxGrade" class="tinput" placeholder="مثال: 5" min="0.5" step="0.5" value="5">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="tbtn gold full" id="bankFormSubmitBtn" onclick="bankSaveForm()">أضف للبنك</button>
+            <button class="tbtn navy" id="bankCancelEditBtn" style="display:none;white-space:nowrap" onclick="bankResetForm()">إلغاء</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="section-hdr">
+          <span>الأسئلة المحفوظة</span>
+          <span style="display:flex;gap:6px;align-items:center">
+            <span class="exammgmt-chip" id="bankCountChip">0 سؤال</span>
+            <button class="tbtn navy" onclick="loadBankTab()" style="font-size:.7rem;padding:6px 12px">تحديث</button>
+          </span>
+        </div>
+        <input type="text" id="bankTabSearch" class="tinput" placeholder="🔍 ابحث في نص السؤال أو القسم..." oninput="bankTabRender()" style="margin-bottom:8px">
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <select id="bankTabGradeFilter" class="tselect" onchange="bankTabRender()" style="flex:1;min-width:105px">
+            <option value="">كل الصفوف</option>
+            <option value="أول ثانوي">الصف الأول الثانوي</option>
+            <option value="تاني ثانوي">الصف الثاني الثانوي</option>
+            <option value="تالت ثانوي">الصف الثالث الثانوي</option>
+          </select>
+          <select id="bankTabTypeFilter" class="tselect" onchange="bankTabRender()" style="flex:1;min-width:105px">
+            <option value="">كل الأنواع</option>
+            <option value="mcq">اختيار من متعدد</option>
+            <option value="essay">مقالي</option>
+          </select>
+          <select id="bankTabSecFilter" class="tselect" onchange="bankTabRender()" style="flex:1;min-width:105px">
+            <option value="">كل الأقسام</option>
+          </select>
+        </div>
+        <div id="bankTabList">
+          <div class="empty-state"><span class="eicon"><svg class=ic aria-hidden=true><use href=#i-hourglass></use></svg></span>جاري التحميل...</div>
+        </div>
+      </div>
+    </div>
+
     <!-- LESSONS TAB -->
     <!-- AI ASSISTANT TAB -->
     <div id="tpane-ai" class="tpane">
@@ -4579,7 +4684,7 @@ async function studentLogin(){
 
     <!-- ESSAY GRADING TAB -->
     <div id="tpane-essayGrading" class="tpane">
-      <div class="tseg"><button type="button" data-t="exams" onclick="switchTeacherTab('exams')">الامتحانات</button><button type="button" data-t="essayGrading" onclick="switchTeacherTab('essayGrading')">التصحيح المقالي<span class="tnav-badge js-essay-badge" style="display:none"></span></button></div>
+      <div class="tseg"><button type="button" data-t="exams" onclick="switchTeacherTab('exams')">الامتحانات</button><button type="button" data-t="essayGrading" onclick="switchTeacherTab('essayGrading')">التصحيح المقالي<span class="tnav-badge js-essay-badge" style="display:none"></span></button><button type="button" data-t="bank" onclick="switchTeacherTab('bank')">بنك الأسئلة</button></div>
       <div class="panel">
         <div class="section-hdr">
           <span>تصحيح الأسئلة المقالية</span>
@@ -5002,6 +5107,18 @@ async function studentLogin(){
   <div class="mbtns"><button class="mbtnm gray" style="width:100%" onclick="closeModal('questionBankModal')">إغلاق</button></div>
 </div></div>
 
+<div id="bankPickExamModal" class="modal"><div class="mbox" style="max-width:420px;text-align:right">
+  <div class="micon" style="text-align:center"><svg class=ic aria-hidden=true><use href=#i-clipboard-list></use></svg></div>
+  <p class="mtitle" style="text-align:center;color:var(--navy)">إضافة السؤال لامتحان</p>
+  <p style="font-size:.7rem;color:var(--muted);text-align:center;margin-bottom:10px">اختار الامتحان اللي عايز تضيفله السؤال ده — هيتضاف في آخر أسئلته.</p>
+  <select id="bankPickExamSelect" class="tselect" style="width:100%;margin-bottom:12px"></select>
+  <div class="mbtns" style="display:flex;gap:8px">
+    <button class="mbtnm green" style="flex:1" onclick="bankConfirmAddToExam()">إضافة</button>
+    <button class="mbtnm gray" style="flex:1" onclick="closeModal('bankPickExamModal')">إلغاء</button>
+  </div>
+</div></div>
+
+
 <script>
 // ============================================================
 // FIREBASE CONFIG
@@ -5223,7 +5340,7 @@ function showScreen(id) {
 function switchTeacherTab(tab) {
   document.querySelectorAll('.tnav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tpane').forEach(p => p.classList.remove('active'));
-  const grp = { addStudent: 'students', essayGrading: 'exams' }[tab] || tab;
+  const grp = { addStudent: 'students', essayGrading: 'exams', bank: 'exams' }[tab] || tab;
   const nb = document.querySelector(`.teacher-nav .tnav-btn[onclick="switchTeacherTab('${grp}')"]`);
   if (nb) nb.classList.add('active');
   document.querySelectorAll('.tseg button').forEach(b => b.classList.toggle('active', b.dataset.t === tab));
@@ -5235,6 +5352,7 @@ function switchTeacherTab(tab) {
   if (tab === 'addStudent') loadWhatsappGroups();
   if (tab === 'essayGrading') loadEssayGrading();
   if (tab === 'lessons') loadTeacherLessons();
+  if (tab === 'bank') loadBankTab();
   if (tab === 'ai' && window.edAiOnOpen) edAiOnOpen();
   if (tab === 'exams') { closeExamEditor(); loadTeacherExams(); }
 }
@@ -8009,7 +8127,211 @@ async function deleteBankQuestion(bankId) {
   try {
     await db.collection('questionBank').doc(bankId).delete();
     questionBankCache = questionBankCache.filter(x => x.id !== bankId);
+    bankTabCache = bankTabCache.filter(x => x.id !== bankId);
     filterQuestionBank();
+    bankTabRender();
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
+
+// ============================================================
+// QUESTION BANK TAB (add directly, edit, manage, reuse)
+// ============================================================
+let bankTabCache = [];
+let editingBankQuestionId = null;
+let bankPickQuestionId = null;
+
+async function loadBankTab() {
+  const listEl = document.getElementById('bankTabList');
+  if (listEl) listEl.innerHTML = '<div class="empty-state"><svg class=ic aria-hidden=true><use href=#i-hourglass></use></svg> جاري التحميل...</div>';
+  try {
+    const snap = await db.collection('questionBank').orderBy('savedAt', 'desc').get();
+    bankTabCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    questionBankCache = bankTabCache; // keep the exam-editor bank modal in sync
+    const secSel = document.getElementById('bankTabSecFilter');
+    const curSec = secSel.value;
+    const secs = [...new Set(bankTabCache.map(x => x.sec || 'عام'))].sort();
+    secSel.innerHTML = '<option value="">كل الأقسام</option>' + secs.map(s => '<option value="' + escHtml(s) + '">' + escHtml(s) + '</option>').join('');
+    if (secs.includes(curSec)) secSel.value = curSec;
+    bankTabRender();
+  } catch(e) {
+    if (listEl) listEl.innerHTML = '<div class="empty-state"><svg class=ic aria-hidden=true><use href=#i-circle-x></use></svg> خطأ: ' + escHtml(e.message) + '</div>';
+  }
+}
+
+function bankToggleTypeFields() {
+  const isEssay = document.querySelector('input[name="bkType"]:checked').value === 'essay';
+  document.getElementById('bkMcqFields').style.display = isEssay ? 'none' : 'block';
+  document.getElementById('bkEssayFields').style.display = isEssay ? 'block' : 'none';
+  document.getElementById('bkPtsMcqWrap').style.display = isEssay ? 'none' : 'block';
+}
+
+function bankResetForm() {
+  editingBankQuestionId = null;
+  document.querySelector('input[name="bkType"][value="mcq"]').checked = true;
+  bankToggleTypeFields();
+  ['bkSection','bkPassage','bkPassageMeta','bkQuestion','bkExp'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('bkPassageKind').value = '';
+  [0,1,2,3].forEach(i => document.getElementById('bkOpt'+i).value = '');
+  document.querySelector('input[name="bkCorrect"][value="0"]').checked = true;
+  document.getElementById('bkPoints').value = 1;
+  document.getElementById('bkMaxGrade').value = 5;
+  document.getElementById('bankFormMsg').style.display = 'none';
+  document.getElementById('bankFormTitle').textContent = 'إضافة سؤال للبنك';
+  document.getElementById('bankFormSubmitBtn').textContent = 'أضف للبنك';
+  document.getElementById('bankCancelEditBtn').style.display = 'none';
+}
+
+async function bankSaveForm() {
+  const isEssay = document.querySelector('input[name="bkType"]:checked').value === 'essay';
+  const grade = document.getElementById('bkGrade').value;
+  const sec = document.getElementById('bkSection').value.trim();
+  const passage = document.getElementById('bkPassage').value.trim();
+  const q = document.getElementById('bkQuestion').value.trim();
+  const msgEl = document.getElementById('bankFormMsg');
+  msgEl.style.display = 'none';
+
+  if (!q) { msgEl.innerHTML = edMsgHtml('⚠️ أدخل نص السؤال'); msgEl.style.display = 'block'; return; }
+
+  let newQ;
+  if (isEssay) {
+    const maxGrade = parseFloat(document.getElementById('bkMaxGrade').value) || 5;
+    newQ = { sec: sec || 'عام', q, type: 'essay', maxGrade };
+  } else {
+    const opts = [0,1,2,3].map(i => document.getElementById('bkOpt'+i).value.trim());
+    const ans = parseInt(document.querySelector('input[name="bkCorrect"]:checked').value);
+    const exp = document.getElementById('bkExp').value.trim();
+    if (opts.some(o => !o)) { msgEl.innerHTML = edMsgHtml('⚠️ أدخل الاختيارات الأربعة كاملة'); msgEl.style.display = 'block'; return; }
+    newQ = { sec: sec || 'عام', q, opts, ans, exp: exp || '', pts: (parseFloat(document.getElementById('bkPoints').value) > 0 ? parseFloat(document.getElementById('bkPoints').value) : 1) };
+    if (passage) newQ.type = 'passage';
+  }
+  if (passage) {
+    newQ.passage = passage;
+    if (document.getElementById('bkPassageKind').value) newQ.pk = document.getElementById('bkPassageKind').value;
+    if (document.getElementById('bkPassageMeta').value.trim()) newQ.pmeta = document.getElementById('bkPassageMeta').value.trim();
+  }
+
+  try {
+    if (editingBankQuestionId) {
+      const del = firebase.firestore.FieldValue.delete();
+      if (isEssay) { newQ.opts = del; newQ.ans = del; newQ.exp = del; newQ.pts = del; }
+      else { newQ.maxGrade = del; if (!passage) newQ.type = del; }
+      if (!passage) { newQ.passage = del; newQ.pk = del; newQ.pmeta = del; }
+      await db.collection('questionBank').doc(editingBankQuestionId).update({ ...newQ, grade, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    } else {
+      await db.collection('questionBank').add({ ...newQ, grade, savedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    }
+    bankResetForm();
+    await loadBankTab();
+  } catch(e) {
+    msgEl.innerHTML = edMsgHtml('❌ خطأ في الحفظ: ' + e.message);
+    msgEl.style.display = 'block';
+  }
+}
+
+function bankEditQuestion(id) {
+  const bq = bankTabCache.find(x => x.id === id);
+  if (!bq) return;
+  editingBankQuestionId = id;
+  const isEssay = bq.type === 'essay';
+  document.querySelector('input[name="bkType"][value="' + (isEssay ? 'essay' : 'mcq') + '"]').checked = true;
+  bankToggleTypeFields();
+  if (bq.grade) document.getElementById('bkGrade').value = bq.grade;
+  document.getElementById('bkSection').value = (bq.sec && bq.sec !== 'عام') ? bq.sec : '';
+  document.getElementById('bkPassage').value = bq.passage || '';
+  document.getElementById('bkPassageKind').value = bq.pk || '';
+  document.getElementById('bkPassageMeta').value = bq.pmeta || '';
+  document.getElementById('bkQuestion').value = bq.q || '';
+  if (isEssay) {
+    document.getElementById('bkMaxGrade').value = bq.maxGrade || 5;
+  } else {
+    (bq.opts || []).forEach((o, i) => { if (i < 4) document.getElementById('bkOpt'+i).value = o; });
+    const r = document.querySelector('input[name="bkCorrect"][value="' + (bq.ans || 0) + '"]');
+    if (r) r.checked = true;
+    document.getElementById('bkExp').value = bq.exp || '';
+    document.getElementById('bkPoints').value = qPts(bq);
+  }
+  document.getElementById('bankFormTitle').textContent = 'تعديل سؤال من البنك';
+  document.getElementById('bankFormSubmitBtn').textContent = 'حفظ التعديلات';
+  document.getElementById('bankCancelEditBtn').style.display = 'block';
+  document.getElementById('bankFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function bankTabDelete(id) {
+  if (!confirm('حذف السؤال ده من البنك نهائيًا؟')) return;
+  try {
+    await db.collection('questionBank').doc(id).delete();
+    if (editingBankQuestionId === id) bankResetForm();
+    await loadBankTab();
+  } catch(e) { alert('❌ خطأ: ' + e.message); }
+}
+
+function bankTabRender() {
+  const listEl = document.getElementById('bankTabList');
+  if (!listEl) return;
+  const q = (document.getElementById('bankTabSearch').value || '').trim().toLowerCase();
+  const grade = document.getElementById('bankTabGradeFilter').value;
+  const type = document.getElementById('bankTabTypeFilter').value;
+  const sec = document.getElementById('bankTabSecFilter').value;
+  let filtered = bankTabCache;
+  if (grade) filtered = filtered.filter(x => x.grade === grade);
+  if (type === 'essay') filtered = filtered.filter(x => x.type === 'essay');
+  else if (type === 'mcq') filtered = filtered.filter(x => x.type !== 'essay');
+  if (sec) filtered = filtered.filter(x => (x.sec || 'عام') === sec);
+  if (q) filtered = filtered.filter(x => (x.q || '').toLowerCase().includes(q) || (x.sec || '').toLowerCase().includes(q));
+  document.getElementById('bankCountChip').textContent = bankTabCache.length + ' سؤال';
+  if (!filtered.length) {
+    listEl.innerHTML = '<div class="empty-state"><span class="eicon"><svg class=ic aria-hidden=true><use href=#i-book-open></use></svg></span>' + (bankTabCache.length ? 'مفيش نتائج مطابقة للبحث' : 'لسه مفيش أسئلة في البنك — أضف أول سؤال من الفورم اللي فوق') + '</div>';
+    return;
+  }
+  listEl.innerHTML = filtered.map(bq => {
+    const isEssay = bq.type === 'essay';
+    const optsHtml = isEssay ? '' : '<div class="qb-opts">' + (bq.opts || []).map((o, oi) => '<div class="' + (oi === bq.ans ? 'qb-opt-correct' : '') + '">' + (oi === bq.ans ? '✔️' : '○') + ' ' + escHtml(o) + '</div>').join('') + '</div>';
+    return '<div class="exammgmt-card" style="margin-bottom:8px">'
+      + '<div style="font-size:.78rem;font-weight:700">' + formatInlineText(bq.q)
+      + (bq.sec ? ' <span class="exammgmt-chip">' + escHtml(bq.sec) + '</span>' : '')
+      + (bq.grade ? ' <span class="exammgmt-chip">' + gradeLabel(bq.grade) + '</span>' : '')
+      + (isEssay ? ' <span class="exammgmt-chip" style="color:#7c3aed">مقالي</span>' : '')
+      + (bq.passage ? ' <span class="exammgmt-chip"><svg class=ic aria-hidden=true><use href=#i-file-text></use></svg> نص مرفق</span>' : '')
+      + ' <span class="exammgmt-chip"><svg class=ic aria-hidden=true><use href=#i-target></use></svg> ' + qPts(bq) + ' درجة</span>'
+      + '</div>'
+      + optsHtml
+      + '<div style="display:flex;gap:6px;margin-top:8px">'
+      + '<button class="tbtn gold" style="flex:1;font-size:.72rem;padding:7px" onclick="bankOpenPickExam(\'' + bq.id + '\')"><svg class=ic aria-hidden=true><use href=#i-plus></use></svg> إضافة لامتحان</button>'
+      + '<button class="tbtn navy" style="font-size:.72rem;padding:7px 10px" title="تعديل" onclick="bankEditQuestion(\'' + bq.id + '\')"><svg class=ic aria-hidden=true><use href=#i-pencil></use></svg></button>'
+      + '<button class="tbtn red" style="font-size:.72rem;padding:7px 10px" title="حذف" onclick="bankTabDelete(\'' + bq.id + '\')"><svg class=ic aria-hidden=true><use href=#i-trash-2></use></svg></button>'
+      + '</div></div>';
+  }).join('');
+}
+
+async function bankOpenPickExam(id) {
+  bankPickQuestionId = id;
+  const sel = document.getElementById('bankPickExamSelect');
+  showModal('bankPickExamModal');
+  sel.innerHTML = '<option value="">جاري تحميل الامتحانات...</option>';
+  try {
+    if (!teacherExamsCache.length) await loadTeacherExams();
+    if (!teacherExamsCache.length) { sel.innerHTML = '<option value="">مفيش امتحانات — أنشئ امتحان الأول</option>'; return; }
+    sel.innerHTML = teacherExamsCache.map(ex => '<option value="' + ex.id + '">' + escHtml(ex.title || 'بدون عنوان') + ' — ' + gradeLabel(ex.grade || '') + ' (' + ((ex.questions || []).length) + ' سؤال)</option>').join('');
+  } catch(e) { sel.innerHTML = '<option value="">خطأ في التحميل</option>'; }
+}
+
+async function bankConfirmAddToExam() {
+  const examId = document.getElementById('bankPickExamSelect').value;
+  const bq = bankTabCache.find(x => x.id === bankPickQuestionId);
+  const ex = teacherExamsCache.find(e => e.id === examId);
+  if (!bq || !ex) { alert('⚠️ اختار امتحان صحيح'); return; }
+  const copy = JSON.parse(JSON.stringify(bq));
+  ['id', 'savedAt', 'updatedAt', 'grade'].forEach(k => delete copy[k]);
+  const questions = JSON.parse(JSON.stringify(ex.questions || []));
+  copy.id = questions.length + 1;
+  questions.push(copy);
+  try {
+    await saveExamQuestions(examId, questions);
+    ex.questions = questions;
+    ex.secured = true;
+    closeModal('bankPickExamModal');
+    alert('✅ اتضاف السؤال لامتحان «' + (ex.title || '') + '»');
   } catch(e) { alert('❌ خطأ: ' + e.message); }
 }
 
