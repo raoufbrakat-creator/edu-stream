@@ -3898,6 +3898,38 @@ function richText(html){
     Array.from(node.children).forEach(el=>{
       walk(el);
       if(el.tagName==='SCRIPT'||el.tagName==='STYLE'){el.remove();return}
+      // em بتتحوّل لـ i بدل ما التنسيق يروح
+      if(el.tagName==='EM'){
+        const i=document.createElement('i');
+        while(el.firstChild)i.appendChild(el.firstChild);
+        el.replaceWith(i);return;
+      }
+      // font فيه لون بتتحوّل لـ span بستايل لون آمن، ومن غير لون بنشيل الوسم ونخلي النص
+      if(el.tagName==='FONT'){
+        const safe=rtSafeStyle(el.getAttribute('color')?'color:'+el.getAttribute('color'):'');
+        if(safe){
+          const sp=document.createElement('span');
+          sp.setAttribute('style',safe);
+          while(el.firstChild)sp.appendChild(el.firstChild);
+          el.replaceWith(sp);return;
+        }
+        while(el.firstChild)node.insertBefore(el.firstChild,el);
+        el.remove();return;
+      }
+      // p وdiv وli فاصل سطر (br) بدل الدمج الصامت، ومن غير تكديس فواصل ورا بعضها
+      if(el.tagName==='P'||el.tagName==='DIV'||el.tagName==='LI'){
+        while(el.firstChild)node.insertBefore(el.firstChild,el);
+        const isSep=n=>n&&n.nodeType===1&&n.tagName==='BR';
+        const skipWs=n=>{while(n&&n.nodeType===3&&!n.textContent.trim())n=n.previousSibling;return n;};
+        const skipWsF=n=>{while(n&&n.nodeType===3&&!n.textContent.trim())n=n.nextSibling;return n;};
+        // بعد نقل المحتوى: previousSibling بقى آخر محتوى البلوك نفسه (أو اللي قبله لو فاضي)
+        const prevIsBr=isSep(skipWs(el.previousSibling));
+        const nextIsBr=isSep(skipWsF(el.nextSibling));
+        const isLast=!el.nextSibling;
+        if(!prevIsBr&&!nextIsBr&&!isLast)node.insertBefore(document.createElement('br'),el);
+        el.remove();
+        return;
+      }
       if(!ALLOWED[el.tagName]){
         while(el.firstChild)node.insertBefore(el.firstChild,el);
         el.remove();
@@ -5186,7 +5218,6 @@ const firebaseConfig = {
   appId: "1:565224729476:web:b62fac6e1815f0613b4bd1"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 
 // App Check — مراقبة بس (التوكن بيتبعت مع الطلبات لكن Firebase مش بتشترطه غير بعد ما تفعّل enforcement من الكونسول)
 // حط مفتاح reCAPTCHA Enterprise هنا بعد إنشائه من: Firebase Console ← Build ← App Check ← Register
@@ -5198,6 +5229,8 @@ try {
     firebase.appCheck().activate(edAppCheckProvider, true);
   }
 } catch (e) { console.warn('App Check لم يُفعّل:', e); }
+
+const db = firebase.firestore();
 
 // ============================================================
 // CONSTANTS
@@ -8652,19 +8685,22 @@ async function resetAllExams() {
 
 async function exportFullBackup() {
   try {
+    const failedBackupCollections = [];
+    const optionalSnap = name => db.collection(name).get().catch(e => { console.warn('Backup: تعذّر جلب', name, e); failedBackupCollections.push(name); return { docs: [] }; });
     const [studSnap, examSnap, resSnap, answersSnap, lessonsSnap, annSnap, settingsSnap, bankSnap, certsSnap] = await Promise.all([
       db.collection('students').get(),
       db.collection('exams').get(),
       db.collection('results').get(),
       db.collection('examAnswers').get(),
-      db.collection('lessons').get(),
-      db.collection('announcements').get(),
-      db.collection('settings').get(),
-      db.collection('questionBank').get(),
-      db.collection('certs').get()
+      optionalSnap('lessons'),
+      optionalSnap('announcements'),
+      optionalSnap('settings'),
+      optionalSnap('questionBank'),
+      optionalSnap('certs')
     ]);
     const backup = {
       exportedAt: new Date().toISOString(),
+      failedCollections: failedBackupCollections,
       students: studSnap.docs.map(d => ({ id: d.id, ...d.data() })),
       exams: examSnap.docs.map(d => ({ id: d.id, ...d.data() })),
       examAnswers: answersSnap.docs.map(d => ({ id: d.id, ...d.data() })),
@@ -9999,8 +10035,13 @@ function sendWhatsAppReport() {
 }
 
 function saveWaAndSend() {
-  const num = document.getElementById('waRegInput').value.trim();
-  if (!/^\d{10,15}$/.test(num)) { alert('أدخل رقم صحيح (أرقام فقط، من 10 لـ 15 رقم)'); return; }
+  let num = document.getElementById('waRegInput').value.trim();
+  // حوّل الأرقام العربية (٠-٩) والعربية الممتدة (۰-۹) للاتينية
+  num = num.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+           .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  // شيل المسافات والشرطات والأقواس، واسمح بعلامة + في الأول بس
+  num = num.replace(/[\s\-()]/g, '').replace(/^\+/, '');
+  if (!/^\d{10,15}$/.test(num)) { alert('أدخل رقم صحيح (أرقام فقط، من 10 لـ 15 رقم — مثال: 01012345678)'); return; }
   if (currentStudent) {
     currentStudent.phone = num;
     db.collection('students').doc(currentStudent.code).update({ phone: num }).catch(()=>{});
