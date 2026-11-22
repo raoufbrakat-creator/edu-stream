@@ -6133,16 +6133,35 @@ function renderStudentsTable(students) {
 let selectedStudentCodes = new Set();
 let currentFilteredStudentCodes = [];
 
+let edLoginCodePending=false;
+function edConfirmLoginCode(question){
+  return new Promise(resolve=>{
+    let m=document.getElementById('studentLoginCodeConfirm');
+    if(!m){
+      m=document.createElement('div');m.id='studentLoginCodeConfirm';m.className='modal';
+      m.innerHTML='<div class="mbox" style="max-width:410px;text-align:center"><div class="micon">🔑</div><p class="mtitle" style="color:var(--navy)">تأكيد كود الدخول</p><p id="rbCodeConfirmText" style="font-size:.86rem;line-height:1.9;color:var(--ink)"></p><div class="mbtns"><button type="button" class="mbtnm navy" id="rbCodeConfirmOk">تأكيد</button><button type="button" class="mbtnm gray" id="rbCodeConfirmCancel">إلغاء</button></div></div>';
+      document.body.appendChild(m);
+    }
+    document.getElementById('rbCodeConfirmText').textContent=question;
+    const ok=document.getElementById('rbCodeConfirmOk'),cancel=document.getElementById('rbCodeConfirmCancel');
+    const settle=value=>{ok.onclick=null;cancel.onclick=null;m.onclick=null;closeModal('studentLoginCodeConfirm');resolve(value);};
+    ok.onclick=()=>settle(true);cancel.onclick=()=>settle(false);m.onclick=e=>{if(e.target===m)settle(false);};
+    showModal('studentLoginCodeConfirm');cancel.focus();
+  });
+}
 async function provisionStudentAccess(code,name,hasLoginCode){
-  const question=hasLoginCode?'تغيير كود دخول '+name+'؟ الكود القديم مش هيفتح دخول جديد بعد التغيير، والجلسات المفتوحة حاليًا ممكن تفضل شغالة. كلمات السر مش هتتغير.':'إنشاء كود دخول سري واحد للطالب '+name+'؟ كلمة السر القديمة، لو موجودة، مش هتتغير.';
-  if(!confirm(question))return;
+  if(edLoginCodePending)return;
+  edLoginCodePending=true;
   try{
+    const question=hasLoginCode?'تغيير كود دخول '+name+'؟ الكود القديم مش هيفتح دخول جديد بعد التغيير، والجلسات المفتوحة حاليًا ممكن تفضل شغالة. كلمات السر مش هتتغير.':'إنشاء كود دخول سري واحد للطالب '+name+'؟ كلمة السر القديمة، لو موجودة، مش هتتغير.';
+    if(!await edConfirmLoginCode(question))return;
     const j=await edWorkerCall('/issue-login-code',{code,rotate:hasLoginCode===true});
     const st=(allStudentsCache||[]).find(x=>x.code===code);
     if(st){st.authUid=j.authUid;st.loginCodeReady=true;}
     filterStudentsTable();
     showLoginCodeModal(code,name,j.loginCode);
   }catch(e){alert('تعذّر إنشاء كود الدخول: '+e.message+'\nحدّث قائمة الطلاب قبل المحاولة من جديد.');}
+  finally{edLoginCodePending=false;}
 }
 function pickStudentProfile(code){
   const st=(allStudentsCache||[]).find(x=>x.code===code)||{};
