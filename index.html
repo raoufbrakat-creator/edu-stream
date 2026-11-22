@@ -3217,8 +3217,7 @@ function edMsgHtml(m){m=String(m==null?'':m).replace(/^\s+/,'');var c=m?String.f
           <button class="ls-ico" id="lsPassEye" type="button" aria-label="إظهار أو إخفاء كلمة السر">👁️</button>
           <input id="teacherPass" class="ls-code" type="password" placeholder="كلمة السر" maxlength="64" autocomplete="current-password" spellcheck="false">
         </div>
-        <p id="edCodeHelp" style="font-size:.75rem;line-height:1.7;color:var(--muted);margin:8px 0">RB وبعده ٩ حروف وأرقام. انسخ الكود من رسالة الأستاذ زي ما هو، بالحروف الكبيرة والصغيرة.</p>
-        <div id="studentBotCheck" style="display:flex;justify-content:center;direction:ltr;margin:10px auto;min-height:65px"></div>
+        <div id="studentBotCheck" style="display:flex;justify-content:center;direction:ltr"></div>
         <button class="ls-go" id="loginBtn" type="button" onclick="studentLogin()"><span class="ls-spin"></span><span id="loginBtnText">دخول المنصة</span><span class="ls-arr"><svg class=ic aria-hidden=true><use href=#i-arrow-left></use></svg></span></button>
         <button type="button" id="edLegacyToggle" class="ls-link" style="margin-top:10px" onclick="edToggleLegacy()">عندك معرّف وكلمة سر قديمة؟</button>
         <div class="ls-opts">
@@ -4124,7 +4123,7 @@ let lsLegacy=false,edBotToken='',edBotWidget=null;
 function edTurnstileReady(){
   const box=$ls('studentBotCheck');
   if(!box||typeof turnstile==='undefined'||edBotWidget!==null)return;
-  edBotWidget=turnstile.render(box,{sitekey:ED_TURNSTILE_SITE_KEY,action:'student-login',language:'ar',size:window.innerWidth<430?'compact':'normal',callback:t=>{edBotToken=t},'expired-callback':()=>{edBotToken=''},'error-callback':()=>{edBotToken=''}});
+  edBotWidget=turnstile.render(box,{sitekey:ED_TURNSTILE_SITE_KEY,action:'student-login',language:'ar',appearance:'interaction-only',size:window.innerWidth<430?'compact':'normal',callback:t=>{edBotToken=t},'expired-callback':()=>{edBotToken=''},'error-callback':()=>{edBotToken=''}});
 }
 function edResetBot(){edBotToken='';if(edBotWidget!==null&&typeof turnstile!=='undefined'){try{turnstile.reset(edBotWidget)}catch(e){}}}
 function lsTeacherMode(on){
@@ -4144,7 +4143,6 @@ function lsTeacherMode(on){
   $ls('lsRemWrap').style.display=on?'none':'';
   $ls('lsPaste').style.display=on||!(navigator.clipboard&&navigator.clipboard.readText)?'none':'';
   const bot=$ls('studentBotCheck');if(bot)bot.style.display=on||lsLegacy?'none':'flex';
-  const help=$ls('edCodeHelp');if(help)help.style.display=on||lsLegacy?'none':'';
   const legacy=$ls('edLegacyToggle');if(legacy){legacy.style.display=on?'none':'';legacy.textContent=lsLegacy?'الرجوع لكود الدخول الواحد':'عندك معرّف وكلمة سر قديمة؟';}
   $ls('lsWelcome').style.display='none';$ls('lsForm').style.display='';
   if(!on&&!lsLegacy)edTurnstileReady();
