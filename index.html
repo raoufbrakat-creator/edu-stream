@@ -3206,10 +3206,10 @@ function edMsgHtml(m){m=String(m==null?'':m).replace(/^\s+/,'');var c=m?String.f
         <button class="ls-link" id="lsWelNo" type="button">مش أنا — استخدم كود آخر</button>
       </div>
       <div id="lsForm">
-        <label class="ls-lbl" id="lsLbl" for="studentCode">كودك الشخصي</label>
+        <label class="ls-lbl" id="lsLbl" for="studentCode">كود الدخول السري</label>
         <div class="ls-field">
           <button class="ls-ico" id="lsEye" type="button" aria-label="إظهار أو إخفاء الكود">👁️</button>
-          <input id="studentCode" class="ls-code" type="text" placeholder="أدخل الكود الخاص بك" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <input id="studentCode" class="ls-code" type="password" placeholder="الصق كود الدخول هنا" maxlength="11" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr">
           <button class="ls-paste" id="lsPaste" type="button">لصق</button>
         </div>
         <label class="ls-lbl" id="lsPassLbl" for="teacherPass" style="display:none">كلمة السر من الأستاذ</label>
@@ -3217,9 +3217,12 @@ function edMsgHtml(m){m=String(m==null?'':m).replace(/^\s+/,'');var c=m?String.f
           <button class="ls-ico" id="lsPassEye" type="button" aria-label="إظهار أو إخفاء كلمة السر">👁️</button>
           <input id="teacherPass" class="ls-code" type="password" placeholder="كلمة السر" maxlength="64" autocomplete="current-password" spellcheck="false">
         </div>
+        <p id="edCodeHelp" style="font-size:.75rem;line-height:1.7;color:var(--muted);margin:8px 0">RB وبعده ٩ حروف وأرقام. انسخ الكود من رسالة الأستاذ زي ما هو، بالحروف الكبيرة والصغيرة.</p>
+        <div id="studentBotCheck" style="display:flex;justify-content:center;direction:ltr;margin:10px auto;min-height:65px"></div>
         <button class="ls-go" id="loginBtn" type="button" onclick="studentLogin()"><span class="ls-spin"></span><span id="loginBtnText">دخول المنصة</span><span class="ls-arr"><svg class=ic aria-hidden=true><use href=#i-arrow-left></use></svg></span></button>
+        <button type="button" id="edLegacyToggle" class="ls-link" style="margin-top:10px" onclick="edToggleLegacy()">عندك معرّف وكلمة سر قديمة؟</button>
         <div class="ls-opts">
-          <label id="lsRemWrap"><input type="checkbox" id="rememberMe"> تذكر الكود على هذا الجهاز</label>
+          <label id="lsRemWrap"><input type="checkbox" id="rememberMe"> تذكر دخولي على هذا الجهاز</label>
           <a class="ls-help" data-wa="مرحبًا أستاذ رؤوف، واجهتني مشكلة في الدخول على منصة Edu Stream" target="_blank" rel="noopener">واجهتك مشكلة؟ تواصل مع الأستاذ رؤوف</a>
         </div>
       </div>
@@ -4090,22 +4093,6 @@ function copyStudentCode(code,btn){
   else{const t=document.createElement('textarea');t.value=code;document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()}
 }
 function waPhone(p){let ph=String(p||'').replace(/\D/g,'');if(ph.startsWith('00'))ph=ph.slice(2);else if(ph.startsWith('0'))ph='20'+ph.slice(1);return ph}
-function shareStudentCode(code){
-  const st=(allStudentsCache||[]).find(x=>x.code===code)||{};
-  let m=document.getElementById('lsShareModal');
-  if(!m){
-    m=document.createElement('div');m.id='lsShareModal';m.className='modal';
-    m.innerHTML='<div class="mbox" style="max-width:380px;text-align:right"><div class="micon" style="text-align:center"><svg class=ic aria-hidden=true><use href=#i-message-circle></use></svg></div><p class="mtitle" id="lsShareName" style="text-align:center;color:var(--navy)"></p><p class="mmsg" style="font-size:.78rem;line-height:1.8">ابعت الرسالتين واحدة واحدة. الكود بيتبعت لوحده عشان الطالب ينسخه بضغطة من غير أي كلام زيادة.</p><button type="button" class="tbtn green share-step" id="lsShareBtn1">1️⃣ 📲 رسالة الترحيب</button><button type="button" class="tbtn gold share-step" id="lsShareBtn2">2️⃣ 🔑 الكود بس</button><p id="lsShareNoPhone" style="display:none;font-size:.7rem;color:#b45309;margin-top:8px"><svg class=ic aria-hidden=true><use href=#i-triangle-alert></use></svg> مفيش رقم موبايل للطالب ده، هتختار الجهة بنفسك في واتساب.</p><div class="mbtns"><button class="mbtnm gray" style="width:100%" onclick="closeModal(\'lsShareModal\')">إغلاق</button></div></div>';
-    document.body.appendChild(m);
-  }
-  const b1=document.getElementById('lsShareBtn1'),b2=document.getElementById('lsShareBtn2');
-  b1.textContent='1️⃣ 📲 رسالة الترحيب';b2.textContent='2️⃣ 🔑 الكود بس';b1.classList.remove('done');
-  document.getElementById('lsShareName').textContent=st.name||code;
-  document.getElementById('lsShareNoPhone').style.display=st.phone?'none':'block';
-  b1.onclick=()=>{sendWelcomeWhatsApp(st.name||'',st.phone);b1.textContent='✅ اتفتح الترحيب، دوس 2 دلوقتي';b1.classList.add('done');b2.focus()};
-  b2.onclick=()=>{sendCodeOnlyWhatsApp(code,st.phone);b2.textContent='✅ اتفتح الكود'};
-  showModal('lsShareModal');
-}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#teacherDashboard .tnav-btn');if(b)setTimeout(()=>b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}),30)});
 /* ===== DASHBOARD HELPERS ===== */
 function lsDash(has){
@@ -4130,7 +4117,122 @@ function lsErr(msg,quiet){const e=$ls('authError');e.innerHTML=edMsgHtml(msg);e.
 function lsBusySet(on,txt){lsBusy=on;const b=$ls('loginBtn');b.disabled=on||lsLockLeft()>0;b.classList.toggle('busy',on);$ls('loginBtnText').textContent=txt||'دخول المنصة'}
 function lsTick(){clearInterval(lsTimer);const t=()=>{const s=lsLockLeft();if(s>0){lsErr('⏳ محاولات غلط كتير — جرّب بعد '+s+' ثانية',true);$ls('loginBtn').disabled=true}else{clearInterval(lsTimer);$ls('authError').classList.remove('show');$ls('loginBtn').disabled=lsBusy}};t();lsTimer=setInterval(t,1000)}
 function lsFail(msg){lsErr(msg);if(++lsFails>=5){lsFails=0;lsSet(LS_LOCK,String(Date.now()+30000));lsTick()}}
-function lsTeacherMode(on){lsTeacher=on;const el=$ls('studentCode'),pf=$ls('lsPassField'),pl=$ls('lsPassLbl'),p=$ls('teacherPass');$ls('lsCard').classList.toggle('ls-t',on);el.type=on?'email':'text';el.placeholder=on?'بريدك الإلكتروني':'أدخل الكود الخاص بك';el.maxLength=on?64:20;el.setAttribute('autocomplete',on?'username':'off');el.setAttribute('autocapitalize',on?'none':'characters');$ls('lsLbl').textContent=on?'🔐 دخول المدرس':'كودك الشخصي';el.value='';if(pf)pf.style.display='';if(pl){pl.style.display='';pl.textContent=on?'كلمة السر':'كلمة السر من الأستاذ';}if(p){p.value='';p.placeholder=on?'كلمة السر':'كلمة السر من الأستاذ';}$ls('lsRemWrap').style.display=on?'none':'';$ls('lsPaste').style.display=on||!(navigator.clipboard&&navigator.clipboard.readText)?'none':''}
+const ED_TURNSTILE_SITE_KEY="0x4AAAAAAGNVfjuTMWjtBvtz";
+const edLoginCodePattern=/^RB[1-9A-HJ-NP-Za-km-z]{9}$/;
+const edCleanLoginCode=v=>String(v||'').replace(/\s/g,'').replace(/^rb/i,'RB');
+let lsLegacy=false,edBotToken='',edBotWidget=null;
+function edTurnstileReady(){
+  const box=$ls('studentBotCheck');
+  if(!box||typeof turnstile==='undefined'||edBotWidget!==null)return;
+  edBotWidget=turnstile.render(box,{sitekey:ED_TURNSTILE_SITE_KEY,action:'student-login',language:'ar',size:window.innerWidth<430?'compact':'normal',callback:t=>{edBotToken=t},'expired-callback':()=>{edBotToken=''},'error-callback':()=>{edBotToken=''}});
+}
+function edResetBot(){edBotToken='';if(edBotWidget!==null&&typeof turnstile!=='undefined'){try{turnstile.reset(edBotWidget)}catch(e){}}}
+function lsTeacherMode(on){
+  lsTeacher=on;
+  const el=$ls('studentCode'),pf=$ls('lsPassField'),pl=$ls('lsPassLbl'),p=$ls('teacherPass');
+  $ls('lsCard').classList.toggle('ls-t',on);
+  el.type=on?'email':(lsLegacy?'text':'password');
+  el.placeholder=on?'بريدك الإلكتروني':(lsLegacy?'معرّف الطالب القديم':'الصق كود الدخول هنا');
+  el.maxLength=on?64:(lsLegacy?64:11);
+  el.setAttribute('autocomplete',on?'username':'off');
+  el.setAttribute('autocapitalize','none');
+  $ls('lsLbl').textContent=on?'🔐 دخول المدرس':(lsLegacy?'معرّف الطالب القديم':'كود الدخول السري');
+  el.value='';
+  if(pf)pf.style.display=on||lsLegacy?'':'none';
+  if(pl){pl.style.display=on||lsLegacy?'':'none';pl.textContent=on?'كلمة السر':'كلمة السر القديمة';}
+  if(p){p.value='';p.placeholder=on?'كلمة السر':'كلمة السر القديمة';}
+  $ls('lsRemWrap').style.display=on?'none':'';
+  $ls('lsPaste').style.display=on||!(navigator.clipboard&&navigator.clipboard.readText)?'none':'';
+  const bot=$ls('studentBotCheck');if(bot)bot.style.display=on||lsLegacy?'none':'flex';
+  const help=$ls('edCodeHelp');if(help)help.style.display=on||lsLegacy?'none':'';
+  const legacy=$ls('edLegacyToggle');if(legacy){legacy.style.display=on?'none':'';legacy.textContent=lsLegacy?'الرجوع لكود الدخول الواحد':'عندك معرّف وكلمة سر قديمة؟';}
+  $ls('lsWelcome').style.display='none';$ls('lsForm').style.display='';
+  if(!on&&!lsLegacy)edTurnstileReady();
+  edResetBot();
+}
+function edToggleLegacy(){lsLegacy=!lsLegacy;lsTeacherMode(false);}
+async function edFinishStudentLogin(code){
+  let snap=null;
+  try{snap=await db.collection('students').doc(code).get()}catch(e){snap=null}
+  if(!snap||!snap.exists){try{await firebase.auth().signOut()}catch(e){}lsFail('❌ حسابك لسه مش متجهز — تواصل مع الأستاذ رؤوف');return false;}
+  const data=snap.data();
+  if(data.locked){try{await firebase.auth().signOut()}catch(e){}lsErr('🔒 هذا الحساب موقوف — تواصل مع الأستاذ رؤوف');return false;}
+  currentStudent={code,...data};lsFails=0;
+  if($ls('rememberMe').checked)lsSet(LS_KEY,JSON.stringify({code,name:data.name||''}));else lsDel(LS_KEY);
+  const sessionId=Date.now()+'-'+Math.random().toString(36).slice(2);
+  sessionStorage.setItem('myEduStreamSession',sessionId);
+  try{await db.collection('students').doc(code).update({activeSessionId:sessionId})}catch(e){}
+  attachSessionListener();showStudentDashboard();return true;
+}
+async function edResumeStudent(saved){
+  if(lsBusy)return;lsBusySet(true,'جاري فتح حسابك...');
+  try{
+    const u=await new Promise(resolve=>{let off;off=firebase.auth().onAuthStateChanged(user=>{if(off)off();resolve(user)});});
+    if(u&&u.uid!=='EnHLMZfPd2TyMIkGC6SPvMSBJ602'){
+      const b=await db.collection('bindings').doc(u.uid).get();
+      if(b.exists&&b.data().code===saved.code&&await edFinishStudentLogin(saved.code))return;
+    }
+    $ls('lsWelcome').style.display='none';$ls('lsForm').style.display='';$ls('studentCode').value='';
+    lsErr('من فضلك الصق كود الدخول السري من جديد');
+  }catch(e){$ls('lsWelcome').style.display='none';$ls('lsForm').style.display='';lsErr('تعذّر فتح الجلسة المحفوظة — الصق كود الدخول من جديد');}
+  finally{lsBusySet(false)}
+}
+async function studentLogin(){
+  if(lsBusy)return;
+  if(lsLockLeft()>0){lsTick();return}
+  const el=$ls('studentCode'),raw=el.value.trim();
+  $ls('authError').classList.remove('show');
+  if(!raw){lsErr('⚠️ من فضلك أدخل '+(lsTeacher?'البريد الإلكتروني':'كود الدخول'));return}
+  lsBusySet(true,'جاري التحقق...');
+  try{
+    if(lsTeacher){
+      const passEl=$ls('teacherPass'),pass=passEl?passEl.value:'';
+      if(!pass){lsErr('⚠️ من فضلك أدخل كلمة السر');return}
+      try{
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+        const cred=await firebase.auth().signInWithEmailAndPassword(raw,pass);
+        if(!cred.user||cred.user.uid!=='EnHLMZfPd2TyMIkGC6SPvMSBJ602'){
+          try{await firebase.auth().signOut()}catch(e){}lsFail('❌ بيانات الدخول غير صحيحة');return;
+        }
+      }catch(e){lsFail(typeof edAiAuthMsg==='function'?edAiAuthMsg(e):'❌ بيانات الدخول غير صحيحة');return}
+      if(passEl)passEl.value='';
+      lsFails=0;lsTeacherMode(false);
+      await loadDashboardStats();showScreen('teacherDashboard');switchTeacherTab('home');attachTeacherResultNotifications();attachLocksListener();return;
+    }
+    let code;
+    const bad='❌ كود الدخول غير صحيح أو الحساب موقوف — تواصل مع الأستاذ رؤوف';
+    await firebase.auth().setPersistence($ls('rememberMe').checked?firebase.auth.Auth.Persistence.LOCAL:firebase.auth.Auth.Persistence.SESSION);
+    if(lsLegacy){
+      code=lsClean(raw);
+      const secret=$ls('teacherPass').value;
+      if(code.length<3||/[\/.]/.test(code)||!secret){lsFail('❌ المعرف أو كلمة السر غير صحيحة');return}
+      try{await firebase.auth().signInWithEmailAndPassword(synthStudentEmail(code),secret)}catch(e){lsFail(bad);return}
+      $ls('teacherPass').value='';
+    }else{
+      const loginCode=edCleanLoginCode(raw);
+      if(!edLoginCodePattern.test(loginCode)){lsFail('الكود بيبدأ بـ RB وبعده ٩ حروف وأرقام. انسخه زي ما هو، بالحروف الكبيرة والصغيرة.');return}
+      if(!edBotToken){lsErr('استنى تحقق الأمان يخلص، أو جرّبه من جديد');edTurnstileReady();return}
+      let r,j;
+      try{
+        r=await fetch(ED_WORKER_URL+'/student-code-login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code:loginCode,turnstileToken:edBotToken})});
+        j=await r.json().catch(()=>({}));
+      }catch(e){lsErr('تعذّر الاتصال بخدمة الدخول — جرّب من جديد');return}
+      finally{edResetBot()}
+      if(!r.ok){
+        if(r.status===429){lsErr('محاولات كتير — استنى دقيقة وجرّب تاني');return}
+        if(r.status===403){lsErr('تحقق الأمان ما اكتملش — جرّبه من جديد');return}
+        if(r.status>=500){lsErr('خدمة الدخول مش متاحة مؤقتًا — جرّب بعد شوية');return}
+        lsFail(bad);return;
+      }
+      if(!j.customToken||typeof j.studentCode!=='string'){lsErr('تعذّر فتح الحساب — جرّب من جديد');return}
+      try{await firebase.auth().signInWithCustomToken(j.customToken)}catch(e){lsFail(bad);return}
+      code=j.studentCode;
+    }
+    el.value='';
+    await edFinishStudentLogin(code);
+  }catch(e){lsErr('🌐 خطأ في الاتصال — تأكد من الإنترنت')}
+  finally{lsBusySet(false)}
+}
 
 const ED_WORKER_URL='https://edustream-grading.raoufbrakat.workers.dev'; // set to the deployed grading worker at cutover
 const synthStudentEmail=code=>encodeURIComponent(String(code).trim().toLowerCase())+'@students.edustream.app';
@@ -4151,64 +4253,16 @@ function edSubmissionId(examId, code){
   return id;
 }
 
-async function studentLogin(){
-  if(lsBusy)return;
-  if(lsLockLeft()>0){lsTick();return}
-  const el=$ls('studentCode'),raw=el.value.trim();
-  $ls('authError').classList.remove('show');
-  if(!raw){lsErr('⚠️ من فضلك أدخل '+(lsTeacher?'كلمة السر':'الكود الخاص بك'));return}
-  lsBusySet(true,'جاري التحقق...');
-  try{
-    if(lsTeacher){
-      const passEl=$ls('teacherPass'),pass=passEl?passEl.value:'';
-      if(!pass){lsErr('⚠️ من فضلك أدخل كلمة السر');return}
-      try{
-        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-        const cred=await firebase.auth().signInWithEmailAndPassword(raw,pass);
-        if(!cred.user||cred.user.uid!=='EnHLMZfPd2TyMIkGC6SPvMSBJ602'){
-          try{await firebase.auth().signOut()}catch(e){}
-          lsFail('❌ بيانات الدخول غير صحيحة');return;
-        }
-      }catch(e){lsFail(typeof edAiAuthMsg==='function'?edAiAuthMsg(e):'❌ بيانات الدخول غير صحيحة');return}
-      if(passEl)passEl.value='';
-      lsFails=0;
-      lsTeacherMode(false);
-      await loadDashboardStats();showScreen('teacherDashboard');switchTeacherTab('home');attachTeacherResultNotifications();attachLocksListener();return;
-    }
-    const code=lsClean(raw),bad='❌ الكود أو كلمة السر غير صحيحة — تواصل مع الأستاذ رؤوف';
-    if(code.length<3||/[\/.]/.test(code)){lsFail(bad);return}
-    const sPassEl=$ls('teacherPass'),secret=sPassEl?sPassEl.value:'';
-    if(!secret){lsErr('⚠️ من فضلك أدخل كلمة السر');return}
-    try{
-      await firebase.auth().setPersistence($ls('rememberMe').checked?firebase.auth.Auth.Persistence.LOCAL:firebase.auth.Auth.Persistence.SESSION);
-      await firebase.auth().signInWithEmailAndPassword(synthStudentEmail(code),secret);
-    }catch(e){lsFail(bad);return}
-    if(sPassEl)sPassEl.value='';
-    let snap=null;
-    try{snap=await db.collection('students').doc(code).get()}catch(e){snap=null}
-    if(!snap||!snap.exists){try{await firebase.auth().signOut()}catch(e){} lsFail('❌ حسابك لسه مش متجهز — تواصل مع الأستاذ رؤوف');return}
-    const data=snap.data();
-    if(data.locked){try{await firebase.auth().signOut()}catch(e){} lsErr('🔒 هذا الحساب موقوف — تواصل مع الأستاذ رؤوف');return}
-    currentStudent={code,...data};lsFails=0;
-    if($ls('rememberMe').checked)lsSet(LS_KEY,JSON.stringify({code,name:data.name||''}));else lsDel(LS_KEY);
-    const sessionId=Date.now()+'-'+Math.random().toString(36).slice(2);
-    sessionStorage.setItem('myEduStreamSession',sessionId);
-    try{await db.collection('students').doc(code).update({activeSessionId:sessionId})}catch(e){}
-    attachSessionListener();showStudentDashboard();
-  }catch(e){lsErr('🌐 خطأ في الاتصال — تأكد من الإنترنت')}
-  finally{lsBusySet(false)}
-}
-
 (function(){
   lsTeacherMode(false);
   const el=$ls('studentCode');
   document.querySelectorAll('[data-wa]').forEach(a=>a.href='https://wa.me/201012032976?text='+encodeURIComponent(a.dataset.wa));
-  el.addEventListener('input',()=>{if(!lsTeacher){const v=lsClean(el.value);if(v!==el.value)el.value=v}});
+  el.addEventListener('input',()=>{if(!lsTeacher){const v=lsLegacy?lsClean(el.value):edCleanLoginCode(el.value);if(v!==el.value)el.value=v}});
   el.addEventListener('keydown',e=>{if(e.key==='Enter')studentLogin()});
   $ls('lsEye').onclick=()=>{const t=lsTeacher?$ls('teacherPass'):el;if(t)t.type=t.type==='password'?'text':'password'};
   const tpEl=$ls('teacherPass');
   if(tpEl){tpEl.addEventListener('keydown',e=>{if(e.key==='Enter')studentLogin()});$ls('lsPassEye').onclick=()=>{tpEl.type=tpEl.type==='password'?'text':'password'}}
-  $ls('lsPaste').onclick=async()=>{try{const t=await navigator.clipboard.readText();el.value=lsTeacher?t.trim():lsClean(t);el.focus()}catch(e){lsErr('تعذّر اللصق — اضغط مطولًا في الخانة والصق يدويًا')}};
+  $ls('lsPaste').onclick=async()=>{try{const t=await navigator.clipboard.readText();el.value=lsTeacher?t.trim():(lsLegacy?lsClean(t):edCleanLoginCode(t));el.focus()}catch(e){lsErr('تعذّر اللصق — اضغط مطولًا في الخانة والصق يدويًا')}};
   if(!(navigator.clipboard&&navigator.clipboard.readText))$ls('lsPaste').style.display='none';
   // hidden teacher entry: long-press the top logo
   const lg=$ls('lsLogo');let pt=null;
@@ -4221,8 +4275,8 @@ async function studentLogin(){
   if(sv&&sv.code){
     $ls('lsWelcome').style.display='block';$ls('lsForm').style.display='none';$ls('rememberMe').checked=true;
     $ls('lsWelName').textContent=sv.name||('كود: '+sv.code.slice(0,2)+'•••'+sv.code.slice(-2));
-    $ls('lsWelGo').onclick=()=>{el.value=sv.code;studentLogin()};
-    $ls('lsWelNo').onclick=()=>{lsDel(LS_KEY);$ls('lsWelcome').style.display='none';$ls('lsForm').style.display='';$ls('rememberMe').checked=false;el.value='';el.focus()};
+    $ls('lsWelGo').onclick=()=>edResumeStudent(sv);
+    $ls('lsWelNo').onclick=()=>{firebase.auth().signOut().catch(()=>{});lsDel(LS_KEY);$ls('lsWelcome').style.display='none';$ls('lsForm').style.display='';$ls('rememberMe').checked=false;el.value='';el.focus()};
   }
   if(lsLockLeft()>0)lsTick();
   // hero photo: hero.jpg next to this file first, then fallbacks; gradient if all fail
@@ -4235,6 +4289,7 @@ async function studentLogin(){
     Promise.race([Promise.all([min,ld]),cap]).then(()=>{sp.classList.add('out');setTimeout(()=>sp.remove(),800)});}
 })();
 </script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=edTurnstileReady" async defer></script>
 
 <!-- ===== STUDENT DASHBOARD ===== -->
 <div id="studentDashboard" class="screen">
@@ -4833,7 +4888,7 @@ async function studentLogin(){
               <input type="text" id="newStudentName" class="tinput" placeholder="اسم الطالب كاملاً">
             </div>
             <div>
-              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">الكود الشخصي</label>
+              <label class="flabel" style="font-size:.72rem;margin-bottom:4px">معرّف الطالب الداخلي، مش كود الدخول</label>
               <input type="text" id="newStudentCode" class="tinput" placeholder="مثال: RB-7X9K2M4QZD8" maxlength="13" oninput="this.value=this.value.toUpperCase()">
             </div>
           </div>
@@ -6058,16 +6113,15 @@ function renderStudentsTable(students) {
         </div>
       </div>
       <div class="student-card-row">
-        <span class="code-chip">${s.code}</span>
-        <button class="icon-btn navy" type="button" onclick="copyStudentCode('${s.code}',this)" title="نسخ الكود">${SIC.copy}</button>
-        <button class="icon-btn green" type="button" onclick="shareStudentCode('${s.code}')" title="إرسال الكود واتساب">${SIC.chat}</button>
+        <span class="code-chip" title="معرّف داخلي، مش كود الدخول السري">معرّف: ${s.code}</span>
+        <button class="icon-btn navy" type="button" onclick="copyStudentCode('${s.code}',this)" title="نسخ معرّف الطالب، مش كود الدخول">${SIC.copy}</button>
+        <button class="tbtn gold" type="button" onclick="provisionStudentAccess('${s.code}','${safeName}',${!!s.loginCodeReady})">${s.loginCodeReady?'تغيير كود الدخول':'إنشاء كود الدخول'}</button>
         ${statusBadge}
       </div>
       <div class="student-actions-row">
         ${hasDone ? `<button class="icon-btn navy" onclick="openStudentReport('${s.code}')" title="التقرير">${SIC.chart}</button>` : ''}
         <button class="icon-btn navy" onclick="openEditStudentModal('${s.code}')" title="تعديل البيانات">${SIC.edit}</button>
-        <button class="icon-btn gold" onclick="provisionStudentAccess('${s.code}','${safeName}',${!!s.authUid})" title="${s.authUid?'إعادة تعيين كلمة السر':'تجهيز كلمة السر'}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>
-        <button class="icon-btn navy" onclick="requestEditStudentCode('${s.code}','${safeName}')" title="تعديل الكود">${SIC.key}</button>
+        <button class="icon-btn navy" onclick="requestEditStudentCode('${s.code}','${safeName}')" title="تعديل المعرّف الداخلي قبل تجهيز الدخول">${SIC.key}</button>
         <button class="icon-btn green" onclick="grantExtraTime('${s.code}','${safeName}')" title="وقت إضافي">${SIC.clock}</button>
         <button class="icon-btn ${s.locked?'green':'red'}" onclick="toggleStudentLock('${s.code}',${!!s.locked})" title="${s.locked?'تفعيل':'إيقاف'}">${s.locked?SIC.play:SIC.pause}</button>
         <button class="icon-btn red" onclick="requestDeleteStudent('${s.code}','${safeName}')" title="حذف">${SIC.trash}</button>
@@ -6079,32 +6133,66 @@ function renderStudentsTable(students) {
 let selectedStudentCodes = new Set();
 let currentFilteredStudentCodes = [];
 
-async function provisionStudentAccess(code,name,isProvisioned){
-  const what=isProvisioned?'إعادة تعيين كلمة سر الطالب':'إنشاء كلمة سر للطالب';
-  if(!confirm(what+' '+name+' ('+code+').\u0020أكمل؟'))return;
+let edLoginCodePending=false;
+function edConfirmLoginCode(question){
+  return new Promise(resolve=>{
+    let m=document.getElementById('studentLoginCodeConfirm');
+    if(!m){
+      m=document.createElement('div');m.id='studentLoginCodeConfirm';m.className='modal';
+      m.innerHTML='<div class="mbox" style="max-width:410px;text-align:center"><div class="micon">🔑</div><p class="mtitle" style="color:var(--navy)">تأكيد كود الدخول</p><p id="rbCodeConfirmText" style="font-size:.86rem;line-height:1.9;color:var(--ink)"></p><div class="mbtns"><button type="button" class="mbtnm navy" id="rbCodeConfirmOk">تأكيد</button><button type="button" class="mbtnm gray" id="rbCodeConfirmCancel">إلغاء</button></div></div>';
+      document.body.appendChild(m);
+    }
+    document.getElementById('rbCodeConfirmText').textContent=question;
+    const ok=document.getElementById('rbCodeConfirmOk'),cancel=document.getElementById('rbCodeConfirmCancel');
+    const settle=value=>{ok.onclick=null;cancel.onclick=null;m.onclick=null;closeModal('studentLoginCodeConfirm');resolve(value);};
+    ok.onclick=()=>settle(true);cancel.onclick=()=>settle(false);m.onclick=e=>{if(e.target===m)settle(false);};
+    showModal('studentLoginCodeConfirm');cancel.focus();
+  });
+}
+async function provisionStudentAccess(code,name,hasLoginCode){
+  if(edLoginCodePending)return;
+  edLoginCodePending=true;
   try{
-    const j=await edWorkerCall(isProvisioned?'/reset-secret':'/provision',{code,profile:pickStudentProfile(code)});
+    const question=hasLoginCode?'تغيير كود دخول '+name+'؟ الكود القديم مش هيفتح دخول جديد بعد التغيير، والجلسات المفتوحة حاليًا ممكن تفضل شغالة. كلمات السر مش هتتغير.':'إنشاء كود دخول سري واحد للطالب '+name+'؟ كلمة السر القديمة، لو موجودة، مش هتتغير.';
+    if(!await edConfirmLoginCode(question))return;
+    const j=await edWorkerCall('/issue-login-code',{code,rotate:hasLoginCode===true});
     const st=(allStudentsCache||[]).find(x=>x.code===code);
-    if(st&&!st.authUid)st.authUid=j.ok?'provisioned':'';
-    showSecretModal(code,name,j.secret);
-  }catch(e){alert('❌ تعذّر تجهيز الدخول: '+e.message)}
+    if(st){st.authUid=j.authUid;st.loginCodeReady=true;}
+    filterStudentsTable();
+    showLoginCodeModal(code,name,j.loginCode);
+  }catch(e){alert('تعذّر إنشاء كود الدخول: '+e.message+'\nحدّث قائمة الطلاب قبل المحاولة من جديد.');}
+  finally{edLoginCodePending=false;}
 }
 function pickStudentProfile(code){
   const st=(allStudentsCache||[]).find(x=>x.code===code)||{};
   return {name:st.name||'',grade:st.grade||'',gender:st.gender||'',phone:st.phone||''};
 }
-function showSecretModal(code,name,secret){
-  let m=document.getElementById('secretModal');
+function showLoginCodeModal(code,name,loginCode){
+  let m=document.getElementById('studentLoginCodeModal');
   if(!m){
-    m=document.createElement('div');m.id='secretModal';m.className='modal';
-    m.innerHTML='<div class="mbox" style="max-width:380px;text-align:center"><div class="micon"><svg class=ic aria-hidden=true><use href=#i-lock></use></svg></div><p class="mtitle" style="color:var(--navy)">كلمة سر الطالب</p><p id="secretModalWho" style="font-size:.8rem;color:var(--muted)"></p><div id="secretModalVal" style="font-size:1.5rem;font-weight:800;letter-spacing:2px;background:var(--cream2);border:1px dashed var(--bdr);border-radius:12px;padding:14px;margin:10px 0;direction:ltr"></div><p style="font-size:.7rem;color:#b45309">⚠️ بتظهر مرة واحدة بس — انسخها وابعتها للطالب دلوقتي.</p><div class="mbtns"><button class="mbtnm navy" id="secretCopyBtn">📋 نسخ</button><button class="mbtnm gray" id="secretCloseBtn">إغلاق</button></div></div>';
+    m=document.createElement('div');m.id='studentLoginCodeModal';m.className='modal';
+    m.innerHTML='<div class="mbox" style="max-width:390px;text-align:center"><div class="micon">🔑</div><p class="mtitle" style="color:var(--navy)">كود دخول الطالب</p><p id="rbCodeWho" style="font-size:.8rem;color:var(--muted)"></p><div id="rbCodeValue" style="font-size:1.65rem;font-weight:800;letter-spacing:1.5px;background:var(--cream2);border:1px dashed var(--bdr);border-radius:12px;padding:14px;margin:10px 0;direction:ltr;user-select:all"></div><p style="font-size:.77rem;line-height:1.8;color:#92400e">بيظهر مرة واحدة بس. انسخ الكود وابعته للطالب على الخاص في رسالة عادية، بالحروف الكبيرة والصغيرة زي ما هي. أي حد معاه الكود يقدر يدخل بحسابه.</p><div class="mbtns"><button class="mbtnm navy" id="rbCodeCopy">نسخ كود الدخول</button><button class="mbtnm gray" id="rbCodeClose">إغلاق</button></div></div>';
     document.body.appendChild(m);
   }
-  document.getElementById('secretModalWho').textContent=name+' ('+code+')';
-  document.getElementById('secretModalVal').textContent=secret;
-  document.getElementById('secretCloseBtn').onclick=()=>closeModal('secretModal');
-  document.getElementById('secretCopyBtn').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(code+'\n'+secret);document.getElementById('secretCopyBtn').textContent='✅ اتنسخت';};
-  showModal('secretModal');
+  document.getElementById('rbCodeWho').textContent=name+' · معرّف الطالب: '+code;
+  document.getElementById('rbCodeValue').textContent=loginCode;
+  const copy=document.getElementById('rbCodeCopy');copy.textContent='نسخ كود الدخول';
+  copy.onclick=async()=>{
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText)await navigator.clipboard.writeText(loginCode);
+      else{const t=document.createElement('textarea');t.value=loginCode;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();if(!ok)throw new Error('copy failed');}
+      copy.textContent='اتنسخ الكود';
+    }catch(e){copy.textContent='اضغط مطولًا على الكود لنسخه';}
+  };
+  const clear=()=>{document.getElementById('rbCodeValue').textContent='';copy.onclick=null;closeModal('studentLoginCodeModal');};
+  document.getElementById('rbCodeClose').onclick=clear;
+  m.onclick=e=>{if(e.target===m)clear();};
+  showModal('studentLoginCodeModal');
+}
+function shareStudentCode(code){
+  const st=(allStudentsCache||[]).find(x=>x.code===code)||{};
+  if(st.loginCodeReady){alert('كود الدخول السري بيظهر مرة واحدة وقت إنشائه. لو نسخته قبل كده ابعته للطالب على الخاص. لو ضاع، استخدم زر تغيير كود الدخول بعد التأكيد. معرّف الطالب الظاهر في القائمة مش كود دخول.');return;}
+  provisionStudentAccess(code,st.name||code,false);
 }
 
 function toggleStudentSelection(code) {
@@ -6835,21 +6923,14 @@ async function addStudent() {
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    succEl.innerHTML = `✅ تم إضافة "${name}" بالكود: ${code}`;
-    if (phone) {
-      const safeName = name.replace(/'/g, "\\'");
-      succEl.innerHTML += `<div style="display:flex;gap:8px;margin-top:10px">
-        <button class="tbtn green" style="flex:1" onclick="sendWelcomeWhatsApp('${safeName}', '${phone}')">1️⃣ 📲 رسالة الترحيب</button>
-        <button class="tbtn gold" style="flex:1" onclick="sendCodeOnlyWhatsApp('${code}', '${phone}')">2️⃣ 🔑 الكود بس</button>
-      </div>
-      <p style="font-size:.66rem;color:var(--muted);margin-top:6px">ابعت الترحيب الأول، ارجع افتح المنصة تاني، وابعت الكود لوحده في رسالة منفصلة عشان الطالب يقدر ينسخه بضغطة واحدة.</p>`;
-    }
+    succEl.textContent = 'تم إضافة الطالب. المعرّف الداخلي: '+code+' . أنشئ كود دخوله السري من زر إنشاء كود الدخول.';
+    const accessBtn=document.createElement('button');accessBtn.className='tbtn gold';accessBtn.type='button';accessBtn.textContent='إنشاء كود الدخول';accessBtn.style.marginTop='10px';accessBtn.onclick=()=>provisionStudentAccess(code,name,false);succEl.appendChild(accessBtn);
     succEl.style.display = 'block';
     document.getElementById('newStudentName').value = '';
     document.getElementById('newStudentCode').value = '';
     document.getElementById('newStudentPhone').value = '';
     await loadDashboardStats();
-    if (!phone) setTimeout(() => { succEl.style.display = 'none'; }, 4000);
+
   } catch(e) {
     msgEl.innerHTML = edMsgHtml('❌ خطأ أثناء الإضافة: ' + e.message);
     msgEl.style.display = 'block';
@@ -6862,14 +6943,14 @@ function sendWelcomeWhatsApp(name, phone) {
     `تم تسجيلك بنجاح في منصة Edu Stream ✅\n` +
     `📚 المادة: اللغة العربية\n\n` +
     `🔗 رابط المنصة: https://raoufbrakat-creator.github.io/edu-stream/\n\n` +
-    `هابعتلك كودك الشخصي في رسالة تانية دلوقتي — احتفظ بيه، هتستخدمه في تسجيل الدخول ودخول الامتحانات.\n\n` +
+    `كود الدخول السري هيوصلك على الخاص. انسخه زي ما هو وما تبعتوش لحد تاني. كود الامتحان، لو مطلوب، منفصل عنه.\n\n` +
     `👨‍🏫 الأستاذ رؤوف بركات`
   );
   window.open('https://wa.me/' + waPhone(phone) + '?text=' + msg, '_blank');
 }
 
 function sendCodeOnlyWhatsApp(code, phone) {
-  window.open('https://wa.me/' + waPhone(phone) + '?text=' + encodeURIComponent(code), '_blank');
+  alert('معرّف الطالب مش كود دخول. أنشئ كود الدخول السري، انسخه، وابعته للطالب بنفسك على الخاص.');
 }
 
 function generateRandomCode() {
@@ -7038,6 +7119,8 @@ async function saveStudentEdit(code) {
 }
 
 async function requestEditStudentCode(oldCode, name) {
+  const linked=(allStudentsCache||[]).find(x=>x.code===oldCode);
+  if(linked&&(linked.authUid||linked.loginCodeReady)){alert("معرّف الطالب الداخلي ثابت بعد تجهيز حسابه عشان نحافظ على النتائج وربط الحساب. لتغيير دخوله استخدم زر تغيير كود الدخول.");return;} 
   const input = prompt('كود جديد لـ"' + name + '":\n(احرف كبيرة وأرقام، مينفعش يتكرر مع كود طالب تاني)', oldCode);
   if (!input) return;
   const newCode = input.trim().toUpperCase();
@@ -8814,6 +8897,7 @@ function showModal(id) {
   document.getElementById(id).classList.add('active');
 }
 function closeModal(id) {
+  if(id==='studentLoginCodeModal'){const v=document.getElementById('rbCodeValue');if(v)v.textContent='';const b=document.getElementById('rbCodeCopy');if(b)b.onclick=null;}
   document.getElementById(id).classList.remove('active');
   if (id === 'studentReportModal') detachAttendanceListener();
 }
