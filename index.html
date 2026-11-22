@@ -4244,6 +4244,35 @@ async function edWorkerCall(path,body){
 }
 
 
+// عند حذف امتحان: true = حذف نتائج الطلاب المرتبطة بيه نهائيًا، false = الإبقاء عليها كسجل درجات
+const ED_EXAM_DELETE_REMOVES_RESULTS = true;
+function edDeleteSummaryText(j){
+  const r=j.removed||{};const bits=[];
+  if(j.kind==='student'){
+    bits.push('اتحذف الطالب نهائيًا');
+    if(j.auth==='deleted')bits.push('مع حساب الدخول بتاعه');
+    else if(j.auth&&j.auth.indexOf('failed')===0)bits.push('⚠️ حساب الدخول ما اتحذفش — محتاج مراجعة');
+  } else {
+    bits.push('اتحذف الامتحان ومفتاح إجابته');
+    if(j.resultsKept)bits.push('مع الإبقاء على '+j.resultsKept+' نتيجة كسجل درجات');
+  }
+  const counts=[];
+  if(r.results)counts.push(r.results+' نتيجة');
+  if(r.submissions)counts.push(r.submissions+' تسليم');
+  if(r.attendance)counts.push(r.attendance+' سجل حضور');
+  if(r.locks)counts.push(r.locks+' قفل');
+  if(counts.length)bits.push('مع '+counts.join(' و'));
+  let img=0,imgFailed=0,imgSkipped=0;
+  Object.keys(j.images||{}).forEach(k=>{const x=j.images[k];img+=x.deleted||0;imgFailed+=x.failed||0;imgSkipped+=x.skipped||0});
+  if(img)bits.push('و'+img+' صورة من الاستضافة');
+  if(j.complete===false){
+    const n=(j.pending&&j.pending.images)||(imgSkipped+imgFailed)||1;
+    bits.push('لكن الحذف مش مكتمل: '+n+' صورة لسه على الاستضافة. مكانها محفوظ في سجل التنضيف وهتتحذف بإعادة المحاولة لما تتوفر صلاحيات الصور');
+  }
+  return bits.join('، ');
+}
+function edDeleteAlertPrefix(j){return (j&&j.complete===false)?'⚠️ ':'✅ ';}
+
 function edSubmissionId(examId, code){
   const k='eduStreamSubId_'+examId+'_'+code;
   let id=localStorage.getItem(k);
@@ -5226,7 +5255,7 @@ function edSubmissionId(examId, code){
 <div id="exitWarningModal" class="modal"><div class="mbox"><div class="micon"><svg class=ic aria-hidden=true><use href=#i-triangle-alert></use></svg></div><p class="mtitle" style="color:var(--red);">تحذير!</p><p class="mmsg">إذا خرجت الآن <strong>هيتقفل الامتحان</strong> وهتحتاج كود من الأستاذ رؤوف عشان تكمّله. إجاباتك محفوظة.</p><div class="mbtns"><button class="mbtnm green" onclick="closeModal('exitWarningModal')">أكمل الامتحان</button><button class="mbtnm red" onclick="forceExit()">خروج</button></div></div></div>
 <div id="finalWarningModal" class="modal"><div class="mbox"><div class="micon"><svg class=ic aria-hidden=true><use href=#i-triangle-alert></use></svg></div><p class="mtitle">تأكيد إنهاء الامتحان</p><p class="mmsg">هذا الإجراء لا يمكن التراجع عنه!</p><div class="sgrid"><span class="slbl">الأسئلة المجابة:</span><span class="sval" id="summaryAnswered">0</span><span class="slbl">غير المجابة:</span><span class="sval" style="color:var(--red)" id="summaryUnanswered">0</span><span class="slbl">الوقت المستغرق:</span><span class="sval" id="summaryTimeUsed">0</span><span class="slbl">الوقت المتبقي:</span><span class="sval" style="color:var(--green)" id="summaryTimeLeft">0</span></div><div class="mbtns"><button class="mbtnm gray" onclick="closeModal('finalWarningModal')">العودة</button><button class="mbtnm red" onclick="proceedToFinish()">أنهِ الامتحان</button></div></div></div>
 <div id="lockScreen" class="modal"><div class="mbox"><div class="micon"><svg class=ic aria-hidden=true><use href=#i-lock></use></svg></div><p class="mmsg">اطلب من مستر رؤوف يفتحلك الامتحان</p></div></div>
-<div id="confirmDeleteModal" class="modal"><div class="mbox"><div class="micon"><svg class=ic aria-hidden=true><use href=#i-trash-2></use></svg></div><p class="mtitle" style="color:var(--red)">تأكيد الحذف</p><p class="mmsg">هل أنت متأكد من حذف هذا الطالب نهائياً؟<br><strong id="deleteConfirmName" style="color:var(--navy)"></strong></p><div class="mbtns"><button class="mbtnm gray" onclick="closeModal('confirmDeleteModal')">إلغاء</button><button class="mbtnm red" onclick="confirmDeleteStudent()">حذف نهائياً <svg class=ic aria-hidden=true><use href=#i-trash-2></use></svg></button></div></div></div>
+<div id="confirmDeleteModal" class="modal"><div class="mbox"><div class="micon"><svg class=ic aria-hidden=true><use href=#i-trash-2></use></svg></div><p class="mtitle" style="color:var(--red)">تأكيد الحذف</p><p class="mmsg">هل أنت متأكد من حذف هذا الطالب نهائيًا؟ هيتحذف معاه حساب دخوله وكل نتائجه وصور إجاباته وسجلات حضوره.<br><strong id="deleteConfirmName" style="color:var(--navy)"></strong></p><div class="mbtns"><button class="mbtnm gray" onclick="closeModal('confirmDeleteModal')">إلغاء</button><button class="mbtnm red" onclick="confirmDeleteStudent()">حذف نهائياً <svg class=ic aria-hidden=true><use href=#i-trash-2></use></svg></button></div></div></div>
 <div id="studentReportModal" class="modal"><div class="mbox" style="max-width:480px;max-height:82vh;overflow-y:auto;text-align:right">
   <div class="micon" style="text-align:center"><svg class=ic aria-hidden=true><use href=#i-chart-no-axes-column></use></svg></div>
   <p class="mtitle" style="text-align:center;color:var(--navy)" id="reportStudentName">—</p>
@@ -6234,19 +6263,28 @@ async function commitDeletesInChunks(refs) {
 async function bulkDeleteStudents() {
   const codes = currentFilteredStudentCodes.filter(c => selectedStudentCodes.has(c));
   if (!codes.length) return;
-  if (!confirm('⚠️ هل أنت متأكد من حذف ' + codes.length + ' طالب نهائيًا؟ هيتحذف كل نتائجهم كمان. الإجراء ده مينفعش يتراجع.')) return;
+  if (!confirm('⚠️ هل أنت متأكد من حذف ' + codes.length + ' طالب نهائيًا؟ هيتحذف معاهم حسابات دخولهم وكل نتائجهم وصور إجاباتهم وسجلات حضورهم. الإجراء ده مينفعش يتراجع.')) return;
   alert('📦 هتنزّل نسخة احتياطية كاملة الأول، وبعدها نكمل الحذف.');
   const backupOk = await exportFullBackup();
   if (!backupOk) { alert('⛔ اتوقف الحذف لأن النسخة الاحتياطية ما نزّلتش. جرّب تاني.'); return; }
   if (!confirm('اتنزّلت النسخة الاحتياطية. متأكد إنك عايز تكمل الحذف؟')) return;
   try {
-    const refs = codes.map(code => db.collection('students').doc(code));
-    const resultsSnaps = await Promise.all(codes.map(code => db.collection('results').where('studentCode', '==', code).get()));
-    resultsSnaps.forEach(snap => snap.docs.forEach(d => refs.push(d.ref)));
-    await commitDeletesInChunks(refs);
-    codes.forEach(c => selectedStudentCodes.delete(c));
-    alert('✅ اتحذف ' + codes.length + ' طالب');
+    let done = 0; const failed = []; const incomplete = [];
+    for (const code of codes) {
+      try {
+        const j = await edWorkerCall('/delete-student', { code });
+        done++; selectedStudentCodes.delete(code);
+        if (j && j.complete === false) incomplete.push(code);
+      }
+      catch(e) { failed.push(code); }
+    }
     await loadStudents();
+    if (typeof loadDashboardStats === 'function') loadDashboardStats();
+    const bulkBits = [];
+    if (done) bulkBits.push('اتحذف ' + done + ' طالب بكل بياناتهم');
+    if (incomplete.length) bulkBits.push('لكن الحذف مش مكتمل لـ ' + incomplete.length + ' منهم: صور لسه على الاستضافة وهتتحذف بإعادة المحاولة لما تتوفر صلاحيات الصور (' + incomplete.join('، ') + ')');
+    if (failed.length) bulkBits.push('وتعذّر حذف: ' + failed.join('، ') + ' — جرّب حذفهم مرة أخرى');
+    alert((failed.length || incomplete.length ? '⚠️ ' : '✅ ') + bulkBits.join('، '));
   } catch(e) { alert('❌ خطأ: ' + e.message); }
 }
 
@@ -7155,20 +7193,21 @@ async function requestEditStudentCode(oldCode, name) {
 
 async function confirmDeleteStudent() {
   if (!pendingDeleteCode) return;
+  const code = pendingDeleteCode;
+  const btn = document.querySelector('#confirmDeleteModal .mbtnm.red');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ جاري الحذف الكامل...'; }
   try {
-    await db.collection('students').doc(pendingDeleteCode).delete();
-    // Also delete all of this student's exam results
-    const resSnap = await db.collection('results').where('studentCode', '==', pendingDeleteCode).get();
-    const batch = db.batch();
-    resSnap.docs.forEach(d => batch.delete(d.ref));
-    await batch.commit();
+    const j = await edWorkerCall('/delete-student', { code });
     closeModal('confirmDeleteModal');
     document.getElementById('deleteStudentCode').value = '';
     pendingDeleteCode = null;
     await loadStudents();
-    alert('✅ تم حذف الطالب بنجاح');
+    if (typeof loadDashboardStats === 'function') loadDashboardStats();
+    alert(edDeleteAlertPrefix(j) + edDeleteSummaryText(j));
   } catch(e) {
-    alert('❌ خطأ: ' + e.message);
+    alert('❌ ما اكتملش الحذف: ' + e.message + ' — لو ظهر الطالب في القايمة تاني، جرّب مرة أخرى');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = 'حذف نهائياً <svg class=ic aria-hidden=true><use href=#i-trash-2></use></svg>'; }
   }
 }
 
@@ -7760,13 +7799,19 @@ async function createNewExam() {
   }
 }
 
-function deleteExamDoc(examId) {
+async function deleteExamDoc(examId) {
   const ex = teacherExamsCache.find(e => e.id === examId);
-  if (!confirm('⚠️ هل أنت متأكد من حذف امتحان "' + (ex ? ex.title : '') + '" نهائياً؟ كل أسئلته هتتحذف.')) return;
-  db.collection('exams').doc(examId).delete()
-    .then(() => db.collection('examAnswers').doc(examId).delete().catch(() => {}))
-    .then(() => loadTeacherExams())
-    .catch(e => alert('❌ خطأ: ' + e.message));
+  const title = (ex ? ex.title : '') || examId;
+  const warn = ED_EXAM_DELETE_REMOVES_RESULTS
+    ? '⚠️ هل أنت متأكد من حذف امتحان "' + title + '" نهائيًا؟ هيتحذف معاه كل أسئلته ونتائج الطلاب وصور إجاباتهم وسجلات الحضور المرتبطة بيه. الإجراء ده مينفعش يتراجع.'
+    : '⚠️ هل أنت متأكد من حذف امتحان "' + title + '" نهائيًا؟ هيتحذف معاه كل أسئلته وسجلات الحضور المرتبطة بيه، ونتائج الطلاب وصور إجاباتهم هتفضل محفوظة كسجل درجات.';
+  if (!confirm(warn)) return;
+  try {
+    const j = await edWorkerCall('/delete-exam', { examId, removeResults: ED_EXAM_DELETE_REMOVES_RESULTS });
+    await loadTeacherExams();
+    if (typeof loadDashboardStats === 'function') loadDashboardStats();
+    alert(edDeleteAlertPrefix(j) + edDeleteSummaryText(j));
+  } catch(e) { alert('❌ ما اكتملش الحذف: ' + e.message); }
 }
 
 async function cloneExam(examId) {
